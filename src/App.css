@@ -39,8 +39,8 @@
 
 body {
   margin: 0;
+  padding: 0px 70px;
   box-sizing: border-box;
-  padding: 0;
 }
 
 html {
