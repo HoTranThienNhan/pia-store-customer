@@ -5,7 +5,7 @@ import { EyeInvisibleOutlined, EyeTwoTone, InfoCircleOutlined, LockOutlined, Use
 import imagePoster from '../../assets/images/food-poster.jpg'
 import { AuthCard } from './style';
 
-const SignInPage = () => {
+const SignUpPage = () => {
     return (
         <div style={{ padding: '0px 70px', height: '1500px' }}>
             <AuthCard>
@@ -14,7 +14,7 @@ const SignInPage = () => {
                         <h2 style={{ marginBottom: '48px' }}>Chào mừng đến BRANCH NAME</h2>
                         <Col style={{ padding: '20px 50px' }}>
                             <h1 style={{ textAlign: 'center', marginBottom: '24px' }}>
-                                Đăng Nhập Tài Khoản
+                                Đăng Ký Tài Khoản
                             </h1>
                             <InputFormComponent
                                 placeholder="Tài khoản"
@@ -27,12 +27,15 @@ const SignInPage = () => {
                                 prefix={<LockOutlined className="site-form-item-icon" />}
                                 className='auth-input-password'
                             />
-                            <Button type="primary" className='auth-button-signin' danger>Đăng Nhập</Button>
+                            <Input.Password 
+                                placeholder="Nhập lại mật khẩu"
+                                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)} 
+                                prefix={<LockOutlined className="site-form-item-icon" />}
+                                className='auth-input-password'
+                            />
+                            <Button type="primary" className='auth-button-signup' danger>Đăng Ký</Button>
                             <div style={{ marginBottom: '8px' }}>
-                                <a>Quên mật khẩu?</a>
-                            </div>
-                            <div>
-                                Chưa có tài khoản? <a>Tạo tài khoản</a>
+                                Đã có tài khoản? <a>Đăng nhập</a>
                             </div>
                         </Col>
                     </Col>
@@ -45,4 +48,4 @@ const SignInPage = () => {
     )
 };
 
-export default SignInPage
+export default SignUpPage

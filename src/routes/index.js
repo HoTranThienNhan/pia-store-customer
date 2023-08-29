@@ -4,6 +4,7 @@ import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import OrderPage from "../pages/OrderPage/OrderPage";
 import ProductPage from "../pages/ProductPage/ProductPage";
 import SignInPage from "../pages/SignInPage/SignInPage";
+import SignUpPage from "../pages/SignUpPage/SignUpPage";
 
 export const routes = [
     {
@@ -33,7 +34,7 @@ export const routes = [
     },
     {
         path: '/signup',
-        page: MenuPage,
+        page: SignUpPage,
         isShowHeader: false
     },
     {
