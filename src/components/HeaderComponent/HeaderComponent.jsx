@@ -1,4 +1,4 @@
-import { Col, Row } from "antd";
+import { Badge, Col, Row } from "antd";
 import { UserOutlined, HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import React from 'react';
 import { WrapperAccountHeader, WrapperHeader, WrapperAuthHeader } from "./style";
@@ -6,7 +6,7 @@ import SearchButtonComponent from "../SearchButtonComponent/SearchButtonComponen
 import NavigationComponent from "../NavigationComponent/NavigationComponent";
 
 const HeaderComponent = () => {
-   const navItem = ['Trang chủ', 'Tìm hiểu', 'Thức ăn', 'Nước uống', 'Liên hệ']
+   const navItem = ['Trang chủ', 'Tìm hiểu', 'Thực đơn', 'Khuyến mãi', 'Liên hệ']
    return (
       <div>
          <WrapperHeader>
@@ -43,8 +43,16 @@ const HeaderComponent = () => {
                      <span style={{ marginLeft: '5px' }}>Đăng ký</span>
                   </WrapperAuthHeader>
                   <WrapperAccountHeader>
-                     <HeartOutlined style={{ marginRight: '15px' }} />
-                     <ShoppingCartOutlined style={{ marginRight: '15px' }} />
+                     <div style={{ marginRight: '15px' }}>
+                        <Badge count={1}>
+                           <HeartOutlined style={{ marginRight: '5px', fontSize: '24px' }} />
+                        </Badge>
+                     </div>
+                     <div>
+                        <Badge count={1}>
+                           <ShoppingCartOutlined style={{ marginRight: '5px', fontSize: '24px' }} />
+                        </Badge>
+                     </div>
                   </WrapperAccountHeader>
                </Row>
             </Col>
