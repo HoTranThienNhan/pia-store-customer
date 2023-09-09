@@ -98,6 +98,7 @@ const SignUpPage = () => {
                                 </Form.Item>
                                 <Form.Item>
                                     <Button 
+                                        disabled={!email.length || !password.length || !confirmpassword.length}
                                         type="primary" 
                                         htmlType='submit' 
                                         className='auth-button-signup' 
