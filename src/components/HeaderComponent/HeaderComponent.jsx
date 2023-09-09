@@ -4,9 +4,18 @@ import React from 'react';
 import { WrapperAccountHeader, WrapperHeader, WrapperAuthHeader } from "./style";
 import SearchButtonComponent from "../SearchButtonComponent/SearchButtonComponent";
 import NavigationComponent from "../NavigationComponent/NavigationComponent";
+import { useNavigate } from "react-router-dom";
 
 const HeaderComponent = () => {
-   const navItem = ['Trang chủ', 'Tìm hiểu', 'Thực đơn', 'Khuyến mãi', 'Liên hệ']
+   const navItem = ['Trang chủ', 'Tìm hiểu', 'Thực đơn', 'Khuyến mãi', 'Liên hệ'];
+   const navigate = useNavigate();
+   const handleNavigateSignin = () => {
+      navigate('/signin');
+   }
+   const handleNavigateSignup = () => {
+      navigate('/signup');
+   }
+
    return (
       <div>
          <WrapperHeader>
@@ -39,8 +48,9 @@ const HeaderComponent = () => {
                      <UserOutlined />
                   </WrapperAccountHeader>
                   <WrapperAuthHeader>
-                     <span style={{ marginRight: '5px' }}>Đăng nhập</span> /
-                     <span style={{ marginLeft: '5px' }}>Đăng ký</span>
+                     <span onClick={handleNavigateSignin} style={{ marginRight: '5px', cursor: 'pointer' }}>Đăng nhập</span> 
+                     <span style={{ userSelect: 'none' }}>/</span>
+                     <span onClick={handleNavigateSignup} style={{ marginLeft: '5px', cursor: 'pointer' }}>Đăng ký</span>
                   </WrapperAuthHeader>
                   <WrapperAccountHeader>
                      <div style={{ marginRight: '15px' }}>

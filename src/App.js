@@ -11,15 +11,15 @@ export function App() {
   //   fetchAPI();
   // }, []);
 
-  const fetchAPI = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getAllProducts`);
-    return res.data;
-  }
+  // const fetchAPI = async () => {
+  //   const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getAllProducts`);
+  //   return res.data;
+  // }
 
-  const query = useQuery({
-    queryKey: ['todos'], queryFn: fetchAPI
-  });
-  console.log(query);
+  // const query = useQuery({
+  //   queryKey: ['todos'], queryFn: fetchAPI
+  // });
+  // console.log(query);
 
   return (
     <div>

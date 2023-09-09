@@ -11,11 +11,11 @@ export const AuthCard = styled(Card)`
         border-radius: 0 0 8px 8px;
     }
 
-    .auth-input-username, .auth-input-password {
+    .auth-input-email, .auth-input-password {
         height: 45px;
         border-radius: 25px;
         padding: 0px 18px;
-        margin-bottom: 20px; 
+        margin-top: 20px; 
         border: 1px solid #000;
     }
 
@@ -24,6 +24,6 @@ export const AuthCard = styled(Card)`
         width: 100%; 
         border-radius: 25px; 
         margin-bottom: 20px; 
-        margin-top: 10px;
+        margin-top: 20px;
     }
 `
