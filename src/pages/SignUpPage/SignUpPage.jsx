@@ -6,12 +6,22 @@ import imagePoster from '../../assets/images/food-poster.jpg'
 import { AuthCard } from './style';
 import { useNavigate } from 'react-router-dom';
 import InputPasswordComponent from '../../components/InputPasswordComponent/InputPasswordComponent';
+import * as UserService from '../../services/UserService';
+import { useMutationHooks } from '../../hooks/useMutationHook';
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 
 const SignUpPage = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmpassword, setConfirmPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    // mutation
+    const mutation = useMutationHooks(
+        data => UserService.signupUser(data)
+    );
+
+    const { data, isLoading } = mutation;
 
     // hooks
     const handleOnChangeEmail = (value) => {
@@ -27,7 +37,11 @@ const SignUpPage = () => {
     }
 
     const handleSignup = () => {
-
+        mutation.mutate({
+            email,
+            password,
+            confirmPassword
+        })
     }
 
     // navigation
@@ -92,21 +106,24 @@ const SignUpPage = () => {
                                         placeholder="Nhập lại mật khẩu"
                                         prefix={<LockOutlined className="site-form-item-icon" />}
                                         className='auth-input-password'
-                                        value={confirmpassword}
+                                        value={confirmPassword}
                                         onChange={handleOnChangeConfirmPassword}
                                     />
                                 </Form.Item>
+                                {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
                                 <Form.Item>
-                                    <Button 
-                                        disabled={!email.length || !password.length || !confirmpassword.length}
-                                        type="primary" 
-                                        htmlType='submit' 
-                                        className='auth-button-signup' 
-                                        onClick={handleSignup}
-                                        danger
-                                    >
-                                        Đăng Ký
-                                    </Button>
+                                    <LoadingComponent isLoading={isLoading}>
+                                        <Button
+                                            disabled={!email.length || !password.length || !confirmPassword.length}
+                                            type="primary"
+                                            htmlType='submit'
+                                            className='auth-button-signup'
+                                            onClick={handleSignup}
+                                            danger
+                                        >
+                                            Đăng Ký
+                                        </Button>
+                                    </LoadingComponent>
                                 </Form.Item>
                             </Form>
                             <div style={{ marginBottom: '8px' }}>

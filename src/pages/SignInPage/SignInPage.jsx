@@ -6,12 +6,22 @@ import imagePoster from '../../assets/images/food-poster.jpg'
 import { AuthCard } from './style';
 import { useNavigate } from 'react-router-dom';
 import InputPasswordComponent from '../../components/InputPasswordComponent/InputPasswordComponent';
+import * as UserService from '../../services/UserService';
+import { useMutationHooks } from '../../hooks/useMutationHook';
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 
 const SignInPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
+
+    // mutation
+    const mutation = useMutationHooks(
+        data => UserService.signinUser(data)
+    );
+
+    const { data, isLoading } = mutation;
 
     // navigation
     const handleNavigateSignup = () => {
@@ -31,8 +41,13 @@ const SignInPage = () => {
     }
 
     const handleSignin = () => {
-        
+        mutation.mutate({
+            email,
+            password
+        });
     }
+
+
 
     return (
         <div style={{ padding: '0px 70px', height: '1500px' }}>
@@ -77,17 +92,20 @@ const SignInPage = () => {
                                         onChange={handleOnChangePassword}
                                     />
                                 </Form.Item>
+                                {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
                                 <Form.Item>
-                                    <Button
-                                        disabled={!email.length || !password.length}
-                                        type="primary"
-                                        htmlType='submit'
-                                        onClick={handleSignin}
-                                        className='auth-button-signin'
-                                        danger
-                                    >
-                                        Đăng Nhập
-                                    </Button>
+                                    <LoadingComponent isLoading={isLoading}>
+                                        <Button
+                                            disabled={!email.length || !password.length}
+                                            type="primary"
+                                            htmlType='submit'
+                                            onClick={handleSignin}
+                                            className='auth-button-signin'
+                                            danger
+                                        >
+                                            Đăng Nhập
+                                        </Button>
+                                    </LoadingComponent>
                                 </Form.Item>
                             </Form>
                             <div style={{ marginBottom: '8px' }}>
