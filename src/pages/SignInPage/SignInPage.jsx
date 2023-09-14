@@ -9,6 +9,7 @@ import InputPasswordComponent from '../../components/InputPasswordComponent/Inpu
 import * as UserService from '../../services/UserService';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
+import FloatingLabelComponent from '../../components/FloatingLabelComponent/FloatingLabelComponent';
 
 const SignInPage = () => {
     const [email, setEmail] = useState('');
@@ -69,13 +70,15 @@ const SignInPage = () => {
                                     style={{ marginBottom: '0px' }}
                                     className='auth-form-item-email'
                                 >
-                                    <InputFormComponent
-                                        placeholder="Tài khoản"
-                                        prefix={<UserOutlined className="site-form-item-icon" />}
-                                        className='auth-input-email'
-                                        value={email}
-                                        onChange={handleOnChangeEmail}
-                                    />
+                                    <FloatingLabelComponent label="Tài khoản email" value={email}>
+                                        <InputFormComponent
+                                            placeholder=""
+                                            prefix={<UserOutlined className="site-form-item-icon" />}
+                                            className='auth-input-email'
+                                            value={email}
+                                            onChange={handleOnChangeEmail}
+                                        />
+                                    </FloatingLabelComponent>
                                 </Form.Item>
                                 <Form.Item
                                     label=""
@@ -84,13 +87,15 @@ const SignInPage = () => {
                                     style={{ marginBottom: '0px' }}
                                     className='auth-form-item-password'
                                 >
-                                    <InputPasswordComponent
-                                        placeholder="Mật khẩu"
-                                        prefix={<LockOutlined className="site-form-item-icon" />}
-                                        className='auth-input-password'
-                                        value={password}
-                                        onChange={handleOnChangePassword}
-                                    />
+                                    <FloatingLabelComponent label="Mật khẩu" value={password}>
+                                        <InputPasswordComponent
+                                            placeholder=""
+                                            prefix={<LockOutlined className="site-form-item-icon" />}
+                                            className='auth-input-password'
+                                            value={password}
+                                            onChange={handleOnChangePassword}
+                                        />
+                                    </FloatingLabelComponent>
                                 </Form.Item>
                                 {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
                                 <Form.Item>

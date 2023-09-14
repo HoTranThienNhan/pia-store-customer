@@ -1,7 +1,7 @@
 import { Button, Col, Form, Image, Row } from 'antd';
 import React, { useState } from 'react';
 import InputFormComponent from '../../components/InputFormComponent/InputFormComponent';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { IdcardOutlined, LockOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
 import imagePoster from '../../assets/images/food-poster.jpg'
 import { AuthCard } from './style';
 import { useNavigate } from 'react-router-dom';
@@ -9,9 +9,12 @@ import InputPasswordComponent from '../../components/InputPasswordComponent/Inpu
 import * as UserService from '../../services/UserService';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
+import FloatingLabelComponent from '../../components/FloatingLabelComponent/FloatingLabelComponent';
 
 const SignUpPage = () => {
     const navigate = useNavigate();
+    const [fullname, setFullname] = useState('');
+    const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -24,6 +27,14 @@ const SignUpPage = () => {
     const { data, isLoading } = mutation;
 
     // hooks
+    const handleOnChangeFullname = (value) => {
+        setFullname(value);
+    }
+
+    const handleOnChangePhone = (value) => {
+        setPhone(value);
+    }
+
     const handleOnChangeEmail = (value) => {
         setEmail(value);
     }
@@ -37,7 +48,10 @@ const SignUpPage = () => {
     }
 
     const handleSignup = () => {
+        // parse these data into UserService 
         mutation.mutate({
+            fullname,
+            phone,
             email,
             password,
             confirmPassword
@@ -70,15 +84,51 @@ const SignUpPage = () => {
                                     validateStatus={"validating"}
                                     help=""
                                     style={{ marginBottom: '0px' }}
+                                    className='auth-form-item-fullname'
+                                >
+                                    <FloatingLabelComponent label="Họ tên" value={fullname}>
+                                        <InputFormComponent
+                                            placeholder=""
+                                            prefix={<IdcardOutlined className="site-form-item-icon" />}
+                                            className='auth-input-fullname'
+                                            value={fullname}
+                                            onChange={handleOnChangeFullname}
+                                        />
+                                    </FloatingLabelComponent>
+                                </Form.Item>
+                                <Form.Item
+                                    label=""
+                                    validateStatus={"validating"}
+                                    help=""
+                                    style={{ marginBottom: '0px' }}
+                                    className='auth-form-item-phone'
+                                >
+                                    <FloatingLabelComponent label="Số điện thoại" value={phone}>
+                                        <InputFormComponent
+                                            placeholder=""
+                                            prefix={<PhoneOutlined className="site-form-item-icon" />}
+                                            className='auth-input-phone'
+                                            value={phone}
+                                            onChange={handleOnChangePhone}
+                                        />
+                                    </FloatingLabelComponent>
+                                </Form.Item>
+                                <Form.Item
+                                    label=""
+                                    validateStatus={"validating"}
+                                    help=""
+                                    style={{ marginBottom: '0px' }}
                                     className='auth-form-item-email'
                                 >
-                                    <InputFormComponent
-                                        placeholder="Tài khoản"
-                                        prefix={<UserOutlined className="site-form-item-icon" />}
-                                        className='auth-input-email'
-                                        value={email}
-                                        onChange={handleOnChangeEmail}
-                                    />
+                                    <FloatingLabelComponent label="Tài khoản email" value={email}>
+                                        <InputFormComponent
+                                            placeholder=""
+                                            prefix={<UserOutlined className="site-form-item-icon" />}
+                                            className='auth-input-email'
+                                            value={email}
+                                            onChange={handleOnChangeEmail}
+                                        />
+                                    </FloatingLabelComponent>
                                 </Form.Item>
                                 <Form.Item
                                     label=""
@@ -87,13 +137,15 @@ const SignUpPage = () => {
                                     style={{ marginBottom: '0px' }}
                                     className='auth-form-item-password'
                                 >
-                                    <InputPasswordComponent
-                                        placeholder="Mật khẩu"
-                                        prefix={<LockOutlined className="site-form-item-icon" />}
-                                        className='auth-input-password'
-                                        value={password}
-                                        onChange={handleOnChangePassword}
-                                    />
+                                    <FloatingLabelComponent label="Mật khẩu" value={password}>
+                                        <InputPasswordComponent
+                                            placeholder=""
+                                            prefix={<LockOutlined className="site-form-item-icon" />}
+                                            className='auth-input-password'
+                                            value={password}
+                                            onChange={handleOnChangePassword}
+                                        />
+                                    </FloatingLabelComponent>
                                 </Form.Item>
                                 <Form.Item
                                     label=""
@@ -102,19 +154,25 @@ const SignUpPage = () => {
                                     style={{ marginBottom: '0px' }}
                                     className='auth-form-item-confirm-password'
                                 >
-                                    <InputPasswordComponent
-                                        placeholder="Nhập lại mật khẩu"
-                                        prefix={<LockOutlined className="site-form-item-icon" />}
-                                        className='auth-input-password'
-                                        value={confirmPassword}
-                                        onChange={handleOnChangeConfirmPassword}
-                                    />
+                                    <FloatingLabelComponent label="Nhập lại mật khẩu" value={confirmPassword}>
+                                        <InputPasswordComponent
+                                            placeholder=""
+                                            prefix={<LockOutlined className="site-form-item-icon" />}
+                                            className='auth-input-password'
+                                            value={confirmPassword}
+                                            onChange={handleOnChangeConfirmPassword}
+                                        />
+                                    </FloatingLabelComponent>
                                 </Form.Item>
                                 {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
                                 <Form.Item>
                                     <LoadingComponent isLoading={isLoading}>
                                         <Button
-                                            disabled={!email.length || !password.length || !confirmPassword.length}
+                                            disabled={!fullname.length 
+                                                || !phone.length
+                                                || !email.length 
+                                                || !password.length 
+                                                || !confirmPassword.length}
                                             type="primary"
                                             htmlType='submit'
                                             className='auth-button-signup'

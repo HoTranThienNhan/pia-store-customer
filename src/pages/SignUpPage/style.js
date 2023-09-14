@@ -11,12 +11,22 @@ export const AuthCard = styled(Card)`
         border-radius: 0 0 8px 8px;
     }
 
-    .auth-input-email, .auth-input-password {
+    .auth-input-email, 
+    .auth-input-password, 
+    .auth-input-fullname,
+    .auth-input-phone {
         height: 45px;
         border-radius: 25px;
         padding: 0px 18px; 
         margin-top: 20px; 
         border: 1px solid #000;
+    }
+
+    .auth-input-fullname .ant-input, 
+    .auth-input-email .ant-input, 
+    .auth-input-password .ant-input,
+    .auth-input-phone .ant-input {
+        padding-top: 7px;
     }
 
     .auth-button-signup {

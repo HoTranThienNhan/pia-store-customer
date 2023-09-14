@@ -18,6 +18,11 @@ export const AuthCard = styled(Card)`
         margin-top: 20px; 
         border: 1px solid #000;
     }
+    
+    .auth-input-email .ant-input, 
+    .auth-input-password .ant-input {
+        padding-top: 7px;
+    }
 
     .auth-button-signin {
         height: 50px; 
