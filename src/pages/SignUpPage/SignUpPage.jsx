@@ -1,5 +1,5 @@
 import { Button, Col, Form, Image, Row } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InputFormComponent from '../../components/InputFormComponent/InputFormComponent';
 import { IdcardOutlined, LockOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
 import imagePoster from '../../assets/images/food-poster.jpg'
@@ -10,6 +10,7 @@ import * as UserService from '../../services/UserService';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import FloatingLabelComponent from '../../components/FloatingLabelComponent/FloatingLabelComponent';
+import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
 
 const SignUpPage = () => {
     const navigate = useNavigate();
@@ -24,7 +25,18 @@ const SignUpPage = () => {
         data => UserService.signupUser(data)
     );
 
-    const { data, isLoading } = mutation;
+    const { data, isLoading , isSuccess, isError } = mutation;
+
+    console.log(isSuccess);
+
+    useEffect(() => {
+        if (isSuccess) {
+            MessagePopup.success();
+            handleNavigateSignin();
+        } else if (isError) {
+            MessagePopup.error();
+        }
+    }, [isSuccess, isError]);
 
     // hooks
     const handleOnChangeFullname = (value) => {

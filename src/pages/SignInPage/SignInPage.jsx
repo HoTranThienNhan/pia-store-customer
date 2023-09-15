@@ -1,5 +1,5 @@
 import { Button, Col, Form, Image, Row } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InputFormComponent from '../../components/InputFormComponent/InputFormComponent';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import imagePoster from '../../assets/images/food-poster.jpg'
@@ -10,10 +10,16 @@ import * as UserService from '../../services/UserService';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import FloatingLabelComponent from '../../components/FloatingLabelComponent/FloatingLabelComponent';
+import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
+import jwt_decode from "jwt-decode";
+import { useDispatch } from 'react-redux';
+import { updateUser } from '../../redux/slices/userSlice';
 
 const SignInPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const dispatch = useDispatch();
 
     const navigate = useNavigate();
 
@@ -22,7 +28,26 @@ const SignInPage = () => {
         data => UserService.signinUser(data)
     );
 
-    const { data, isLoading } = mutation;
+    const { data, isLoading, isSuccess, isError } = mutation;
+
+    useEffect(() => {
+        if (isSuccess) {
+            MessagePopup.success();
+            handleNavigateHomepage();
+            // keep accessToken stored in the browser
+            localStorage.setItem('accessToken', JSON.stringify(data?.accessToken));
+            // if accessToken exists
+            if (data?.accessToken) {
+                // decoded contains elements (id, isAdmin) of access token payload
+                const decoded = jwt_decode(data?.accessToken);
+                if (decoded?.id) {
+                    handleGetUserDetails(decoded.id, data?.accessToken);
+                }
+            }
+        } else if (isError) {
+            MessagePopup.error();
+        }
+    }, [isSuccess, isError]);
 
     // navigation
     const handleNavigateSignup = () => {
@@ -30,6 +55,12 @@ const SignInPage = () => {
     }
     const handleNavigateHomepage = () => {
         navigate('/');
+    }
+
+    const handleGetUserDetails = async (id, accessToken) => {
+        // res contains user information
+        const res = await UserService.getUserDetails(id, accessToken);
+        dispatch(updateUser({...res?.data, accessToken: accessToken}));
     }
 
     // hooks

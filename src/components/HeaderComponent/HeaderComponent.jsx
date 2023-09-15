@@ -5,9 +5,13 @@ import { WrapperAccountHeader, WrapperHeader, WrapperAuthHeader } from "./style"
 import SearchButtonComponent from "../SearchButtonComponent/SearchButtonComponent";
 import NavigationComponent from "../NavigationComponent/NavigationComponent";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const HeaderComponent = () => {
    const navItem = ['Trang chủ', 'Tìm hiểu', 'Thực đơn', 'Khuyến mãi', 'Liên hệ'];
+   const user = useSelector((state) => state.user);
+
+   // navigation
    const navigate = useNavigate();
    const handleNavigateSignin = () => {
       navigate('/signin');
@@ -47,11 +51,15 @@ const HeaderComponent = () => {
                   <WrapperAccountHeader>
                      <UserOutlined />
                   </WrapperAccountHeader>
-                  <WrapperAuthHeader>
+                  {user?.name ? (
+                     <div style={{ marginRight: '20px', display: 'flex', alignItems: 'center' }}>{user.name}</div>
+                  ) : (
+                     <WrapperAuthHeader>
                      <span onClick={handleNavigateSignin} style={{ marginRight: '5px', cursor: 'pointer' }}>Đăng nhập</span> 
                      <span style={{ userSelect: 'none' }}>/</span>
                      <span onClick={handleNavigateSignup} style={{ marginLeft: '5px', cursor: 'pointer' }}>Đăng ký</span>
                   </WrapperAuthHeader>
+                  )}
                   <WrapperAccountHeader>
                      <div style={{ marginRight: '15px' }}>
                         <Badge count={1}>

@@ -2,24 +2,58 @@ import React, { Fragment, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { routes } from './routes';
 import DefaultComponent from './components/DefaultComponent/DefaultComponent';
+import { isJsonString } from './utils';
+import jwt_decode from "jwt-decode";
+import * as UserService from './services/UserService';
+import { useDispatch } from 'react-redux';
+import { updateUser } from './redux/slices/userSlice';
 import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 
 export function App() {
 
-  // useEffect(() => {
-  //   fetchAPI();
-  // }, []);
+  const dispatch = useDispatch();
 
-  // const fetchAPI = async () => {
-  //   const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getAllProducts`);
-  //   return res.data;
-  // }
+  useEffect(() => {
+    let { storageData, decoded } = handleDecoded();
+    if (decoded?.id) {
+      handleGetUserDetails(decoded?.id, storageData);
+    }
+  }, []);
 
-  // const query = useQuery({
-  //   queryKey: ['todos'], queryFn: fetchAPI
-  // });
-  // console.log(query);
+  const handleDecoded = () => {
+    let storageData = localStorage.getItem('accessToken');
+    let decoded = {}
+    if (storageData && isJsonString(storageData)) {
+      // storageData contains accessToken when accessToken exists
+      storageData = JSON.parse(storageData);
+      // decoded contains elements (id, isAdmin) of access token payload
+      decoded = jwt_decode(storageData);
+    }
+    return { decoded, storageData }
+  }
+
+  // provide new accessToken if current accessToken is expired
+  UserService.axiosJWT.interceptors.request.use(async (config) => {
+    const { decoded } = handleDecoded();
+    const currentTime = new Date();
+    // if expired time of decoded is smaller than current time (milisecond)
+    if (decoded?.exp < currentTime.getTime()/1000) {
+      const data = await UserService.refreshToken();
+      
+      config.headers['token'] = `Bearer ${data?.accessToken}`
+    }
+    return config;
+  }, function (error) {
+    return Promise.reject(error);
+  });
+
+
+  const handleGetUserDetails = async (id, accessToken) => {
+    // res contains user information
+    const res = await UserService.getUserDetails(id, accessToken);
+    dispatch(updateUser({ ...res?.data, accessToken: accessToken }));
+  }
+
 
   return (
     <div>
