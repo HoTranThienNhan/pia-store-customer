@@ -6,11 +6,30 @@ export const WrapperHeader = styled(Row)`
     background-color: #ddd;
 `
 
+export const WrapperSearchHeader = styled.div`
+    font-size: 20px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+`
+
 export const WrapperAccountHeader = styled.div`
     font-size: 20px;
     margin-right: 10px;
     display: flex;
     align-items: center;
+`
+
+export const WrapperAuthDiv = styled.div`
+    display: flex;
+
+    .ant-spin-nested-loading{
+        display: flex;
+    }
+    
+    .ant-spin-container {
+        display: flex;
+    }
 `
 
 export const WrapperAuthHeader = styled.span`
@@ -19,5 +38,14 @@ export const WrapperAuthHeader = styled.span`
     align-items: center;
     margin-right: 20px;
 `
+
+export const WrapperSignoutPopover = styled.p`
+    cursor: pointer;
+    margin-bottom: 0px;
+    padding-top: 10px;
+    border-top: 1px solid #c2c2c2;
+`
+
+
 
 

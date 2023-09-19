@@ -12,6 +12,11 @@ export const signupUser = async (data) => {
     return res.data;
 }
 
+export const signoutUser = async (data) => {
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/signout`);
+    return res.data;
+}
+
 export const getUserDetails = async (id, accessToken) => {
     const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/getUserDetails/${id}`, {
         headers: {

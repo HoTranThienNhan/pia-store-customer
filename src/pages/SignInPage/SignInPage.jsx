@@ -79,8 +79,6 @@ const SignInPage = () => {
         });
     }
 
-
-
     return (
         <div style={{ padding: '0px 70px', height: '1500px' }}>
             <AuthCard>

@@ -1,15 +1,22 @@
-import { Badge, Col, Row } from "antd";
+import { Badge, Button, Col, Popover, Row } from "antd";
 import { UserOutlined, HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import React from 'react';
-import { WrapperAccountHeader, WrapperHeader, WrapperAuthHeader } from "./style";
+import React, { useState } from 'react';
+import { WrapperAccountHeader, WrapperHeader, WrapperAuthHeader, WrapperSignoutPopover, WrapperSearchHeader, WrapperAuthDiv } from "./style";
 import SearchButtonComponent from "../SearchButtonComponent/SearchButtonComponent";
 import NavigationComponent from "../NavigationComponent/NavigationComponent";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import * as UserService from '../../services/UserService';
+import { resetUser } from '../../redux/slices/userSlice';
+import LoadingComponent from "../LoadingComponent/LoadingComponent";
 
 const HeaderComponent = () => {
    const navItem = ['Trang chủ', 'Tìm hiểu', 'Thực đơn', 'Khuyến mãi', 'Liên hệ'];
+
    const user = useSelector((state) => state.user);
+   const dispatch = useDispatch();
+
+   const [loading, setLoading] = useState(false);
 
    // navigation
    const navigate = useNavigate();
@@ -19,6 +26,19 @@ const HeaderComponent = () => {
    const handleNavigateSignup = () => {
       navigate('/signup');
    }
+   const handleNavigateSignout = async () => {
+      setLoading(true);
+      await UserService.signoutUser();
+      dispatch(resetUser());
+      setLoading(false);
+   }
+
+   const signoutUserPopoverItem = (
+      <div style={{ padding: '7px' }}>
+         <p>Tài Khoản Của Tôi</p>
+         <WrapperSignoutPopover onClick={handleNavigateSignout}>Đăng Xuất</WrapperSignoutPopover>
+      </div>
+   );
 
    return (
       <div>
@@ -42,24 +62,43 @@ const HeaderComponent = () => {
             {/* Right NavBar Part Here */}
             <Col span={9}>
                <Row justify="end">
-                  <WrapperAccountHeader style={{ marginRight: '25px' }}>
+                  {/* Search Part Here */}
+                  <WrapperSearchHeader style={{ marginRight: '25px' }}>
                      <SearchButtonComponent
                         width='140px'
                         placeholder='Tìm sản phẩm'
                      />
-                  </WrapperAccountHeader>
-                  <WrapperAccountHeader>
-                     <UserOutlined />
-                  </WrapperAccountHeader>
-                  {user?.name ? (
-                     <div style={{ marginRight: '20px', display: 'flex', alignItems: 'center' }}>{user.name}</div>
-                  ) : (
-                     <WrapperAuthHeader>
-                     <span onClick={handleNavigateSignin} style={{ marginRight: '5px', cursor: 'pointer' }}>Đăng nhập</span> 
-                     <span style={{ userSelect: 'none' }}>/</span>
-                     <span onClick={handleNavigateSignup} style={{ marginLeft: '5px', cursor: 'pointer' }}>Đăng ký</span>
-                  </WrapperAuthHeader>
-                  )}
+                  </WrapperSearchHeader>
+                  {/* Auth Part Here */}
+                  <WrapperAuthDiv>
+                     <LoadingComponent isLoading={loading}>
+                        {/* Icon Account Here */}
+                        <WrapperAccountHeader>
+                           <UserOutlined />
+                        </WrapperAccountHeader>
+                        {/* If user exists, show user email, else show signin and signup */}
+                        {user?.name ? (
+                           <Popover placement="bottom" content={signoutUserPopoverItem} trigger="click">
+                              <div style={{
+                                 marginRight: '20px',
+                                 display: 'flex',
+                                 alignItems: 'center',
+                                 fontWeight: 'bold',
+                                 cursor: 'pointer'
+                              }}>
+                                 {user.name}
+                              </div>
+                           </Popover>
+                        ) : (
+                           <WrapperAuthHeader>
+                              <span onClick={handleNavigateSignin} style={{ marginRight: '5px', cursor: 'pointer' }}>Đăng nhập</span>
+                              <span style={{ userSelect: 'none' }}>/</span>
+                              <span onClick={handleNavigateSignup} style={{ marginLeft: '5px', cursor: 'pointer' }}>Đăng ký</span>
+                           </WrapperAuthHeader>
+                        )}
+                     </LoadingComponent>
+                  </WrapperAuthDiv>
+                  {/* Favorite Products And Cart Here */}
                   <WrapperAccountHeader>
                      <div style={{ marginRight: '15px' }}>
                         <Badge count={1}>
