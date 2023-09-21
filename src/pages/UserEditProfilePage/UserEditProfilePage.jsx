@@ -2,7 +2,7 @@ import { Button, Form, Modal, Spin, Upload, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import FloatingLabelComponent from '../../components/FloatingLabelComponent/FloatingLabelComponent';
 import InputFormComponent from '../../components/InputFormComponent/InputFormComponent';
-import { HomeOutlined, IdcardOutlined, LockOutlined, PhoneOutlined, PlusOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
+import { DeleteOutlined, HomeOutlined, IdcardOutlined, LockOutlined, PhoneOutlined, PlusOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { WrapperUploadUserAvtar, WrapperUserEditProfile } from './style';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import { useDispatch, useSelector } from 'react-redux';
@@ -185,7 +185,7 @@ const UserEditProfilePage = () => {
                                 <Upload onChange={handleOnChangeAvatar} maxCount={1}>
                                     <Button icon={<UploadOutlined />}>Upload</Button>
                                 </Upload>
-                                <Button onClick={handleRemoveAvatar} style={{ width: '98px' }}>Remove</Button>
+                                <Button icon={<DeleteOutlined />} onClick={handleRemoveAvatar} style={{ width: '98px' }}>Remove</Button>
                             </div>
                         </div>
                     </WrapperUploadUserAvtar>
