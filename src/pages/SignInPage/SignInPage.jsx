@@ -32,17 +32,19 @@ const SignInPage = () => {
 
     useEffect(() => {
         if (isSuccess) {
-            MessagePopup.success();
-            handleNavigateHomepage();
-            // keep accessToken stored in the browser
-            localStorage.setItem('accessToken', JSON.stringify(data?.accessToken));
             // if accessToken exists
             if (data?.accessToken) {
+                MessagePopup.success();
+                handleNavigateHomepage();
+                // keep accessToken stored in the browser
+                localStorage.setItem('accessToken', JSON.stringify(data?.accessToken));
                 // decoded contains elements (id, isAdmin) of access token payload
                 const decoded = jwt_decode(data?.accessToken);
                 if (decoded?.id) {
                     handleGetUserDetails(decoded.id, data?.accessToken);
                 }
+            } else {
+                MessagePopup.error();
             }
         } else if (isError) {
             MessagePopup.error();
@@ -126,6 +128,7 @@ const SignInPage = () => {
                                         />
                                     </FloatingLabelComponent>
                                 </Form.Item>
+                                
                                 {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
                                 <Form.Item>
                                     <LoadingComponent isLoading={isLoading}>

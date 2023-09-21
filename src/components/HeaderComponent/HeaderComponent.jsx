@@ -1,7 +1,16 @@
 import { Badge, Button, Col, Popover, Row } from "antd";
 import { UserOutlined, HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import React, { useState } from 'react';
-import { WrapperAccountHeader, WrapperHeader, WrapperAuthHeader, WrapperSignoutPopover, WrapperSearchHeader, WrapperAuthDiv } from "./style";
+import React, { useEffect, useState } from 'react';
+import { 
+   WrapperAccountHeader, 
+   WrapperHeader, 
+   WrapperAuthHeader, 
+   WrapperSignoutPopover, 
+   WrapperSearchHeader, 
+   WrapperAuthDiv,
+   WrapperAccountPopover, 
+   WrapperLinePopover
+} from "./style";
 import SearchButtonComponent from "../SearchButtonComponent/SearchButtonComponent";
 import NavigationComponent from "../NavigationComponent/NavigationComponent";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +26,15 @@ const HeaderComponent = () => {
    const dispatch = useDispatch();
 
    const [loading, setLoading] = useState(false);
+   const [username, setUsername] = useState('');
+   const [userAvatar, setUserAvatar] = useState('');
+
+   useEffect(() => {
+      setLoading(true);
+      setUsername(user?.name);
+      setUserAvatar(user?.avatar);
+      setLoading(false);
+   }, [user?.name, user?.avatar]);
 
    // navigation
    const navigate = useNavigate();
@@ -31,11 +49,13 @@ const HeaderComponent = () => {
       await UserService.signoutUser();
       dispatch(resetUser());
       setLoading(false);
+      navigate('/');
    }
 
    const signoutUserPopoverItem = (
-      <div style={{ padding: '7px' }}>
-         <p>Tài Khoản Của Tôi</p>
+      <div>
+         <WrapperAccountPopover onClick={() => navigate('/user/profile')}>Tài Khoản Của Tôi</WrapperAccountPopover>
+         <WrapperLinePopover></WrapperLinePopover>
          <WrapperSignoutPopover onClick={handleNavigateSignout}>Đăng Xuất</WrapperSignoutPopover>
       </div>
    );
@@ -74,10 +94,11 @@ const HeaderComponent = () => {
                      <LoadingComponent isLoading={loading}>
                         {/* Icon Account Here */}
                         <WrapperAccountHeader>
-                           <UserOutlined />
+                           {/* <UserOutlined /> */}
+                           {userAvatar ? (<img className="user-avatar-header" src={userAvatar} alt="avatar" />) : <UserOutlined />}
                         </WrapperAccountHeader>
                         {/* If user exists, show user email, else show signin and signup */}
-                        {user?.name ? (
+                        {user?.accessToken ? (
                            <Popover placement="bottom" content={signoutUserPopoverItem} trigger="click">
                               <div style={{
                                  marginRight: '20px',
@@ -86,7 +107,7 @@ const HeaderComponent = () => {
                                  fontWeight: 'bold',
                                  cursor: 'pointer'
                               }}>
-                                 {user.name}
+                                 {username?.length ? username : 'Tài khoản'}
                               </div>
                            </Popover>
                         ) : (

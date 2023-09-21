@@ -26,6 +26,15 @@ export const getUserDetails = async (id, accessToken) => {
     return res.data;
 }
 
+export const updateUser = async (id, data, accessToken) => {
+    const res = await axiosJWT.put(`${process.env.REACT_APP_API_URL}/user/updateUser/${id}`, data, {
+        headers: {
+            token: `Bearer ${accessToken}`
+        }
+    });
+    return res.data;
+}
+
 export const refreshToken = async () => {
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/refreshToken`, {
         withCredentials: true // get Cookie

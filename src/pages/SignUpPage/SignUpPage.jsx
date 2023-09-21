@@ -24,10 +24,7 @@ const SignUpPage = () => {
     const mutation = useMutationHooks(
         data => UserService.signupUser(data)
     );
-
     const { data, isLoading , isSuccess, isError } = mutation;
-
-    console.log(isSuccess);
 
     useEffect(() => {
         if (isSuccess) {

@@ -18,6 +18,12 @@ export const WrapperAccountHeader = styled.div`
     margin-right: 10px;
     display: flex;
     align-items: center;
+
+    .user-avatar-header {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+    }
 `
 
 export const WrapperAuthDiv = styled.div`
@@ -26,7 +32,7 @@ export const WrapperAuthDiv = styled.div`
     .ant-spin-nested-loading{
         display: flex;
     }
-    
+
     .ant-spin-container {
         display: flex;
     }
@@ -42,7 +48,27 @@ export const WrapperAuthHeader = styled.span`
 export const WrapperSignoutPopover = styled.p`
     cursor: pointer;
     margin-bottom: 0px;
-    padding-top: 10px;
+    margin-top: 5px;
+    padding: 5px 8px;
+
+    &:hover {
+        background-color: #ff222ec7;
+        color: #fff;
+    }
+`
+
+export const WrapperAccountPopover = styled.p`
+    cursor: pointer;
+    margin: 0px;
+    padding: 5px 8px;
+
+    &:hover {
+        background-color: #ff222ec7;
+        color: #fff;
+    }
+`
+export const WrapperLinePopover = styled.p`
+    margin: 5px 0px;
     border-top: 1px solid #c2c2c2;
 `
 
