@@ -1,23 +1,27 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { routes } from './routes';
 import DefaultComponent from './components/DefaultComponent/DefaultComponent';
 import { isJsonString } from './utils';
 import jwt_decode from "jwt-decode";
 import * as UserService from './services/UserService';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from './redux/slices/userSlice';
+import LoadingComponent from './components/LoadingComponent/LoadingComponent';
 
 export function App() {
 
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
-    // localStorage.clear();
+    setIsLoading(true);
     let { storageData, decoded } = handleDecoded();
     if (decoded?.id) {
       handleGetUserDetails(decoded?.id, storageData);
     }
+    setIsLoading(false);
   }, []);
 
   const handleDecoded = () => {
@@ -37,9 +41,9 @@ export function App() {
     const { decoded } = handleDecoded();
     const currentTime = new Date();
     // if expired time of decoded is smaller than current time (milisecond)
-    if (decoded?.exp < currentTime.getTime()/1000) {
+    if (decoded?.exp < currentTime.getTime() / 1000) {
       const data = await UserService.refreshToken();
-      
+
       config.headers['token'] = `Bearer ${data?.accessToken}`;
     }
     return config;
@@ -57,23 +61,33 @@ export function App() {
 
   return (
     <div>
-      <Router>
-        <Routes>
-          {routes.map((route) => {
-            const Page = route.page
-            const Layout = route.isShowHeader ? DefaultComponent : Fragment
-            return (
-              <Route key={route.path}
-                path={route.path}
-                element={
-                  <Layout>
-                    <Page />
-                  </Layout>
-                } />
-            )
-          })}
-        </Routes>
-      </Router>
+      <LoadingComponent isLoading={isLoading}>
+        <Router>
+          <Routes>
+            {routes.map((route) => {
+              const Page = route.page;
+              const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+              const isAdmin = !route.isPrivate || user.isAdmin;
+              // publicRoutePath contains route paths with isPrivate = false (in routes/index.js)
+              var publicRoutePath;
+              if (isAdmin && route.path) {
+                publicRoutePath = route.path
+              }
+
+              return (
+                <Route
+                  key={route.path}
+                  path={publicRoutePath}
+                  element={
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  } />
+              )
+            })}
+          </Routes>
+        </Router>
+      </LoadingComponent>
     </div>
   )
 }

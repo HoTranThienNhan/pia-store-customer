@@ -57,6 +57,9 @@ const HeaderComponent = () => {
    const signoutUserPopoverItem = (
       <div>
          <WrapperAccountPopover onClick={() => navigate('/user/profile')}>Tài Khoản Của Tôi</WrapperAccountPopover>
+         {user?.isAdmin && (
+            <WrapperAccountPopover onClick={() => navigate('/system/admin')}>Quản Lý Hệ Thống</WrapperAccountPopover>
+         )}
          <WrapperLinePopover></WrapperLinePopover>
          <WrapperSignoutPopover onClick={handleNavigateSignout}>Đăng Xuất</WrapperSignoutPopover>
       </div>
