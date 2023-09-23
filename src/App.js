@@ -7,13 +7,13 @@ import jwt_decode from "jwt-decode";
 import * as UserService from './services/UserService';
 import { useDispatch } from 'react-redux';
 import { updateUser } from './redux/slices/userSlice';
-import axios from 'axios';
 
 export function App() {
 
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // localStorage.clear();
     let { storageData, decoded } = handleDecoded();
     if (decoded?.id) {
       handleGetUserDetails(decoded?.id, storageData);
@@ -40,7 +40,7 @@ export function App() {
     if (decoded?.exp < currentTime.getTime()/1000) {
       const data = await UserService.refreshToken();
       
-      config.headers['token'] = `Bearer ${data?.accessToken}`
+      config.headers['token'] = `Bearer ${data?.accessToken}`;
     }
     return config;
   }, function (error) {

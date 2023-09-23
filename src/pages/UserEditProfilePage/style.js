@@ -24,12 +24,12 @@ export const WrapperUserEditProfile = styled.div`
         padding-top: 7px;
     }
 
-    .edit-button-signup {
+    .edit-button-save, .edit-button-cancel {
         height: 50px; 
         width: 100%; 
         border-radius: 12px; 
-        margin-bottom: 20px; 
-        margin-top: 20px;
+        margin: 20px 0px;
+
     }
 `
 
@@ -38,11 +38,21 @@ export const WrapperUploadUserAvtar = styled.div`
         display: none;
     }
 
-    img {
+    img.edit-uploaded-user-avatar {
         border-radius: 50%;
         height: 90px;
         width: 90px;
         object-fit: cover;
         margin: 20px;
+    }
+
+    .edit-default-avatar {
+        height: 90px;
+        margin: 20px;
+    }
+
+    .edit-avatar-remove-button {
+        width: 98px;
+        margin-left: 15px;
     }
 `

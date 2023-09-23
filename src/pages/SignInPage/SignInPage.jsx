@@ -87,7 +87,7 @@ const SignInPage = () => {
                 <Row>
                     <Col span={12} style={{ padding: '32px 32px' }}>
                         <h2 style={{ marginBottom: '48px' }}>
-                            Chào mừng đến <span onClick={handleNavigateHomepage} style={{ cursor: 'pointer' }}>BRANCH NAME</span>
+                            Chào mừng đến <span onClick={handleNavigateHomepage} style={{ cursor: 'pointer' }}>BRAND NAME</span>
                         </h2>
                         <Col style={{ padding: '20px 50px' }}>
                             <h1 style={{ textAlign: 'center', marginBottom: '24px' }}>

@@ -1,14 +1,14 @@
-import { Badge, Button, Col, Popover, Row } from "antd";
+import { Avatar, Badge, Button, Col, Popover, Row } from "antd";
 import { UserOutlined, HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import { 
-   WrapperAccountHeader, 
-   WrapperHeader, 
-   WrapperAuthHeader, 
-   WrapperSignoutPopover, 
-   WrapperSearchHeader, 
+import {
+   WrapperAccountHeader,
+   WrapperHeader,
+   WrapperAuthHeader,
+   WrapperSignoutPopover,
+   WrapperSearchHeader,
    WrapperAuthDiv,
-   WrapperAccountPopover, 
+   WrapperAccountPopover,
    WrapperLinePopover
 } from "./style";
 import SearchButtonComponent from "../SearchButtonComponent/SearchButtonComponent";
@@ -46,6 +46,8 @@ const HeaderComponent = () => {
    }
    const handleNavigateSignout = async () => {
       setLoading(true);
+      // clear old access token in local storage
+      localStorage.clear();
       await UserService.signoutUser();
       dispatch(resetUser());
       setLoading(false);
@@ -65,7 +67,7 @@ const HeaderComponent = () => {
          <WrapperHeader>
             {/* Branch Name Part Here */}
             <Col span={3}>
-               BRANCH NAME
+               BRAND NAME
             </Col>
             {/* NavBar Items Part Here */}
             <Col span={12}>
@@ -95,7 +97,9 @@ const HeaderComponent = () => {
                         {/* Icon Account Here */}
                         <WrapperAccountHeader>
                            {/* <UserOutlined /> */}
-                           {userAvatar ? (<img className="user-avatar-header" src={userAvatar} alt="avatar" />) : <UserOutlined />}
+                           {userAvatar ?
+                              (<img className="user-avatar-header" src={userAvatar} alt="avatar" />) :
+                              <Avatar size={35} icon={<UserOutlined />} />}
                         </WrapperAccountHeader>
                         {/* If user exists, show user email, else show signin and signup */}
                         {user?.accessToken ? (
