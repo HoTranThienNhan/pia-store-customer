@@ -1,8 +1,8 @@
-import { Avatar, Button, Col, Form, Modal, Row, Spin, Upload, message } from 'antd';
+import { Avatar, Button, Col, Form, Modal, Popconfirm, Row, Spin, Upload, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import FloatingLabelComponent from '../../components/FloatingLabelComponent/FloatingLabelComponent';
 import InputFormComponent from '../../components/InputFormComponent/InputFormComponent';
-import { DeleteOutlined, HomeOutlined, IdcardOutlined, LockOutlined, PhoneOutlined, PlusOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
+import { DeleteOutlined, HomeOutlined, IdcardOutlined, LockOutlined, PhoneOutlined, PlusOutlined, QuestionCircleOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { WrapperUploadUserAvatar, WrapperUserEditProfile } from './style';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import { useDispatch, useSelector } from 'react-redux';
@@ -232,29 +232,52 @@ const UserEditProfilePage = () => {
                         <Form.Item style={{ width: '450px' }}>
                             <Row>
                                 <Col span={12} style={{ paddingRight: '15px' }}>
-                                    <Button
-                                        htmlType='submit'
-                                        className='edit-button-cancel'
-                                        onClick={handleCancelEditProfile}
-                                        danger
+                                    <Popconfirm
+                                        placement='bottomRight'
+                                        title="Xác nhận hủy"
+                                        description="Bạn chắc chắn muốn hủy thao tác?"
+                                        onConfirm={handleCancelEditProfile}
+                                        okText="Chắc chắn"
+                                        cancelText="Không"
+                                        icon={
+                                            <QuestionCircleOutlined
+                                                style={{
+                                                    color: 'red',
+                                                }}
+                                            />
+                                        }
                                     >
-                                        Hủy
-                                    </Button>
+                                        <Button
+                                            htmlType='submit'
+                                            className='edit-button-cancel'
+                                            danger
+                                        >
+                                            Hủy
+                                        </Button>
+                                    </Popconfirm>
                                 </Col>
                                 <Col span={12} style={{ paddingLeft: '15px' }}>
                                     <LoadingComponent isLoading={isLoading}>
-                                        <Button
-                                            // disabled={!fullname.length
-                                            //     || !email.length
-                                            //     || !phone.length}
-                                            type="primary"
-                                            htmlType='submit'
-                                            className='edit-button-save'
-                                            onClick={handleSaveEditProfile}
-                                            danger
+                                        <Popconfirm
+                                            placement='bottomLeft'
+                                            title="Xác nhận cập nhật thông tin"
+                                            description="Bạn chắc chắn muốn cập nhật thông tin này?"
+                                            onConfirm={handleSaveEditProfile}
+                                            okText="Chắc chắn"
+                                            cancelText="Không"
                                         >
-                                            Lưu
-                                        </Button>
+                                            <Button
+                                                // disabled={!fullname.length
+                                                //     || !email.length
+                                                //     || !phone.length}
+                                                type="primary"
+                                                htmlType='submit'
+                                                className='edit-button-save'
+                                                danger
+                                            >
+                                                Lưu
+                                            </Button>
+                                        </Popconfirm>
                                     </LoadingComponent>
                                 </Col>
                             </Row>

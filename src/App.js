@@ -13,7 +13,7 @@ export function App() {
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state?.user);
 
   useEffect(() => {
     setIsLoading(true);
