@@ -66,12 +66,12 @@ const SignInPage = () => {
     }
 
     // hooks
-    const handleOnChangeEmail = (value) => {
-        setEmail(value);
+    const handleOnChangeEmail = (e) => {
+        setEmail(e.target.value);
     }
 
-    const handleOnChangePassword = (value) => {
-        setPassword(value);
+    const handleOnChangePassword = (e) => {
+        setPassword(e);
     }
 
     const handleSignin = () => {

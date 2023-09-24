@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import FloatingLabelComponent from '../../components/FloatingLabelComponent/FloatingLabelComponent';
 import InputFormComponent from '../../components/InputFormComponent/InputFormComponent';
 import { DeleteOutlined, HomeOutlined, IdcardOutlined, LockOutlined, PhoneOutlined, PlusOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
-import { WrapperUploadUserAvtar, WrapperUserEditProfile } from './style';
+import { WrapperUploadUserAvatar, WrapperUserEditProfile } from './style';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import * as UserService from '../../services/UserService';
@@ -52,20 +52,20 @@ const UserEditProfilePage = () => {
     }, [isSuccess, isError]);
 
     // hooks
-    const handleOnChangeFullname = (value) => {
-        setFullname(value);
+    const handleOnChangeFullname = (e) => {
+        setFullname(e.target.value);
     }
 
-    const handleOnChangeEmail = (value) => {
-        setEmail(value);
+    const handleOnChangeEmail = (e) => {
+        setEmail(e.target.value);
     }
 
-    const handleOnChangePhone = (value) => {
-        setPhone(value);
+    const handleOnChangePhone = (e) => {
+        setPhone(e.target.value);
     }
 
-    const handleOnChangeAddress = (value) => {
-        setAddress(value);
+    const handleOnChangeAddress = (e) => {
+        setAddress(e.target.value);
     }
 
     const handleOnChangeAvatar = async ({ fileList }) => {
@@ -119,7 +119,7 @@ const UserEditProfilePage = () => {
                             style={{ marginBottom: '0px', width: '450px' }}
                             className='edit-form-item-avatar'
                         >
-                            <WrapperUploadUserAvtar>
+                            <WrapperUploadUserAvatar>
                                 <div style={{ marginTop: '20px', fontWeight: 'bold' }}>Ảnh đại diện</div>
                                 <div style={{ display: 'grid' }}>
                                     <div style={{ marginTop: '10px', marginBottom: '10px' }}>
@@ -139,7 +139,7 @@ const UserEditProfilePage = () => {
                                             </Button>}
                                     </div>
                                 </div>
-                            </WrapperUploadUserAvtar>
+                            </WrapperUploadUserAvatar>
                         </Form.Item>
                         <Form.Item
                             label=""

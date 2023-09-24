@@ -30,3 +30,27 @@ export const WrapperProductManagement = styled.div`
         font-weight: bold;
     }
 `
+
+export const WrapperUploadProductImage = styled.div`
+    .ant-upload-list.ant-upload-list-text {
+        display: none;
+    }
+
+    img.uploaded-product-image {
+        border-radius: 50%;
+        height: 90px;
+        width: 90px;
+        object-fit: cover;
+        margin: 20px;
+    }
+
+    .uploaded-default-image {
+        height: 90px;
+        margin: 20px;
+    }
+
+    .product-image-remove-button {
+        width: 98px;
+        margin-left: 15px;
+    }
+`

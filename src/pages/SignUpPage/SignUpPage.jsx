@@ -36,24 +36,24 @@ const SignUpPage = () => {
     }, [isSuccess, isError]);
 
     // hooks
-    const handleOnChangeFullname = (value) => {
-        setFullname(value);
+    const handleOnChangeFullname = (e) => {
+        setFullname(e.target.value);
     }
 
-    const handleOnChangePhone = (value) => {
-        setPhone(value);
+    const handleOnChangePhone = (e) => {
+        setPhone(e.target.value);
     }
 
-    const handleOnChangeEmail = (value) => {
-        setEmail(value);
+    const handleOnChangeEmail = (e) => {
+        setEmail(e.target.value);
     }
 
-    const handleOnChangePassword = (value) => {
-        setPassword(value);
+    const handleOnChangePassword = (e) => {
+        setPassword(e);
     }
 
-    const handleOnChangeConfirmPassword = (value) => {
-        setConfirmPassword(value);
+    const handleOnChangeConfirmPassword = (e) => {
+        setConfirmPassword(e);
     }
 
     const handleSignup = () => {

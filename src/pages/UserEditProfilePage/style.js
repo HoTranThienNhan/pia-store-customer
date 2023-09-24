@@ -33,7 +33,7 @@ export const WrapperUserEditProfile = styled.div`
     }
 `
 
-export const WrapperUploadUserAvtar = styled.div`
+export const WrapperUploadUserAvatar = styled.div`
     .ant-upload-list.ant-upload-list-text {
         display: none;
     }
