@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 
 export const WrapperUserManagement = styled.div`
     padding: 20px 40px;
-    height: 1500px;
+    height: 100%;
     background-color: #d4e3fa5e;
 
     .add-new-user .add-new-user-button {

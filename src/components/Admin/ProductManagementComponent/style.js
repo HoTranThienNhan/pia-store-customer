@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 
 export const WrapperProductManagement = styled.div`
     padding: 20px 40px;
-    height: 1500px;
+    height: 100%;
     background-color: #d4e3fa5e;
 
     .add-new-product .add-new-product-button {
@@ -37,7 +37,7 @@ export const WrapperUploadProductImage = styled.div`
     }
 
     img.uploaded-product-image {
-        border-radius: 50%;
+        border-radius: 10px;
         height: 90px;
         width: 90px;
         object-fit: cover;

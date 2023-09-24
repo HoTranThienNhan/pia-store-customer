@@ -30,7 +30,7 @@ const AdminPage = () => {
     }
 
     return (
-        <div id="container" style={{ height: '1500px', backgroundColor: '#d4e3fa5e' }}>
+        <div id="container" style={{ height: '100%', backgroundColor: '#d4e3fa5e' }}>
             <Row>
                 <Col span={4}>
                     <WrapperAdminMenuSidebar

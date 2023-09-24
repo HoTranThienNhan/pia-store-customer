@@ -148,7 +148,12 @@ const UserEditProfilePage = () => {
                             style={{ marginBottom: '0px', width: '450px' }}
                             className='edit-form-item-fullname'
                         >
-                            <FloatingLabelComponent label="Họ tên" value={fullname}>
+                            <FloatingLabelComponent
+                                label="Họ tên"
+                                value={fullname}
+                                styleBefore={{ left: '37px', top: '31px' }}
+                                styleAfter={{ left: '37px', top: '23px' }}
+                            >
                                 <InputFormComponent
                                     placeholder=""
                                     prefix={<IdcardOutlined className="site-form-item-icon" />}
@@ -165,7 +170,12 @@ const UserEditProfilePage = () => {
                             style={{ marginBottom: '0px', width: '450px' }}
                             className='edit-form-item-email'
                         >
-                            <FloatingLabelComponent label="Tài khoản email" value={email}>
+                            <FloatingLabelComponent
+                                label="Tài khoản email"
+                                value={email}
+                                styleBefore={{ left: '37px', top: '31px' }}
+                                styleAfter={{ left: '37px', top: '23px' }}
+                            >
                                 <InputFormComponent
                                     placeholder=""
                                     prefix={<UserOutlined className="site-form-item-icon" />}
@@ -182,7 +192,12 @@ const UserEditProfilePage = () => {
                             style={{ marginBottom: '0px', width: '450px' }}
                             className='edit-form-item-phone'
                         >
-                            <FloatingLabelComponent label="Số điện thoại" value={phone}>
+                            <FloatingLabelComponent
+                                label="Số điện thoại"
+                                value={phone}
+                                styleBefore={{ left: '37px', top: '31px' }}
+                                styleAfter={{ left: '37px', top: '23px' }}
+                            >
                                 <InputFormComponent
                                     placeholder=""
                                     prefix={<PhoneOutlined className="site-form-item-icon" />}
@@ -199,7 +214,12 @@ const UserEditProfilePage = () => {
                             style={{ marginBottom: '0px', width: '450px' }}
                             className='edit-form-item-address'
                         >
-                            <FloatingLabelComponent label="Địa chỉ" value={address}>
+                            <FloatingLabelComponent
+                                label="Địa chỉ"
+                                value={address}
+                                styleBefore={{ left: '37px', top: '31px' }}
+                                styleAfter={{ left: '37px', top: '23px' }}
+                            >
                                 <InputFormComponent
                                     placeholder=""
                                     prefix={<HomeOutlined className="site-form-item-icon" />}

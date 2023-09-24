@@ -62,7 +62,7 @@ const SignInPage = () => {
     const handleGetUserDetails = async (id, accessToken) => {
         // res contains user information
         const res = await UserService.getUserDetails(id, accessToken);
-        dispatch(updateUser({...res?.data, accessToken: accessToken}));
+        dispatch(updateUser({ ...res?.data, accessToken: accessToken }));
     }
 
     // hooks
@@ -101,7 +101,12 @@ const SignInPage = () => {
                                     style={{ marginBottom: '0px' }}
                                     className='auth-form-item-email'
                                 >
-                                    <FloatingLabelComponent label="Tài khoản email" value={email}>
+                                    <FloatingLabelComponent
+                                        label="Tài khoản email"
+                                        value={email}
+                                        styleBefore={{ left: '37px', top: '31px' }}
+                                        styleAfter={{ left: '37px', top: '23px' }}
+                                    >
                                         <InputFormComponent
                                             placeholder=""
                                             prefix={<UserOutlined className="site-form-item-icon" />}
@@ -118,7 +123,12 @@ const SignInPage = () => {
                                     style={{ marginBottom: '0px' }}
                                     className='auth-form-item-password'
                                 >
-                                    <FloatingLabelComponent label="Mật khẩu" value={password}>
+                                    <FloatingLabelComponent
+                                        label="Mật khẩu"
+                                        value={password}
+                                        styleBefore={{ left: '37px', top: '31px' }}
+                                        styleAfter={{ left: '37px', top: '23px' }}
+                                    >
                                         <InputPasswordComponent
                                             placeholder=""
                                             prefix={<LockOutlined className="site-form-item-icon" />}
@@ -128,7 +138,7 @@ const SignInPage = () => {
                                         />
                                     </FloatingLabelComponent>
                                 </Form.Item>
-                                
+
                                 {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
                                 <Form.Item>
                                     <LoadingComponent isLoading={isLoading}>

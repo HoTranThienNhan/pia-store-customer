@@ -95,7 +95,12 @@ const SignUpPage = () => {
                                     style={{ marginBottom: '0px' }}
                                     className='auth-form-item-fullname'
                                 >
-                                    <FloatingLabelComponent label="Họ tên" value={fullname}>
+                                    <FloatingLabelComponent
+                                        label="Họ tên"
+                                        value={fullname}
+                                        styleBefore={{ left: '37px', top: '31px' }}
+                                        styleAfter={{ left: '37px', top: '23px' }}
+                                    >
                                         <InputFormComponent
                                             placeholder=""
                                             prefix={<IdcardOutlined className="site-form-item-icon" />}
@@ -112,7 +117,12 @@ const SignUpPage = () => {
                                     style={{ marginBottom: '0px' }}
                                     className='auth-form-item-phone'
                                 >
-                                    <FloatingLabelComponent label="Số điện thoại" value={phone}>
+                                    <FloatingLabelComponent
+                                        label="Số điện thoại"
+                                        value={phone}
+                                        styleBefore={{ left: '37px', top: '31px' }}
+                                        styleAfter={{ left: '37px', top: '23px' }}
+                                    >
                                         <InputFormComponent
                                             placeholder=""
                                             prefix={<PhoneOutlined className="site-form-item-icon" />}
@@ -129,7 +139,12 @@ const SignUpPage = () => {
                                     style={{ marginBottom: '0px' }}
                                     className='auth-form-item-email'
                                 >
-                                    <FloatingLabelComponent label="Tài khoản email" value={email}>
+                                    <FloatingLabelComponent
+                                        label="Tài khoản email"
+                                        value={email}
+                                        styleBefore={{ left: '37px', top: '31px' }}
+                                        styleAfter={{ left: '37px', top: '23px' }}
+                                    >
                                         <InputFormComponent
                                             placeholder=""
                                             prefix={<UserOutlined className="site-form-item-icon" />}
@@ -146,7 +161,12 @@ const SignUpPage = () => {
                                     style={{ marginBottom: '0px' }}
                                     className='auth-form-item-password'
                                 >
-                                    <FloatingLabelComponent label="Mật khẩu" value={password}>
+                                    <FloatingLabelComponent
+                                        label="Mật khẩu"
+                                        value={password}
+                                        styleBefore={{ left: '37px', top: '31px' }}
+                                        styleAfter={{ left: '37px', top: '23px' }}
+                                    >
                                         <InputPasswordComponent
                                             placeholder=""
                                             prefix={<LockOutlined className="site-form-item-icon" />}
@@ -163,7 +183,12 @@ const SignUpPage = () => {
                                     style={{ marginBottom: '0px' }}
                                     className='auth-form-item-confirm-password'
                                 >
-                                    <FloatingLabelComponent label="Nhập lại mật khẩu" value={confirmPassword}>
+                                    <FloatingLabelComponent
+                                        label="Nhập lại mật khẩu"
+                                        value={confirmPassword}
+                                        styleBefore={{ left: '37px', top: '31px' }}
+                                        styleAfter={{ left: '37px', top: '23px' }}
+                                    >
                                         <InputPasswordComponent
                                             placeholder=""
                                             prefix={<LockOutlined className="site-form-item-icon" />}
