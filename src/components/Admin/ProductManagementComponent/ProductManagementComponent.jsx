@@ -12,7 +12,7 @@ import {
     UploadOutlined,
     UserOutlined
 } from '@ant-design/icons';
-import { Avatar, Breadcrumb, Button, Col, Form, Input, Modal, Popconfirm, Row, Select, Upload } from 'antd';
+import { Avatar, Breadcrumb, Button, Col, Form, Input, Modal, Popconfirm, Row, Select, Switch, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import TableComponent from '../../TableComponent/TableComponent';
 import { WrapperProductManagement, WrapperUploadProductImage } from './style';
@@ -42,7 +42,8 @@ const ProductManagementComponent = () => {
         countInStock: '',
         price: '',
         rating: '',
-        description: ''
+        description: '',
+        active: true
     });
     const [updateProductState, setUpdateProductState] = useState({
         id: '',
@@ -54,21 +55,16 @@ const ProductManagementComponent = () => {
         rating: '',
         description: ''
     });
+    const [activeProductState, setActiveProductState] = useState({
+        active: true
+    });
 
-    // useEffect to show in the inputs on every time changing the user information
-    // useEffect(() => {
-    //     setFullname(user?.name);
-    //     setEmail(user?.email);
-    //     setPhone(user?.phone);
-    //     setAddress(user?.address);
-    //     setAvatar(user?.avatar);
-    // }, [user]);
 
     const [selectedRow, setSelectedRow] = useState('');
     // get update product details
     const getUpdateProductDetails = async (id) => {
         const res = await ProductService.getProductDetails(id);
-        if (res.data) {
+        if (res?.data) {
             setUpdateProductState({
                 id: res?.data?.id,
                 name: res?.data?.name,
@@ -87,15 +83,34 @@ const ProductManagementComponent = () => {
         if (selectedRow) {
             getUpdateProductDetails(selectedRow);
         }
-        setIsUpdateProductModalOpen(true);
+        showUpdateProductModal();
     }
 
+
+    const handleActiveProductDetails = () => {
+        // setIsLoadingUpdateProduct(true);
+        if (selectedRow) {
+            // getUpdateProductDetails(selectedRow);
+            // console.log(selectedRow)
+        }
+        // setIsUpdateProductModalOpen(true);
+    }
+
+
+
     // render table
-    const renderTableAction = () => {
+    const renderTableUpdate = () => {
         return (
             <div>
                 <FormOutlined style={{ fontSize: '24px', cursor: 'pointer' }} onClick={handleUpdateProductDetails} />
-                {/* <DeleteOutlined /> */}
+            </div>
+        );
+    }
+    const renderTableActive = (isChecked) => {
+        return (
+            <div>
+                {/* <FormOutlined style={{ fontSize: '24px', cursor: 'pointer' }} onClick={handleUpdateProductDetails} /> */}
+                <Switch checked={isChecked} onChange={handleActiveProductDetails} />
             </div>
         );
     }
@@ -143,9 +158,16 @@ const ProductManagementComponent = () => {
         //     dataIndex: 'description',
         // },
         {
-            title: 'Chỉnh sửa',
-            dataIndex: 'action',
-            render: renderTableAction
+            title: 'Cập Nhật',
+            dataIndex: 'update',
+            render: renderTableUpdate
+        },
+        {
+            title: 'Hoạt Động',
+            dataIndex: 'active',
+            render: (active) => {
+                return renderTableActive(active);
+            },
         }
     ];
     const dataProductsTable = allProducts?.data?.length && allProducts?.data?.map((product) => {
@@ -166,7 +188,8 @@ const ProductManagementComponent = () => {
                 countInStock,
                 price,
                 rating,
-                description
+                description,
+                active
             } = data;
             const res = ProductService.createProduct({
                 id,
@@ -176,7 +199,8 @@ const ProductManagementComponent = () => {
                 countInStock,
                 price,
                 rating,
-                description
+                description,
+                active
             });
             return res;
         }
@@ -191,6 +215,7 @@ const ProductManagementComponent = () => {
             MessagePopup.error();
         }
     }, [isSuccess, isError]);
+
 
     // handle create product modals
     const showCreateProductModal = () => {
@@ -277,6 +302,7 @@ const ProductManagementComponent = () => {
     };
     const handleUpdateProductCancel = () => {
         setIsUpdateProductModalOpen(false);
+        setSelectedRow(null);
         setUpdateProductState({
             id: '',
             name: '',
@@ -643,8 +669,8 @@ const ProductManagementComponent = () => {
                             </Popconfirm>,
                             <Popconfirm
                                 placement='topLeft'
-                                title="Xác nhận thêm sản phẩm"
-                                description="Bạn chắc chắn muốn thêm sản phẩm này?"
+                                title="Xác nhận cập nhật sản phẩm"
+                                description="Bạn chắc chắn muốn cập nhật sản phẩm này?"
                                 onConfirm={handleUpdateProductOk}
                                 okText="Chắc chắn"
                                 cancelText="Không"
@@ -654,7 +680,7 @@ const ProductManagementComponent = () => {
                                 </Button>
                             </Popconfirm>,
                         ]}>
-                        <LoadingComponent isLoading={isLoadingUpdate}>
+                        <LoadingComponent isLoading={isLoadingUpdateProduct}>
                             <Form autoComplete="off">
                                 <Form.Item
                                     label=""
@@ -888,8 +914,11 @@ const ProductManagementComponent = () => {
                         onRow={(record, rowIndex) => {
                             return {
                                 onClick: event => {
-                                    setSelectedRow(record._id)
-                                }
+                                    setSelectedRow(record?._id)
+                                },
+                                onChange: event => {
+                                    setSelectedRow(record?._id)
+                                },
                             };
                         }}
                     />
