@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
 
 const TableComponent = (props) => {
-    const { selectionType = 'checkbox', data = [], columns = [], isLoading = false } = props;
+    const { selectionType = 'checkbox', data = [], columns = [], isLoading = false, components = [] } = props;
 
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -26,6 +26,7 @@ const TableComponent = (props) => {
                     }}
                     columns={columns}
                     dataSource={data}
+                    // components={components}
                     {...props}
                 />
             </LoadingComponent>

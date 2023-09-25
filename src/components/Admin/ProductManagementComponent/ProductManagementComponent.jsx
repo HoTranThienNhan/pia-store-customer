@@ -29,11 +29,12 @@ import DrawerComponent from '../../DrawerComponent/DrawerComponent';
 import { useSelector } from 'react-redux';
 
 const ProductManagementComponent = () => {
-    // useState
+    /*** USE STATE ***/
     const user = useSelector((state) => state?.user);
     const [isCreateProductModalOpen, setIsCreateProductModalOpen] = useState(false);
     const [isUpdateProductModalOpen, setIsUpdateProductModalOpen] = useState(false);
     const [isLoadingUpdateProduct, setIsLoadingUpdateProduct] = useState(false);
+    const [isLoadingActiveProduct, setIsLoadingActiveProduct] = useState(false);
     const [productState, setProductState] = useState({
         id: '',
         name: '',
@@ -58,64 +59,45 @@ const ProductManagementComponent = () => {
     const [activeProductState, setActiveProductState] = useState({
         active: true
     });
-
-
     const [selectedRow, setSelectedRow] = useState('');
-    // get update product details
-    const getUpdateProductDetails = async (id) => {
-        const res = await ProductService.getProductDetails(id);
-        if (res?.data) {
-            setUpdateProductState({
-                id: res?.data?.id,
-                name: res?.data?.name,
-                type: res?.data?.type,
-                image: res?.data?.image,
-                countInStock: res?.data?.countInStock,
-                price: res?.data?.price,
-                rating: res?.data?.rating,
-                description: res?.data?.description
-            });
-        }
-        setIsLoadingUpdateProduct(false);
-    }
-    const handleUpdateProductDetails = () => {
-        setIsLoadingUpdateProduct(true);
-        if (selectedRow) {
-            getUpdateProductDetails(selectedRow);
-        }
-        showUpdateProductModal();
-    }
+    const [selectedActiveRow, setSelectedActiveRow] = useState('');
 
 
-    const handleActiveProductDetails = () => {
-        // setIsLoadingUpdateProduct(true);
-        if (selectedRow) {
-            // getUpdateProductDetails(selectedRow);
-            // console.log(selectedRow)
-        }
-        // setIsUpdateProductModalOpen(true);
-    }
-
-
-
-    // render table
+    /*** RENDER TABLE ***/
     const renderTableUpdate = () => {
         return (
             <div>
-                <FormOutlined style={{ fontSize: '24px', cursor: 'pointer' }} onClick={handleUpdateProductDetails} />
+                <FormOutlined className='all-products-update' style={{ fontSize: '24px', cursor: 'pointer' }} onClick={handleUpdateProductDetails} />
             </div>
         );
     }
-    const renderTableActive = (isChecked) => {
+    const renderTableActive = (isActive) => {
         return (
             <div>
-                {/* <FormOutlined style={{ fontSize: '24px', cursor: 'pointer' }} onClick={handleUpdateProductDetails} /> */}
-                <Switch checked={isChecked} onChange={handleActiveProductDetails} />
+                <Form>
+                    <Popconfirm
+                        placement='topRight'
+                        title="Xác nhận ẩn/hiện sản phẩm"
+                        description={<span>Bạn chắc chắn muốn thực hiện<br /> thao tác này?</span>}
+                        onConfirm={handleActiveProductConfirm}
+                        onCancel={handleActiveProductCancel}
+                        okText="Chắc chắn"
+                        cancelText="Không"
+                    >
+                        <Switch
+                            className='all-products-active'
+                            checked={isActive}
+                            loading={isLoadingActiveProduct}
+                            onChange={handleOnChangeActiveProductState}
+                        />
+                    </Popconfirm>
+                </Form>
             </div>
         );
     }
 
-    // get all products
+
+    /*** GET ALL PRODUCTS ***/
     const getAllProducts = async () => {
         const res = await ProductService.getAllProducts();
         return res;
@@ -126,28 +108,34 @@ const ProductManagementComponent = () => {
     });
     const { isLoading: isLoadingAllProducts, data: allProducts } = queryAllProducts;
 
-    // column of products table and products table
+
+    /** COLUMNS TABLE AND TABLE DATA ***/
     const columnsProducts = [
         {
             title: 'Mã SP',
-            dataIndex: 'id'
+            dataIndex: 'id',
+            className: 'all-products-id',
         },
         {
             title: 'Tên SP',
             dataIndex: 'name',
+            className: 'all-products-name',
             render: (text) => <a>{text}</a>,
         },
         {
             title: 'Giá SP',
             dataIndex: 'price',
+            className: 'all-products-price',
         },
         {
             title: 'Loại SP',
             dataIndex: 'type',
+            className: 'all-products-type',
         },
         {
             title: 'Số Lượng',
             dataIndex: 'countInStock',
+            className: 'all-products-count-in-stock',
         },
         // {
         //     title: 'Đánh Giá',
@@ -165,8 +153,8 @@ const ProductManagementComponent = () => {
         {
             title: 'Hoạt Động',
             dataIndex: 'active',
-            render: (active) => {
-                return renderTableActive(active);
+            render: (isActive) => {
+                return renderTableActive(isActive);
             },
         }
     ];
@@ -177,6 +165,8 @@ const ProductManagementComponent = () => {
         }
     });
 
+
+    /*** CREATE PRODUCT ***/
     // mutation
     const mutation = useMutationHooks(
         (data) => {
@@ -207,6 +197,7 @@ const ProductManagementComponent = () => {
     );
     const { data, isLoading, isSuccess, isError } = mutation;
 
+    // use effect
     useEffect(() => {
         if (isSuccess && data?.status === "OK") {
             MessagePopup.success();
@@ -215,7 +206,6 @@ const ProductManagementComponent = () => {
             MessagePopup.error();
         }
     }, [isSuccess, isError]);
-
 
     // handle create product modals
     const showCreateProductModal = () => {
@@ -271,6 +261,7 @@ const ProductManagementComponent = () => {
     }
 
 
+    /*** UPDATE PRODUCT ***/
     // mutation update product
     const mutationUpdateProduct = useMutationHooks(
         ({ id, accessToken, updatedData } = data) =>
@@ -295,6 +286,31 @@ const ProductManagementComponent = () => {
             MessagePopup.error();
         }
     }, [isSuccessUpdate, isErrorUpdate]);
+
+    // get update product details and fill into the update product modal
+    const getUpdateProductDetails = async (id) => {
+        const res = await ProductService.getProductDetails(id);
+        if (res?.data) {
+            setUpdateProductState({
+                id: res?.data?.id,
+                name: res?.data?.name,
+                type: res?.data?.type,
+                image: res?.data?.image,
+                countInStock: res?.data?.countInStock,
+                price: res?.data?.price,
+                rating: res?.data?.rating,
+                description: res?.data?.description
+            });
+        }
+        setIsLoadingUpdateProduct(false);
+    }
+    const handleUpdateProductDetails = () => {
+        setIsLoadingUpdateProduct(true);
+        if (selectedRow) {
+            getUpdateProductDetails(selectedRow);
+        }
+        showUpdateProductModal();
+    }
 
     // handle update product modals
     const showUpdateProductModal = () => {
@@ -353,6 +369,59 @@ const ProductManagementComponent = () => {
     const handleUpdateProductOk = () => {
         onUpdateProductFinish();
     };
+
+
+    /*** ACTIVE PRODUCT ***/
+    // mutation 
+    const mutationActiveProduct = useMutationHooks(
+        ({ id, accessToken, updatedData } = data) =>
+            ProductService.updateProduct(id, updatedData, accessToken)
+    );
+    const { data: dataActive, isLoading: isLoadingActive, isSuccess: isSuccessActive, isError: isErrorActive } = mutationActiveProduct;
+
+    // use effect selected row on table
+    useEffect(() => {
+        if (selectedActiveRow) {
+            getUpdateProductDetails(selectedActiveRow);
+        }
+    }, [selectedRow]);
+
+    // use effect
+    useEffect(() => {
+        if (isSuccessActive && dataActive?.status === "OK") {
+            MessagePopup.success();
+            getAllProducts();
+        } else if (dataActive?.status === "ERR") {
+            MessagePopup.error();
+        }
+    }, [isSuccessActive, isErrorActive]);
+
+    // handle active product switches
+    const handleOnChangeActiveProductState = (value) => {
+        // setIsLoadingActiveProduct(true);
+        setActiveProductState({
+            ...activeProductState,
+            ['active']: value
+        });
+    }
+    const handleActiveProductConfirm = () => {
+        mutationActiveProduct.mutate(
+            {
+                id: selectedActiveRow,
+                accessToken: user?.accessToken,
+                updatedData: activeProductState
+            },
+            {
+                onSettled: () => {
+                    queryAllProducts.refetch();
+                }
+            }
+        );
+        // setIsLoadingActiveProduct(false);
+    }
+    const handleActiveProductCancel = () => {
+        // setIsLoadingActiveProduct(false);
+    }
 
     return (
         <WrapperProductManagement>
@@ -913,11 +982,24 @@ const ProductManagementComponent = () => {
                         isLoading={isLoadingAllProducts}
                         onRow={(record, rowIndex) => {
                             return {
-                                onClick: event => {
-                                    setSelectedRow(record?._id)
-                                },
-                                onChange: event => {
-                                    setSelectedRow(record?._id)
+                                onClick: (event) => {
+                                    // - event.target.parentElement.className 
+                                    // contains class name of parent of the svg (ant-design icon which is rendered in dataProductsTable)
+                                    // - only pressing the update button on every row can set setSelectedRow
+                                    if (event.target.tagName === 'svg') {   // if click on svg tag (children of class 'all-products-update')
+                                        if (event.target.parentElement.className.includes("all-products-update")) {
+                                            setSelectedRow(record?._id)
+                                        }
+                                    } else if (event.target.tagName === 'path') {   // if click on path tag (children of svg tag)
+                                        if (event.target.parentElement.parentElement.className.includes("all-products-update")) {
+                                            setSelectedRow(record?._id)
+                                        }
+                                    }
+                                    // - same with setSelectedActiveRow
+                                    // if click on switch span (children of class 'all-products-active')
+                                    else if (event.target.parentElement.className.includes("all-products-active")) {
+                                        setSelectedActiveRow(record?._id)
+                                    }
                                 },
                             };
                         }}
