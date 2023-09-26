@@ -8,12 +8,13 @@ import {
     PartitionOutlined,
     PlusOutlined,
     QuestionCircleOutlined,
+    SearchOutlined,
     TagOutlined,
     UploadOutlined,
     UserOutlined
 } from '@ant-design/icons';
-import { Avatar, Breadcrumb, Button, Col, Form, Input, Modal, Popconfirm, Row, Select, Switch, Upload } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Avatar, Breadcrumb, Button, Col, Form, Input, Modal, Popconfirm, Row, Select, Space, Switch, Upload } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import TableComponent from '../../TableComponent/TableComponent';
 import { WrapperProductManagement, WrapperUploadProductImage } from './style';
 import FloatingLabelComponent from '../../FloatingLabelComponent/FloatingLabelComponent';
@@ -31,10 +32,13 @@ import { useSelector } from 'react-redux';
 const ProductManagementComponent = () => {
     /*** USE STATE ***/
     const user = useSelector((state) => state?.user);
+
     const [isCreateProductModalOpen, setIsCreateProductModalOpen] = useState(false);
     const [isUpdateProductModalOpen, setIsUpdateProductModalOpen] = useState(false);
+
     const [isLoadingUpdateProduct, setIsLoadingUpdateProduct] = useState(false);
     const [isLoadingActiveProduct, setIsLoadingActiveProduct] = useState(false);
+
     const [productState, setProductState] = useState({
         id: '',
         name: '',
@@ -59,8 +63,13 @@ const ProductManagementComponent = () => {
     const [activeProductState, setActiveProductState] = useState({
         active: true
     });
+
     const [selectedRow, setSelectedRow] = useState('');
     const [selectedActiveRow, setSelectedActiveRow] = useState('');
+
+    // const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
 
 
     /*** RENDER TABLE ***/
@@ -109,33 +118,209 @@ const ProductManagementComponent = () => {
     const { isLoading: isLoadingAllProducts, data: allProducts } = queryAllProducts;
 
 
+    /*** SEARCH ***/
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        // setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        // setSearchText('');
+    };
+
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <InputFormComponent
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: 'block',
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            close();
+                        }}
+                    >
+                        close
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1677ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        // render: (text) =>
+        //     searchedColumn === dataIndex ? (
+        //         <Highlighter
+        //             highlightStyle={{
+        //                 backgroundColor: '#ffc069',
+        //                 padding: 0,
+        //             }}
+        //             searchWords={[searchText]}
+        //             autoEscape
+        //             textToHighlight={text ? text.toString() : ''}
+        //         />
+        //     ) : (
+        //         text
+        //     ),
+    });
+
+
     /** COLUMNS TABLE AND TABLE DATA ***/
     const columnsProducts = [
         {
             title: 'Mã SP',
             dataIndex: 'id',
             className: 'all-products-id',
+            sorter: (a, b) => a.id.localeCompare(b.id),
+            ...getColumnSearchProps('id'),
         },
         {
             title: 'Tên SP',
             dataIndex: 'name',
             className: 'all-products-name',
-            render: (text) => <a>{text}</a>,
+            sorter: (a, b) => a.name.localeCompare(b.name),
+            ...getColumnSearchProps('name'),
         },
         {
             title: 'Giá SP',
             dataIndex: 'price',
             className: 'all-products-price',
+            sorter: (a, b) => a.price - b.price,
+            filters: [
+                {
+                    text: 'Tất Cả',
+                    value: 'all',
+                },
+                {
+                    text: '< 30.000 VNĐ',
+                    value: '< 30.000',
+                },
+                {
+                    text: '>= 30.000VNĐ',
+                    value: '>= 30.000',
+                },
+            ],
+            onFilter: (value, record) => {
+                if (value === 'all') {
+                    return record.price;
+                } else if (value === '< 30.000') {
+                    return record.price < 30000;
+                } else if (value === '>= 30.000') {
+                    return record.price >= 30000;
+                }
+            },
         },
         {
             title: 'Loại SP',
             dataIndex: 'type',
             className: 'all-products-type',
+            filters: [
+                {
+                    text: 'Tất Cả',
+                    value: 'all',
+                },
+                {
+                    text: 'Hamburger',
+                    value: 'Hamburger',
+                },
+                {
+                    text: 'Pizza',
+                    value: 'Pizza',
+                },
+                {
+                    text: 'Fried Chicken',
+                    value: 'Fried Chicken',
+                },
+            ],
+            onFilter: (value, record) => {
+                if (value === 'all') {
+                    return record.type;
+                } else {
+                    return record.type === value;
+                }
+            },
         },
         {
             title: 'Số Lượng',
             dataIndex: 'countInStock',
             className: 'all-products-count-in-stock',
+            sorter: (a, b) => a.countInStock - b.countInStock,
+            filters: [
+                {
+                    text: 'Tất Cả',
+                    value: 'all',
+                },
+                {
+                    text: '< 20',
+                    value: '< 20',
+                },
+                {
+                    text: '>= 20',
+                    value: '>= 20',
+                },
+                {
+                    text: 'Hết Hàng',
+                    value: '= 0',
+                },
+            ],
+            onFilter: (value, record) => {
+                if (value === 'all') {
+                    return record.countInStock;
+                } else if (value === '< 20') {
+                    return record.countInStock < 20;
+                } else if (value === '>= 20') {
+                    return record.countInStock >= 20;
+                } else if (value === '= 0') {
+                    return record.countInStock == 0;
+                }
+            },
         },
         // {
         //     title: 'Đánh Giá',
@@ -155,6 +340,30 @@ const ProductManagementComponent = () => {
             dataIndex: 'active',
             render: (isActive) => {
                 return renderTableActive(isActive);
+            },
+            filters: [
+                {
+                    text: 'Tất Cả',
+                    value: 'all',
+                },
+                {
+                    text: 'Hiện',
+                    value: 'show',
+                },
+                {
+                    text: 'Ẩn',
+                    value: 'hide',
+                },
+            ],
+            onFilter: (value, record) => {
+                if (value === 'all') {
+                    return record.active == true || record.active == false;
+                } else if (value === 'show') {
+                    return record.active == true;
+                    
+                } else if (value === 'hide') {
+                    return record.active == false;
+                } 
             },
         }
     ];

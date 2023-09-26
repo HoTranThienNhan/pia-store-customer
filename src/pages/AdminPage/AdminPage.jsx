@@ -8,17 +8,17 @@ import ProductManagementComponent from '../../components/Admin/ProductManagement
 
 const AdminPage = () => {
     const items = [
-        getItem('Người Dùng', 'users', <TeamOutlined />),
-        getItem('Sản Phẩm', 'products', <ShopOutlined />)
+        getItem('Sản Phẩm', 'products', <ShopOutlined />),
+        getItem('Người Dùng', 'users', <TeamOutlined />)
     ];
 
-    const [selectedKey, setSelectedKey] = useState('users');
+    const [selectedKey, setSelectedKey] = useState('products');
     const renderPage = (key) => {
         switch (key) {
-            case 'users':
-                return (<UserManagementComponent />);
             case 'products':
                 return (<ProductManagementComponent />);
+            case 'users':
+                return (<UserManagementComponent />);
             default:
                 return (<></>);
         }
@@ -37,7 +37,7 @@ const AdminPage = () => {
                         mode="inline"
                         items={items}
                         onClick={handleOnClick}
-                        defaultSelectedKeys={'users'}
+                        defaultSelectedKeys={'products'}
                     />
                 </Col>
                 <Col span={20}>
