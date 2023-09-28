@@ -1089,40 +1089,36 @@ const UserManagementComponent = () => {
                                         />
                                     </FloatingLabelComponent>
                                 </Form.Item>
-                                <Row justify="space-between">
-                                    <Col span={11}>
-                                        <Form.Item
-                                            label=""
-                                            validateStatus={"validating"}
-                                            help=""
-                                            style={{ marginBottom: '0px' }}
-                                            className='auth-form-item-product-count-in-stock'
-                                        >
-                                            <FloatingLabelComponent
-                                                label="Địa chỉ"
-                                                value={updateUserState.address}
-                                                styleBefore={{ left: '37px', top: '31px' }}
-                                                styleAfter={{ left: '37px', top: '23px' }}
-                                            >
-                                                <InputFormComponent
-                                                    name="address"
-                                                    placeholder=""
-                                                    prefix={<HomeOutlined className="site-form-item-icon" />}
-                                                    className='auth-input-product-count-in-stock'
-                                                    value={updateUserState.address}
-                                                    onChange={handleOnChangeUpdateUserState}
-                                                    style={{
-                                                        borderRadius: '10px',
-                                                        padding: '0px 18px',
-                                                        marginTop: '20px',
-                                                        border: '1px solid #000',
-                                                        height: '45px'
-                                                    }}
-                                                />
-                                            </FloatingLabelComponent>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
+                                <Form.Item
+                                    label=""
+                                    validateStatus={"validating"}
+                                    help=""
+                                    style={{ marginBottom: '0px' }}
+                                    className='auth-form-item-product-count-in-stock'
+                                >
+                                    <FloatingLabelComponent
+                                        label="Địa chỉ"
+                                        value={updateUserState.address}
+                                        styleBefore={{ left: '37px', top: '31px' }}
+                                        styleAfter={{ left: '37px', top: '23px' }}
+                                    >
+                                        <InputFormComponent
+                                            name="address"
+                                            placeholder=""
+                                            prefix={<HomeOutlined className="site-form-item-icon" />}
+                                            className='auth-input-product-count-in-stock'
+                                            value={updateUserState.address}
+                                            onChange={handleOnChangeUpdateUserState}
+                                            style={{
+                                                borderRadius: '10px',
+                                                padding: '0px 18px',
+                                                marginTop: '20px',
+                                                border: '1px solid #000',
+                                                height: '45px'
+                                            }}
+                                        />
+                                    </FloatingLabelComponent>
+                                </Form.Item>
                                 <Form.Item
                                     label=""
                                     validateStatus={"validating"}
