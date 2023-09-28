@@ -37,7 +37,7 @@ const AdminPage = () => {
                         mode="inline"
                         items={items}
                         onClick={handleOnClick}
-                        defaultSelectedKeys={'products'}
+                        defaultSelectedKeys={'users'}
                     />
                 </Col>
                 <Col span={20}>

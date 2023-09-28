@@ -19,6 +19,9 @@ const SignUpPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const isAdmin = false;
+    const address = "";
+    const avatar = "";
 
     // mutation
     const mutation = useMutationHooks(
@@ -63,7 +66,10 @@ const SignUpPage = () => {
             phone,
             email,
             password,
-            confirmPassword
+            confirmPassword,
+            address,
+            avatar,
+            isAdmin
         })
     }
 

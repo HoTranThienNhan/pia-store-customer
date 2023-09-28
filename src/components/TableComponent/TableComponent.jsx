@@ -10,9 +10,9 @@ const TableComponent = (props) => {
             // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
         },
         getCheckboxProps: (record) => ({
-            disabled: record.name === 'Disabled User',
+            // disabled: record.fullname === 'admin',
             // Column configuration not to be checked
-            name: record.name,
+            // name: record.fullname,
         }),
     };
 

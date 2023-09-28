@@ -24,10 +24,22 @@ export const WrapperProductManagement = styled.div`
         border-radius: 10px;
     }
 
-    .all-products.all-products-area .all-products-title {
+    .all-products.all-products-area .all-products-header {
+        margin-bottom: 25px;
+        user-select: none;
+    }
+
+    .all-products.all-products-area .all-products-header .all-products-title {
+        margin-right: 5px;
         padding-bottom: 20px;
         font-size: 17px;
         font-weight: bold;
+    }
+
+    .all-products.all-products-area .all-products-header .all-products-quantity {
+        margin-left: 5px;
+        font-weight: bold; 
+        color: #a4a4a4;
     }
 `
 

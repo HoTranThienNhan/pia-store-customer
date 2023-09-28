@@ -109,6 +109,7 @@ const ProductManagementComponent = () => {
     /*** GET ALL PRODUCTS ***/
     const getAllProducts = async () => {
         const res = await ProductService.getAllProducts();
+        const { total } = res;
         return res;
     }
     const queryAllProducts = useQuery({
@@ -322,6 +323,12 @@ const ProductManagementComponent = () => {
                 }
             },
         },
+        {
+            title: 'Ngày Tạo',
+            dataIndex: 'createdAt',
+            render: (data) => <span>{data.substring(0, 10)}</span>,
+            sorter: (a, b) => a.createdAt.localeCompare(b.createdAt),
+        },
         // {
         //     title: 'Đánh Giá',
         //     dataIndex: 'rating',
@@ -360,13 +367,14 @@ const ProductManagementComponent = () => {
                     return record.active == true || record.active == false;
                 } else if (value === 'show') {
                     return record.active == true;
-                    
+
                 } else if (value === 'hide') {
                     return record.active == false;
-                } 
+                }
             },
         }
     ];
+    // set unique data-row-key for each row of table
     const dataProductsTable = allProducts?.data?.length && allProducts?.data?.map((product) => {
         return {
             ...product,
@@ -634,12 +642,12 @@ const ProductManagementComponent = () => {
 
     return (
         <WrapperProductManagement>
-            <div>
+            <div style={{ userSelect: 'none' }}>
                 <h2 style={{ fontWeight: 'bold' }}>Quản Lý Sản Phẩm</h2>
                 <Breadcrumb
                     items={[
                         {
-                            title: <a href="/">Home</a>,
+                            title: <a href="/">Trang chủ</a>,
                         },
                         {
                             title: 'Quản lý sản phẩm',
@@ -916,9 +924,8 @@ const ProductManagementComponent = () => {
                         </LoadingComponent>
                     </Modal>
                 </div>
-
                 <div>
-                    {/* Modal Update New Product */}
+                    {/* Modal Update Product */}
                     <Modal
                         title="Cập Nhật Sản Phẩm"
                         open={isUpdateProductModalOpen}
@@ -1184,7 +1191,13 @@ const ProductManagementComponent = () => {
                 </div>
 
                 <div className='all-products all-products-area'>
-                    <div className='all-products-title'>Tất Cả Sản Phẩm</div>
+                    <div className='all-products-header'>
+                        <span className='all-products-title'>Tất Cả Sản Phẩm</span>
+                        <span style={{ userSelect: 'none', color: '#7b7b7b' }}>|</span>
+                        <span className='all-products-quantity'>
+                            {dataProductsTable ? dataProductsTable?.length : 0}
+                        </span>
+                    </div>
                     <TableComponent
                         columns={columnsProducts}
                         data={dataProductsTable}

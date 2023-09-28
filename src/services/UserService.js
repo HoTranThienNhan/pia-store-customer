@@ -17,6 +17,15 @@ export const signoutUser = async (data) => {
     return res.data;
 }
 
+export const getAllUsers = async (accessToken) => {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/getAllUsers`, {
+        headers: {
+            token: `Bearer ${accessToken}`
+        }
+    });
+    return res.data;
+}
+
 export const getUserDetails = async (id, accessToken) => {
     const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/getUserDetails/${id}`, {
         headers: {
