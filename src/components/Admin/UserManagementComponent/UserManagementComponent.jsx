@@ -17,7 +17,7 @@ import {
     UploadOutlined,
     UserOutlined
 } from '@ant-design/icons';
-import { Avatar, Breadcrumb, Button, Checkbox, Col, Form, Input, Modal, Popconfirm, Row, Select, Space, Switch, Upload } from 'antd';
+import { Breadcrumb, Button, Checkbox, Col, Form, Modal, Popconfirm, Row, Space, Switch, Upload } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import TableComponent from '../../TableComponent/TableComponent';
 import { WrapperProductManagement, WrapperUploadProductImage } from './style';
@@ -28,7 +28,6 @@ import * as UserService from '../../../services/UserService';
 import { useMutationHooks } from '../../../hooks/useMutationHook';
 import LoadingComponent from '../../LoadingComponent/LoadingComponent';
 import * as MessagePopup from '../../../components/MessagePopupComponent/MessagePopupComponent';
-import TextArea from 'antd/es/input/TextArea';
 import { useQuery } from '@tanstack/react-query';
 import DrawerComponent from '../../DrawerComponent/DrawerComponent';
 import { useSelector } from 'react-redux';
@@ -40,6 +39,7 @@ const UserManagementComponent = () => {
     const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
     const [isUpdateUserModalOpen, setIsUpdateUserModalOpen] = useState(false);
 
+    // loading update and active user when waiting for getting all users
     const [isLoadingUpdateUser, setIsLoadingUpdateUser] = useState(false);
     const [isLoadingActiveUser, setIsLoadingActiveUser] = useState(false);
 
@@ -148,7 +148,6 @@ const UserManagementComponent = () => {
     /*** GET ALL PRODUCTS ***/
     const getAllUsers = async () => {
         const res = await UserService.getAllUsers();
-        const { total } = res;
         return res;
     }
     const queryAllUsers = useQuery({
@@ -307,12 +306,12 @@ const UserManagementComponent = () => {
             ],
             onFilter: (value, record) => {
                 if (value === 'all') {
-                    return record.isAdmin == true || record.isAdmin == false;
+                    return record.isAdmin === true || record.isAdmin === false;
                 } else if (value === 'isAdmin') {
-                    return record.isAdmin == true;
+                    return record.isAdmin === true;
 
                 } else if (value === 'isNotAdmin') {
-                    return record.isAdmin == false;
+                    return record.isAdmin === false;
                 }
             },
         },
@@ -343,12 +342,12 @@ const UserManagementComponent = () => {
             ],
             onFilter: (value, record) => {
                 if (value === 'all') {
-                    return record.active == true || record.active == false;
+                    return record.active === true || record.active === false;
                 } else if (value === 'show') {
-                    return record.active == true;
+                    return record.active === true;
 
                 } else if (value === 'hide') {
-                    return record.active == false;
+                    return record.active === false;
                 }
             },
         }
@@ -671,6 +670,29 @@ const UserManagementComponent = () => {
         // setIsLoadingActiveUser(false);
     }
 
+    /*** ACTIVE MULTIPLE PRODUCTS ***/
+    // mutation 
+    const mutationActiveMultipleUsers = useMutationHooks(
+        ({ data, accessToken } = data) =>
+            UserService.updateActiveMultipleUsers(data, accessToken)
+    );
+    // const { data: dataActive, isLoading: isLoadingActive, isSuccess: isSuccessActive, isError: isErrorActive } = mutationActiveMultipleUsers;
+    const handleActiveMultipleUsersConfirm = (userEmails, isActive) => {
+        mutationActiveMultipleUsers.mutate(
+            {
+                data: { userEmails, isActive },
+                accessToken: user?.accessToken
+            },
+            {
+                onSettled: () => {
+                    queryAllUsers.refetch();
+                }
+            }
+        );
+        // setIsLoadingActiveProduct(false);
+    }
+
+
     return (
         <WrapperProductManagement>
             <div style={{ userSelect: 'none' }}>
@@ -931,7 +953,7 @@ const UserManagementComponent = () => {
                                         <div style={{ display: 'grid' }}>
                                             <div style={{ marginTop: '10px', marginBottom: '10px' }}>
                                                 {userState.avatar &&
-                                                    (<img className='uploaded-product-image' src={userState.avatar} alt='product-image' />)}
+                                                    (<img className='uploaded-product-image' src={userState.avatar} alt='product' />)}
                                             </div>
                                             <div>
                                                 <Upload onChange={handleCreateUserOnChangeAvatar} maxCount={1}>
@@ -997,162 +1019,164 @@ const UserManagementComponent = () => {
                                 </Button>
                             </Popconfirm>,
                         ]}>
-                        <LoadingComponent isLoading={isLoadingUpdateUser}>
-                            <Form autoComplete="off">
-                                <Form.Item
-                                    label=""
-                                    validateStatus={"validating"}
-                                    help=""
-                                    style={{ marginBottom: '0px' }}
-                                    className='auth-form-item-product-id'
-                                >
-                                    <FloatingLabelComponent
-                                        label="Họ tên"
-                                        value={updateUserState.fullname}
-                                        styleBefore={{ left: '37px', top: '31px' }}
-                                        styleAfter={{ left: '37px', top: '23px' }}
+                        <LoadingComponent isLoading={isLoadingUpdate}>
+                            <LoadingComponent isLoading={isLoadingUpdateUser}>
+                                <Form autoComplete="off">
+                                    <Form.Item
+                                        label=""
+                                        validateStatus={"validating"}
+                                        help=""
+                                        style={{ marginBottom: '0px' }}
+                                        className='auth-form-item-product-id'
                                     >
-                                        <InputFormComponent
-                                            name="fullname"
-                                            placeholder=""
-                                            prefix={<IdcardOutlined className="site-form-item-icon" />}
-                                            className='auth-input-product-id'
+                                        <FloatingLabelComponent
+                                            label="Họ tên"
                                             value={updateUserState.fullname}
-                                            onChange={handleOnChangeUpdateUserState}
-                                            style={{
-                                                borderRadius: '10px',
-                                                padding: '0px 18px',
-                                                marginTop: '20px',
-                                                border: '1px solid #000',
-                                                height: '45px'
-                                            }}
-                                        />
-                                    </FloatingLabelComponent>
-                                </Form.Item>
-                                <Form.Item
-                                    label=""
-                                    validateStatus={"validating"}
-                                    help=""
-                                    style={{ marginBottom: '0px' }}
-                                    className='auth-form-item-product-name'
-                                >
-                                    <FloatingLabelComponent
-                                        label="Tài khoản email"
-                                        value={updateUserState.email}
-                                        styleBefore={{ left: '37px', top: '31px' }}
-                                        styleAfter={{ left: '37px', top: '23px' }}
+                                            styleBefore={{ left: '37px', top: '31px' }}
+                                            styleAfter={{ left: '37px', top: '23px' }}
+                                        >
+                                            <InputFormComponent
+                                                name="fullname"
+                                                placeholder=""
+                                                prefix={<IdcardOutlined className="site-form-item-icon" />}
+                                                className='auth-input-product-id'
+                                                value={updateUserState.fullname}
+                                                onChange={handleOnChangeUpdateUserState}
+                                                style={{
+                                                    borderRadius: '10px',
+                                                    padding: '0px 18px',
+                                                    marginTop: '20px',
+                                                    border: '1px solid #000',
+                                                    height: '45px'
+                                                }}
+                                            />
+                                        </FloatingLabelComponent>
+                                    </Form.Item>
+                                    <Form.Item
+                                        label=""
+                                        validateStatus={"validating"}
+                                        help=""
+                                        style={{ marginBottom: '0px' }}
+                                        className='auth-form-item-product-name'
                                     >
-                                        <InputFormComponent
-                                            name="email"
-                                            placeholder=""
-                                            prefix={<UserOutlined className="site-form-item-icon" />}
-                                            className='auth-input-product-name'
+                                        <FloatingLabelComponent
+                                            label="Tài khoản email"
                                             value={updateUserState.email}
-                                            onChange={handleOnChangeUpdateUserState}
-                                            style={{
-                                                borderRadius: '10px',
-                                                padding: '0px 18px',
-                                                marginTop: '20px',
-                                                border: '1px solid #000',
-                                                height: '45px'
-                                            }}
-                                        />
-                                    </FloatingLabelComponent>
-                                </Form.Item>
-                                <Form.Item
-                                    label=""
-                                    validateStatus={"validating"}
-                                    help=""
-                                    style={{ marginBottom: '0px' }}
-                                    className='auth-form-item-product-type'
-                                >
-                                    <FloatingLabelComponent
-                                        label="Số điện thoại"
-                                        value={updateUserState.phone}
-                                        styleBefore={{ left: '37px', top: '31px' }}
-                                        styleAfter={{ left: '37px', top: '23px' }}
+                                            styleBefore={{ left: '37px', top: '31px' }}
+                                            styleAfter={{ left: '37px', top: '23px' }}
+                                        >
+                                            <InputFormComponent
+                                                name="email"
+                                                placeholder=""
+                                                prefix={<UserOutlined className="site-form-item-icon" />}
+                                                className='auth-input-product-name'
+                                                value={updateUserState.email}
+                                                onChange={handleOnChangeUpdateUserState}
+                                                style={{
+                                                    borderRadius: '10px',
+                                                    padding: '0px 18px',
+                                                    marginTop: '20px',
+                                                    border: '1px solid #000',
+                                                    height: '45px'
+                                                }}
+                                            />
+                                        </FloatingLabelComponent>
+                                    </Form.Item>
+                                    <Form.Item
+                                        label=""
+                                        validateStatus={"validating"}
+                                        help=""
+                                        style={{ marginBottom: '0px' }}
+                                        className='auth-form-item-product-type'
                                     >
-                                        <InputFormComponent
-                                            name="phone"
-                                            placeholder=""
-                                            prefix={<PhoneOutlined className="site-form-item-icon" />}
-                                            className='auth-input-product-type'
+                                        <FloatingLabelComponent
+                                            label="Số điện thoại"
                                             value={updateUserState.phone}
-                                            onChange={handleOnChangeUpdateUserState}
-                                            style={{
-                                                borderRadius: '10px',
-                                                padding: '0px 18px',
-                                                marginTop: '20px',
-                                                border: '1px solid #000',
-                                                height: '45px'
-                                            }}
-                                        />
-                                    </FloatingLabelComponent>
-                                </Form.Item>
-                                <Form.Item
-                                    label=""
-                                    validateStatus={"validating"}
-                                    help=""
-                                    style={{ marginBottom: '0px' }}
-                                    className='auth-form-item-product-count-in-stock'
-                                >
-                                    <FloatingLabelComponent
-                                        label="Địa chỉ"
-                                        value={updateUserState.address}
-                                        styleBefore={{ left: '37px', top: '31px' }}
-                                        styleAfter={{ left: '37px', top: '23px' }}
+                                            styleBefore={{ left: '37px', top: '31px' }}
+                                            styleAfter={{ left: '37px', top: '23px' }}
+                                        >
+                                            <InputFormComponent
+                                                name="phone"
+                                                placeholder=""
+                                                prefix={<PhoneOutlined className="site-form-item-icon" />}
+                                                className='auth-input-product-type'
+                                                value={updateUserState.phone}
+                                                onChange={handleOnChangeUpdateUserState}
+                                                style={{
+                                                    borderRadius: '10px',
+                                                    padding: '0px 18px',
+                                                    marginTop: '20px',
+                                                    border: '1px solid #000',
+                                                    height: '45px'
+                                                }}
+                                            />
+                                        </FloatingLabelComponent>
+                                    </Form.Item>
+                                    <Form.Item
+                                        label=""
+                                        validateStatus={"validating"}
+                                        help=""
+                                        style={{ marginBottom: '0px' }}
+                                        className='auth-form-item-product-count-in-stock'
                                     >
-                                        <InputFormComponent
-                                            name="address"
-                                            placeholder=""
-                                            prefix={<HomeOutlined className="site-form-item-icon" />}
-                                            className='auth-input-product-count-in-stock'
+                                        <FloatingLabelComponent
+                                            label="Địa chỉ"
                                             value={updateUserState.address}
-                                            onChange={handleOnChangeUpdateUserState}
-                                            style={{
-                                                borderRadius: '10px',
-                                                padding: '0px 18px',
-                                                marginTop: '20px',
-                                                border: '1px solid #000',
-                                                height: '45px'
-                                            }}
-                                        />
-                                    </FloatingLabelComponent>
-                                </Form.Item>
-                                <Form.Item
-                                    label=""
-                                    validateStatus={"validating"}
-                                    help=""
-                                    style={{ marginBottom: '0px', width: '450px' }}
-                                    className='edit-form-item-avatar'
-                                >
-                                    <WrapperUploadProductImage>
-                                        <div style={{ marginTop: '20px', fontWeight: 'bold' }}>Ảnh đại diện</div>
-                                        <div style={{ display: 'grid' }}>
-                                            <div style={{ marginTop: '10px', marginBottom: '10px' }}>
-                                                {updateUserState.avatar &&
-                                                    (<img className='uploaded-product-image' src={updateUserState.avatar} alt='user-image' />)}
+                                            styleBefore={{ left: '37px', top: '31px' }}
+                                            styleAfter={{ left: '37px', top: '23px' }}
+                                        >
+                                            <InputFormComponent
+                                                name="address"
+                                                placeholder=""
+                                                prefix={<HomeOutlined className="site-form-item-icon" />}
+                                                className='auth-input-product-count-in-stock'
+                                                value={updateUserState.address}
+                                                onChange={handleOnChangeUpdateUserState}
+                                                style={{
+                                                    borderRadius: '10px',
+                                                    padding: '0px 18px',
+                                                    marginTop: '20px',
+                                                    border: '1px solid #000',
+                                                    height: '45px'
+                                                }}
+                                            />
+                                        </FloatingLabelComponent>
+                                    </Form.Item>
+                                    <Form.Item
+                                        label=""
+                                        validateStatus={"validating"}
+                                        help=""
+                                        style={{ marginBottom: '0px', width: '450px' }}
+                                        className='edit-form-item-avatar'
+                                    >
+                                        <WrapperUploadProductImage>
+                                            <div style={{ marginTop: '20px', fontWeight: 'bold' }}>Ảnh đại diện</div>
+                                            <div style={{ display: 'grid' }}>
+                                                <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+                                                    {updateUserState.avatar &&
+                                                        (<img className='uploaded-product-image' src={updateUserState.avatar} alt='user' />)}
+                                                </div>
+                                                <div>
+                                                    <Upload onChange={handleUpdateUserOnChangeImage} maxCount={1}>
+                                                        <Button className='product-image-upload-button' icon={<UploadOutlined />} type='primary' ghost>
+                                                            Upload
+                                                        </Button>
+                                                    </Upload>
+                                                    {updateUserState.avatar &&
+                                                        <Button
+                                                            className='product-image-remove-button'
+                                                            icon={<DeleteOutlined />}
+                                                            onClick={handleUpdateUserRemoveAvatar}
+                                                            danger
+                                                        >
+                                                            Remove
+                                                        </Button>}
+                                                </div>
                                             </div>
-                                            <div>
-                                                <Upload onChange={handleUpdateUserOnChangeImage} maxCount={1}>
-                                                    <Button className='product-image-upload-button' icon={<UploadOutlined />} type='primary' ghost>
-                                                        Upload
-                                                    </Button>
-                                                </Upload>
-                                                {updateUserState.avatar &&
-                                                    <Button
-                                                        className='product-image-remove-button'
-                                                        icon={<DeleteOutlined />}
-                                                        onClick={handleUpdateUserRemoveAvatar}
-                                                        danger
-                                                    >
-                                                        Remove
-                                                    </Button>}
-                                            </div>
-                                        </div>
-                                    </WrapperUploadProductImage>
-                                </Form.Item>
-                            </Form>
+                                        </WrapperUploadProductImage>
+                                    </Form.Item>
+                                </Form>
+                            </LoadingComponent>
                         </LoadingComponent>
                     </Modal>
                 </div>
@@ -1166,6 +1190,7 @@ const UserManagementComponent = () => {
                         </span>
                     </div>
                     <TableComponent
+                        handleActiveMultipleConfirm={handleActiveMultipleUsersConfirm}
                         columns={columnsUsers}
                         data={dataUsersTable}
                         isLoading={isLoadingAllUsers}

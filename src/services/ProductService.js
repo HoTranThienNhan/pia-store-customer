@@ -25,3 +25,12 @@ export const updateProduct = async (id, data, accessToken) => {
     });
     return res.data;
 }
+
+export const updateActiveMultipleProducts = async (data, accessToken) => {
+    const res = await axiosJWT.put(`${process.env.REACT_APP_API_URL}/product/updateActiveMultipleProducts`, data, {
+        headers: {
+            token: `Bearer ${accessToken}`
+        }
+    });
+    return res.data;
+}

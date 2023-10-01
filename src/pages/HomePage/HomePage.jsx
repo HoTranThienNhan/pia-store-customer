@@ -13,7 +13,13 @@ const HomePage = () => {
       const res = await ProductService.getAllProducts();
       return res;
    }
-   const { isLoading, data: products } = useQuery(['products'], fetchAllProducts, { retry: 3, retryDelay: 1000 });
+   const { isLoading, data: products } = useQuery(
+      {
+         queryKey: ['products'],
+         queryFn: fetchAllProducts
+      },
+      { retry: 3, retryDelay: 1000 }
+   );
 
    return (
       <div id="container" style={{ padding: '0px 70px', height: '1500px' }}>
