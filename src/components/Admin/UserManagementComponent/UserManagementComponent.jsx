@@ -278,12 +278,12 @@ const UserManagementComponent = () => {
             render: (data) => <span>{data.substring(0, 10)}</span>,
             sorter: (a, b) => a.createdAt.localeCompare(b.createdAt),
         },
-        // {
-        //     title: 'Địa Chỉ',
-        //     dataIndex: 'address',
-        //     className: 'all-products-type',
-        //     ...getColumnSearchProps('phone'),
-        // },
+        {
+            title: 'Địa Chỉ',
+            dataIndex: 'address',
+            className: 'all-products-type',
+            ...getColumnSearchProps('address'),
+        },
         {
             title: 'Admin',
             dataIndex: 'isAdmin',
@@ -1194,6 +1194,7 @@ const UserManagementComponent = () => {
                         columns={columnsUsers}
                         data={dataUsersTable}
                         isLoading={isLoadingAllUsers}
+                        excelFileName="UsersTable"
                         onRow={(record, rowIndex) => {
                             return {
                                 onClick: (event) => {

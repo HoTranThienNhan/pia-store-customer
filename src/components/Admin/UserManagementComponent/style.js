@@ -22,6 +22,7 @@ export const WrapperProductManagement = styled.div`
         padding: 30px 25px;
         background-color: #fff;
         border-radius: 10px;
+        position: relative;
     }
 
     .all-products.all-products-area .all-products-header {

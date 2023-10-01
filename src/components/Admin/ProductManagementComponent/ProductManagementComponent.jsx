@@ -1230,6 +1230,7 @@ const ProductManagementComponent = () => {
                         columns={columnsProducts}
                         data={dataProductsTable}
                         isLoading={isLoadingAllProducts}
+                        excelFileName="ProductsTable"
                         onRow={(record, rowIndex) => {
                             return {
                                 onClick: (event) => {

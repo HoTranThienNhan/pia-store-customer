@@ -1,11 +1,23 @@
 import { Button, Divider, Popconfirm, Radio, Table } from 'antd';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
+import { DownloadTableExcel } from 'react-export-table-to-excel';
+import { FileExcelOutlined } from '@ant-design/icons';
 
 const TableComponent = (props) => {
-    const { selectionType = 'checkbox', data = [], columns = [], isLoading = false, components = [], handleActiveMultipleConfirm } = props;
+    const { 
+        selectionType = 'checkbox', 
+        data = [], 
+        columns = [], 
+        isLoading = false, 
+        excelFileName = 'DefaultTable',
+        handleActiveMultipleConfirm 
+    } = props;
 
     const [selectedMultipleRowKeys, setSelectedMultipleRowKeys] = useState([]);
+
+    const tableRef = useRef(null);
+    const excelSheetName = excelFileName.replace('Table', '');
 
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -69,6 +81,18 @@ const TableComponent = (props) => {
                     </Popconfirm>
                 </div>
             )}
+
+            {/* Export Table To Excel */}
+            <DownloadTableExcel
+                filename={excelFileName}
+                sheet={excelSheetName}
+                currentTableRef={tableRef.current}
+            >
+                <Button type="dashed" style={{ marginBottom: '20px', position: 'absolute', top: '25px', right: '25px' }}>
+                    <FileExcelOutlined /> Export to Excel 
+                </Button>
+            </DownloadTableExcel>
+
             <LoadingComponent isLoading={isLoading}>
                 <Table
                     rowSelection={{
@@ -77,7 +101,7 @@ const TableComponent = (props) => {
                     }}
                     columns={columns}
                     dataSource={data}
-                    // components={components}
+                    ref={tableRef}
                     {...props}
                 />
             </LoadingComponent>
