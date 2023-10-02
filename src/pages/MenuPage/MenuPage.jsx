@@ -7,7 +7,7 @@ import { Breadcrumb, Col, Row } from 'antd';
 
 const MenuPage = () => {
     return (
-        <div id="container" style={{ padding: '0px 70px', height: '1500px' }}>
+        <div id="container" style={{ padding: '85px 70px 0px 70px', height: '1500px' }}>
             <Breadcrumb style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '40px' }}>
                 <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
                 <Breadcrumb.Item>Thực đơn</Breadcrumb.Item>

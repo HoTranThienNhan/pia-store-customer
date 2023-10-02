@@ -4,6 +4,9 @@ import { styled } from "styled-components";
 export const WrapperHeader = styled(Row)`
     padding: 25px 70px;
     background-color: #ddd;
+    position: fixed;
+    z-index: 10;
+    width: 100%;
 `
 
 export const WrapperSearchHeader = styled.div`

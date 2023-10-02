@@ -19,7 +19,9 @@ const SearchButtonComponent = (props) => {
                     borderRight: 'none'
                 }}
                 allowClear
-                bordered={false} />
+                bordered={false}
+                {...props}
+            />
             <Button
                 icon={<SearchOutlined />}
                 style={{

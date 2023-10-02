@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Col, Popover, Row } from "antd";
+import { Avatar, Badge, Col, Popover, Row } from "antd";
 import { UserOutlined, HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import {
@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as UserService from '../../services/UserService';
 import { resetUser } from '../../redux/slices/userSlice';
 import LoadingComponent from "../LoadingComponent/LoadingComponent";
+import { searchProduct } from "../../redux/slices/productSlice";
 
 const HeaderComponent = () => {
    const navItem = ['Trang chủ', 'Tìm hiểu', 'Thực đơn', 'Khuyến mãi', 'Liên hệ'];
@@ -28,6 +29,7 @@ const HeaderComponent = () => {
    const [loading, setLoading] = useState(false);
    const [username, setUsername] = useState('');
    const [userAvatar, setUserAvatar] = useState('');
+   const [search, setSearch] = useState('');
 
    useEffect(() => {
       setLoading(true);
@@ -65,12 +67,19 @@ const HeaderComponent = () => {
       </div>
    );
 
+   const onSearch = (e) => {
+      setSearch(e.target.value);
+      dispatch(searchProduct(e.target.value));
+   }
+
    return (
       <div>
          <WrapperHeader>
             {/* Branch Name Part Here */}
             <Col span={3}>
-               BRAND NAME
+               <Row justify="space-around" align="middle" style={{ height: '100%' }}>
+                  BRAND NAME
+               </Row>
             </Col>
             {/* NavBar Items Part Here */}
             <Col span={12}>
@@ -92,6 +101,7 @@ const HeaderComponent = () => {
                      <SearchButtonComponent
                         width='140px'
                         placeholder='Tìm sản phẩm'
+                        onChange={onSearch}
                      />
                   </WrapperSearchHeader>
                   {/* Auth Part Here */}

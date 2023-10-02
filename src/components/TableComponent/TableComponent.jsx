@@ -89,7 +89,7 @@ const TableComponent = (props) => {
                 currentTableRef={tableRef.current}
             >
                 <Button type="dashed" style={{ marginBottom: '20px', position: 'absolute', top: '25px', right: '25px' }}>
-                    <FileExcelOutlined /> Export to Excel 
+                    <FileExcelOutlined /> Xuất sang Excel 
                 </Button>
             </DownloadTableExcel>
 

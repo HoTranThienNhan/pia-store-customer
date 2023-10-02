@@ -104,7 +104,7 @@ const UserEditProfilePage = () => {
     }
 
     return (
-        <WrapperUserEditProfile id="container" style={{ padding: '40px 70px', height: '1500px' }}>
+        <WrapperUserEditProfile id="container" style={{ padding: '125px 70px 40px 70px', height: '1500px' }}>
             <Row>
                 <Col span={6}>
                     <div>HHH</div>
