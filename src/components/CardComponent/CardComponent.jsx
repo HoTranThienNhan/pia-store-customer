@@ -2,19 +2,19 @@ import React from 'react';
 import { Card } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import { NameProduct, PriceProduct } from './style';
-import hamburger from '../../assets/images/hamburger.png'
+import pizza from '../../assets/images/banh-mi-heo-quay.png';
 
 const CardComponent = (props) => {
-    const { countInStock, description, name, price, rating, type, sold, discount } = props;
+    const { countInStock, description, name, price, rating, type, sold, discount, image } = props;
 
     return (
         <Card
             hoverable
-            style={{ width: 240, padding: '30px', borderColor: '#ccc' }}
-            cover={<img alt="example" src={hamburger} />}
+            style={{ width: 240, height: 320, padding: '30px 20px', borderColor: '#ccc' }}
+            cover={<img alt="product" src={image} />}
         >
             <NameProduct>{name}</NameProduct>
-            <PriceProduct>{price} VNĐ</PriceProduct>
+            <PriceProduct>{price.toLocaleString()} VNĐ</PriceProduct>
         </Card>
     )
 };

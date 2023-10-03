@@ -2,13 +2,13 @@ import axios from "axios";
 
 export const axiosJWT = axios.create();
 
-export const getAllProducts = async (search) => {
+export const getAllProducts = async (search, limitProducts = 20) => {
     let res = {};
     if (search?.length) {
-        res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getAllProducts?filter=name&filter=${search}`);
+        res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getAllProducts?filter=name&filter=${search}&limitProducts=${limitProducts}`);
     } else {
-        res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getAllProducts`);
-    }
+        res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getAllProducts?limitProducts=${limitProducts}`);
+    } 
     return res.data;
 }
 

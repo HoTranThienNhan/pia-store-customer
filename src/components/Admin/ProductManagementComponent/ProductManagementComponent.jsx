@@ -10,10 +10,9 @@ import {
     QuestionCircleOutlined,
     SearchOutlined,
     TagOutlined,
-    UploadOutlined,
-    UserOutlined
+    UploadOutlined
 } from '@ant-design/icons';
-import { Avatar, Breadcrumb, Button, Col, Form, Input, Modal, Popconfirm, Row, Select, Space, Switch, Upload } from 'antd';
+import { Breadcrumb, Button, Col, Form, Input, Modal, Popconfirm, Row, Space, Switch, Upload } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import TableComponent from '../../TableComponent/TableComponent';
 import { WrapperProductManagement, WrapperUploadProductImage } from './style';
@@ -24,10 +23,9 @@ import * as ProductService from '../../../services/ProductService';
 import { useMutationHooks } from '../../../hooks/useMutationHook';
 import LoadingComponent from '../../LoadingComponent/LoadingComponent';
 import * as MessagePopup from '../../../components/MessagePopupComponent/MessagePopupComponent';
-import TextArea from 'antd/es/input/TextArea';
 import { useQuery } from '@tanstack/react-query';
-import DrawerComponent from '../../DrawerComponent/DrawerComponent';
 import { useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 
 const ProductManagementComponent = () => {
     /*** USE STATE ***/
@@ -641,6 +639,13 @@ const ProductManagementComponent = () => {
         // setIsLoadingActiveProduct(false);
     }
 
+    /*** NAVIGATE ***/
+    const navigate = useNavigate();
+    const handleNavigateHomePage = () => {
+        navigate('/');
+    }
+
+
 
     /*** ACTIVE MULTIPLE PRODUCTS ***/
     // mutation 
@@ -672,7 +677,7 @@ const ProductManagementComponent = () => {
                 <Breadcrumb
                     items={[
                         {
-                            title: <a href="/">Trang chủ</a>,
+                            title: <span onClick={handleNavigateHomePage} style={{ cursor: 'pointer' }} href="/">Trang chủ</span>,
                         },
                         {
                             title: 'Quản lý sản phẩm',

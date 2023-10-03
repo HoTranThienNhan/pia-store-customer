@@ -1,6 +1,6 @@
 import { Breadcrumb, Button, Col, Image, Row, Tabs } from 'antd';
 import React from 'react';
-import imageProduct from '../../assets/images/hamburger.png'
+import imageProduct from '../../assets/images/hamburger-beef.png'
 import imageCalories from '../../assets/images/calories.png'
 import { StarFilled } from '@ant-design/icons'
 import InputNumberComponent from '../../components/InputNumberComponent/InputNumberComponent';

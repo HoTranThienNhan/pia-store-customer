@@ -1,19 +1,13 @@
 import {
     DeleteOutlined,
-    DollarOutlined,
-    FieldNumberOutlined,
-    FileTextOutlined,
     FormOutlined,
     HomeOutlined,
     IdcardOutlined,
-    InboxOutlined,
     LockOutlined,
-    PartitionOutlined,
     PhoneOutlined,
     PlusOutlined,
     QuestionCircleOutlined,
     SearchOutlined,
-    TagOutlined,
     UploadOutlined,
     UserOutlined
 } from '@ant-design/icons';
@@ -29,8 +23,8 @@ import { useMutationHooks } from '../../../hooks/useMutationHook';
 import LoadingComponent from '../../LoadingComponent/LoadingComponent';
 import * as MessagePopup from '../../../components/MessagePopupComponent/MessagePopupComponent';
 import { useQuery } from '@tanstack/react-query';
-import DrawerComponent from '../../DrawerComponent/DrawerComponent';
 import { useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 
 const UserManagementComponent = () => {
     /*** USE STATE ***/
@@ -692,6 +686,12 @@ const UserManagementComponent = () => {
         // setIsLoadingActiveProduct(false);
     }
 
+    /*** NAVIGATE ***/
+    const navigate = useNavigate();
+    const handleNavigateHomePage = () => {
+        navigate('/');
+    }
+
 
     return (
         <WrapperProductManagement>
@@ -700,7 +700,7 @@ const UserManagementComponent = () => {
                 <Breadcrumb
                     items={[
                         {
-                            title: <a href="/">Trang chủ</a>,
+                            title: <span onClick={handleNavigateHomePage} style={{ cursor: 'pointer' }} href="/">Trang chủ</span>,
                         },
                         {
                             title: 'Quản lý người dùng',

@@ -156,10 +156,11 @@ const SignInPage = () => {
                                 </Form.Item>
                             </Form>
                             <div style={{ marginBottom: '8px' }}>
-                                <a>Quên mật khẩu?</a>
+                                <span style={{ cursor: 'pointer' }}>Quên mật khẩu?</span>
                             </div>
                             <div>
-                                Chưa có tài khoản? <a onClick={handleNavigateSignup}>Tạo tài khoản</a>
+                                Chưa có tài khoản? 
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={handleNavigateSignup}> Tạo tài khoản</span>
                             </div>
                         </Col>
                     </Col>

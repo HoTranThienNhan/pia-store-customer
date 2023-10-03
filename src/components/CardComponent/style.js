@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 
 export const NameProduct = styled.div`
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
     text-align: center;
 `

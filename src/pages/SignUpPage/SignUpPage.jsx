@@ -225,7 +225,7 @@ const SignUpPage = () => {
                                 </Form.Item>
                             </Form>
                             <div style={{ marginBottom: '8px' }}>
-                                Đã có tài khoản? <a onClick={handleNavigateSignin}>Đăng nhập</a>
+                                Đã có tài khoản? <span style={{ cursor: 'pointer', color: 'blue' }} onClick={handleNavigateSignin}>Đăng nhập</span>
                             </div>
                         </Col>
                     </Col>

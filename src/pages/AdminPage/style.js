@@ -12,5 +12,6 @@ export const WrapperAdminMenuSidebar = styled(Menu)`
     .ant-menu-item.ant-menu-item-selected, 
     .ant-menu-item.ant-menu-item-active {
         border-radius: 5px;
+        user-select: none;
     }
 `

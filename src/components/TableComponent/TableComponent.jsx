@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import { DownloadTableExcel } from 'react-export-table-to-excel';
 import { FileExcelOutlined } from '@ant-design/icons';
+import { ButtonExportToExcel, WrapperTable } from './style';
 
 const TableComponent = (props) => {
     const { 
@@ -44,7 +45,7 @@ const TableComponent = (props) => {
     const handleActiveUpdateCancel = () => { }
 
     return (
-        <div>
+        <WrapperTable>
             {selectedMultipleRowKeys.length > 0 && (
                 <div style={{ marginBottom: '20px' }}>
                     <Popconfirm
@@ -88,9 +89,9 @@ const TableComponent = (props) => {
                 sheet={excelSheetName}
                 currentTableRef={tableRef.current}
             >
-                <Button type="dashed" style={{ marginBottom: '20px', position: 'absolute', top: '25px', right: '25px' }}>
+                <ButtonExportToExcel type="dashed">
                     <FileExcelOutlined /> Xuất sang Excel 
-                </Button>
+                </ButtonExportToExcel>
             </DownloadTableExcel>
 
             <LoadingComponent isLoading={isLoading}>
@@ -105,7 +106,7 @@ const TableComponent = (props) => {
                     {...props}
                 />
             </LoadingComponent>
-        </div>
+        </WrapperTable>
     )
 };
 
