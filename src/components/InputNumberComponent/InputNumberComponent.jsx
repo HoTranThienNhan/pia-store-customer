@@ -20,7 +20,9 @@ const InputNumberComponent = (props) => {
    }
 
    const setValue = (e) => {
-      setProductCount(`${e}`);
+      if (e !== null) {
+         setProductCount(`${e}`);
+      }
    }
 
     return (

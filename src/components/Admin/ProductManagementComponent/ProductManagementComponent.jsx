@@ -377,7 +377,7 @@ const ProductManagementComponent = () => {
     const dataProductsTable = allProducts?.data?.length && allProducts?.data?.map((product) => {
         return {
             ...product,
-            key: product._id
+            key: product.id
         }
     });
 
@@ -657,7 +657,7 @@ const ProductManagementComponent = () => {
     const handleActiveMultipleProductsConfirm = (productIds, isActive) => {
         mutationActiveMultipleProducts.mutate(
             {
-                data: { productIds, isActive },
+                data: { productIds, isActive },     // productIds contain data-row-keys
                 accessToken: user?.accessToken
             },
             {
@@ -1244,17 +1244,17 @@ const ProductManagementComponent = () => {
                                     // - only pressing the update button on every row can set setSelectedRow
                                     if (event.target.tagName === 'svg') {   // if click on svg tag (children of class 'all-products-update')
                                         if (event.target.parentElement.className.includes("all-products-update")) {
-                                            setSelectedRow(record?._id)
+                                            setSelectedRow(record?.id)
                                         }
                                     } else if (event.target.tagName === 'path') {   // if click on path tag (children of svg tag)
                                         if (event.target.parentElement.parentElement.className.includes("all-products-update")) {
-                                            setSelectedRow(record?._id)
+                                            setSelectedRow(record?.id)
                                         }
                                     }
                                     // - same with setSelectedActiveRow
                                     // if click on switch span (children of class 'all-products-active')
                                     else if (event.target.parentElement.className.includes("all-products-active")) {
-                                        setSelectedActiveRow(record?._id)
+                                        setSelectedActiveRow(record?.id)
                                     }
                                 },
                             };

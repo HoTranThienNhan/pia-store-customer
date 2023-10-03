@@ -5,6 +5,9 @@ import imageCalories from '../../assets/images/calories.png'
 import { StarFilled } from '@ant-design/icons'
 import InputNumberComponent from '../../components/InputNumberComponent/InputNumberComponent';
 import { DetailContentDiv, DetailsReviewSection, PriceSpan, StarRating } from './style';
+import { useNavigate, useParams } from "react-router-dom";
+import * as ProductService from '../../services/ProductService';
+import { useQuery } from '@tanstack/react-query';
 
 const items = [
    {
@@ -19,12 +22,40 @@ const items = [
    }
 ]
 
+
 const ProductsPage = () => {
+   const { id } = useParams();
+
+   const onChange = () => { }
+
+   const getProductDetails = async (context) => {
+      const id = context?.queryKey && context?.queryKey[1];
+      console.log('id', id)
+      const res = await ProductService.getProductDetails(id);
+      return res?.data;
+   }
+
+   const { isLoading, data: productDetails } = useQuery(
+      {
+         queryKey: ['productDetails', id],
+         queryFn: getProductDetails,
+         enabled: !!id,
+      }
+   );
+
+   // console.log('productDetails', productDetails)
+
+
+   /*** NAVIGATE ***/
+   const navigate = useNavigate();
+   const handleNavigateHomePage = () => {
+      navigate('/');
+   }
 
    return (
       <div id="container" style={{ padding: '85px 70px 0px 70px', height: '1500px' }}>
          <Breadcrumb style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '40px' }}>
-            <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
+            <Breadcrumb.Item><span onClick={handleNavigateHomePage} style={{ cursor: 'pointer' }} href="/">Trang chủ</span></Breadcrumb.Item>
             <Breadcrumb.Item>Thực đơn</Breadcrumb.Item>
             <Breadcrumb.Item>Sản Phẩm</Breadcrumb.Item>
          </Breadcrumb>

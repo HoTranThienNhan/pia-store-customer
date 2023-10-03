@@ -52,6 +52,7 @@ const HomePage = () => {
                            <Col span={6} style={{ marginBottom: '30px' }}>
                               <CardComponent
                                  key={product._id}
+                                 id={product.id}
                                  countInStock={product.countInStock}
                                  description={product.description}
                                  image={product.image}
