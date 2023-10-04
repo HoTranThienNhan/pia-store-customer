@@ -476,7 +476,7 @@ const ProductManagementComponent = () => {
         });
     }
 
-
+    
     /*** UPDATE PRODUCT ***/
     // mutation update product
     const mutationUpdateProduct = useMutationHooks(
@@ -677,7 +677,7 @@ const ProductManagementComponent = () => {
                 <Breadcrumb
                     items={[
                         {
-                            title: <span onClick={handleNavigateHomePage} style={{ cursor: 'pointer' }} href="/">Trang chủ</span>,
+                            title: <span onClick={handleNavigateHomePage} style={{ cursor: 'pointer' }}>Trang chủ</span>,
                         },
                         {
                             title: 'Quản lý sản phẩm',

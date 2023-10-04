@@ -20,7 +20,7 @@ const CardComponent = (props) => {
             onClick={() => handleNavigateProductDetails(id)}
         >
             <NameProduct>{name}</NameProduct>
-            <PriceProduct>{price.toLocaleString()} VNĐ</PriceProduct>
+            <PriceProduct>{price?.toLocaleString()} VNĐ</PriceProduct>
         </Card>
     )
 };

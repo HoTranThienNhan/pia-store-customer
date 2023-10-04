@@ -68,6 +68,7 @@ export function App() {
               const Page = route.page;
               const Layout = route.isShowHeader ? DefaultComponent : Fragment;
               const isAdmin = !route.isPrivate || user.isAdmin;
+              const exactRoute = route.exact;
               // publicRoutePath contains route paths with isPrivate = false (in routes/index.js)
               var publicRoutePath;
               if (isAdmin && route.path) {
@@ -78,6 +79,7 @@ export function App() {
                 <Route
                   key={route.path}
                   path={publicRoutePath}
+                  exact={exactRoute}
                   element={
                     <Layout>
                       <Page />

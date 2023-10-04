@@ -700,7 +700,7 @@ const UserManagementComponent = () => {
                 <Breadcrumb
                     items={[
                         {
-                            title: <span onClick={handleNavigateHomePage} style={{ cursor: 'pointer' }} href="/">Trang chủ</span>,
+                            title: <span onClick={handleNavigateHomePage} style={{ cursor: 'pointer' }}>Trang chủ</span>,
                         },
                         {
                             title: 'Quản lý người dùng',

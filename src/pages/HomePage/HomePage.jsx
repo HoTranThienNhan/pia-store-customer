@@ -24,12 +24,13 @@ const HomePage = () => {
       setLoading(true);
       const limitProducts = context?.queryKey && context?.queryKey[1];
       const search = context?.queryKey && context?.queryKey[2];
-      const res = await ProductService.getAllProducts(search, limitProducts);
+      const onlyActive = 'true';
+      const res = await ProductService.getAllProducts(search, limitProducts, onlyActive);
       setLoading(false);
       return res;
    }
 
-   const { isLoading, data: products, isPreviousData } = useQuery(
+   const queryAllProducts = useQuery(
       {
          queryKey: ['products', limitProducts, searchDebounce],
          queryFn: fetchAllProducts,
@@ -39,6 +40,7 @@ const HomePage = () => {
          staleTime: Infinity,
       }
    );
+   const { isLoading, data: products, isPreviousData } = queryAllProducts;
 
    return (
       <div id="container" style={{ padding: '85px 70px 50px 70px', height: 'maxContent' }}>

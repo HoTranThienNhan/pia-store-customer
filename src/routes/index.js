@@ -14,61 +14,71 @@ export const routes = [
         path: '/',
         page: HomePage,
         isShowHeader: true,
-        isPrivate: false
+        isPrivate: false,
+        exact: false,
     },
     {
         path: '/order',
         page: OrderPage,
-        isShowHeader: true
+        isShowHeader: true,
+        exact: false,
     },
     {
         path: '/menu/products/:id',
         page: ProductPage,
         isShowHeader: true,
-        isPrivate: false
+        isPrivate: false,
+        exact: true,
     },
     {
         path: '/menu',
         page: MenuPage,
         isShowHeader: true,
-        isPrivate: false
+        isPrivate: false,
+        exact: false,
     },
     {
         path: '/signin',
         page: SignInPage,
         isShowHeader: false,
-        isPrivate: false
+        isPrivate: false,
+        exact: false,
     },
     {
         path: '/signup',
         page: SignUpPage,
         isShowHeader: false,
-        isPrivate: false
+        isPrivate: false,
+        exact: false,
     },
     {
         path: '/user/profile',
         page: UserProfilePage,
         isShowHeader: true,
-        isPrivate: false
+        isPrivate: false,
+        exact: false,
     },
     {
         path: '/user/profile/edit',
         page: UserEditProfilePage,
         isShowHeader: true,
-        isPrivate: false
+        isPrivate: false,
+        exact: false,
     },
     // admin routes
     {
         path: '/system/admin',
         page: AdminPage,
         isShowHeader: true,
-        isPrivate: true
+        isPrivate: true,
+        exact: false,
     },
     // remaining routes
     {
         path: '*',
         page: NotFoundPage,
         isShowHeader: false,
-        isPrivate: false
+        isPrivate: false,
+        exact: false,
     },
 ]
