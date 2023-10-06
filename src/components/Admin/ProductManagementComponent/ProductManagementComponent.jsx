@@ -12,10 +12,10 @@ import {
     TagOutlined,
     UploadOutlined
 } from '@ant-design/icons';
-import { Breadcrumb, Button, Col, Form, Input, Modal, Popconfirm, Row, Space, Switch, Upload } from 'antd';
+import { Breadcrumb, Button, Col, Divider, Form, Input, Modal, Popconfirm, Row, Select, Space, Switch, Upload } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import TableComponent from '../../TableComponent/TableComponent';
-import { WrapperProductManagement, WrapperUploadProductImage } from './style';
+import { SelectForm, WrapperProductManagement, WrapperUploadProductImage } from './style';
 import FloatingLabelComponent from '../../FloatingLabelComponent/FloatingLabelComponent';
 import InputFormComponent from '../../InputFormComponent/InputFormComponent';
 import { getBase64 } from '../../../utils';
@@ -26,6 +26,7 @@ import * as MessagePopup from '../../../components/MessagePopupComponent/Message
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
+import SelectComponent from '../../SelectComponent/SelectComponent';
 
 const ProductManagementComponent = () => {
     /*** USE STATE ***/
@@ -49,6 +50,8 @@ const ProductManagementComponent = () => {
         description: '',
         active: true
     });
+    const [selectedType, setSelectedType] = useState('');
+    const [selectedUpdateType, setSelectedUpdateType] = useState('');
     const [updateProductState, setUpdateProductState] = useState({
         id: '',
         name: '',
@@ -66,12 +69,12 @@ const ProductManagementComponent = () => {
     const [selectedRow, setSelectedRow] = useState('');
     const [selectedActiveRow, setSelectedActiveRow] = useState('');
 
-    // const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
 
 
     /*** RENDER TABLE ***/
+    // #region
     const renderTableUpdate = () => {
         return (
             <div>
@@ -103,9 +106,11 @@ const ProductManagementComponent = () => {
             </div>
         );
     }
+    // #endregion
 
 
     /*** GET ALL PRODUCTS ***/
+    // #region
     const getAllProducts = async () => {
         const res = await ProductService.getAllProducts();
         const { total } = res;
@@ -116,9 +121,60 @@ const ProductManagementComponent = () => {
         queryFn: getAllProducts
     });
     const { isLoading: isLoadingAllProducts, data: allProducts } = queryAllProducts;
+    // #endregion
+
+
+    /*** ALL PRODUCT TYPES ***/
+    // #region
+    const getAllProductTypes = async () => {
+        const res = await ProductService.getAllProductTypes();
+        return res;
+    }
+    const queryAllProductTypes = useQuery({
+        queryKey: ['productTypes'],
+        queryFn: getAllProductTypes
+    });
+    const { isLoading: isLoadingAllProductTypes, data: allProductTypes } = queryAllProductTypes;
+
+    const [allTypes, setAllTypes] = useState([]);
+    const [newType, setNewType] = useState('');
+    const inputNewTypeRef = useRef(null);
+
+    const handleOnChangeNewType = (e) => {
+        setNewType(e.target.value);
+    }
+
+    const addNewTypeItem = (e) => {
+        e.preventDefault();
+        if (newType !== '') {
+            setAllTypes([...allTypes, newType]);
+        }
+        setNewType('');
+        setTimeout(() => {
+            inputNewTypeRef?.current?.focus();
+        }, 0);
+    };
+
+    const handleOnChangeSelect = (value) => {
+        setSelectedType(value);
+        setProductState({
+            ...productState,
+            type: value
+        });
+    }
+
+    const handleOnChangeSelectUpdate = (value) => {
+        setSelectedUpdateType(value);
+        setUpdateProductState({
+            ...updateProductState,
+            type: value
+        });
+    }
+    // #endregion
 
 
     /*** SEARCH ***/
+    // #region
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         // setSearchText(selectedKeys[0]);
@@ -210,9 +266,11 @@ const ProductManagementComponent = () => {
         //         text
         //     ),
     });
+    // #endregion
 
 
-    /** COLUMNS TABLE AND TABLE DATA ***/
+    /*** COLUMNS TABLE AND TABLE DATA ***/
+    // #region
     const columnsProducts = [
         {
             title: 'Mã SP',
@@ -380,9 +438,11 @@ const ProductManagementComponent = () => {
             key: product.id
         }
     });
+    // #endregion
 
 
     /*** CREATE PRODUCT ***/
+    // #region
     // mutation
     const mutation = useMutationHooks(
         (data) => {
@@ -423,9 +483,23 @@ const ProductManagementComponent = () => {
         }
     }, [isSuccess, isError]);
 
+    // get lastest product id and create new product id
+    const getLastestProductId = () => {
+        const allProductsCount = allProducts?.data?.length;
+        const lastestProductId = allProducts?.data[allProductsCount - 1]?.id; // lastestProductId pattern: example is SP001
+        const newProductId = lastestProductId?.slice(0, 2) + (parseInt(lastestProductId?.slice(2)) + 1)?.toString()?.padStart(3, 0);
+        return newProductId;
+    }
+
     // handle create product modals
     const showCreateProductModal = () => {
         setIsCreateProductModalOpen(true);
+        setAllTypes(allProductTypes?.data);
+        const newProductId = getLastestProductId();
+        setProductState({
+            ...productState,
+            id: newProductId
+        });
     };
     const onCreateProductFinish = () => {
         mutation.mutate(
@@ -433,6 +507,7 @@ const ProductManagementComponent = () => {
             {
                 onSettled: () => {
                     queryAllProducts.refetch();
+                    queryAllProductTypes.refetch();
                 }
             }
         );
@@ -442,6 +517,7 @@ const ProductManagementComponent = () => {
     };
     const handleCreateProductCancel = () => {
         setIsCreateProductModalOpen(false);
+        setSelectedType('');
         setProductState({
             id: '',
             name: '',
@@ -475,9 +551,11 @@ const ProductManagementComponent = () => {
             [e.target.name]: e.target.value
         });
     }
+    // #endregion
 
-    
+
     /*** UPDATE PRODUCT ***/
+    // #region
     // mutation update product
     const mutationUpdateProduct = useMutationHooks(
         ({ id, accessToken, updatedData } = data) =>
@@ -531,6 +609,7 @@ const ProductManagementComponent = () => {
     // handle update product modals
     const showUpdateProductModal = () => {
         setIsUpdateProductModalOpen(true);
+        setAllTypes(allProductTypes?.data);
     };
     const handleUpdateProductCancel = () => {
         setIsUpdateProductModalOpen(false);
@@ -585,9 +664,11 @@ const ProductManagementComponent = () => {
     const handleUpdateProductOk = () => {
         onUpdateProductFinish();
     };
+    // #endregion
 
 
     /*** ACTIVE PRODUCT ***/
+    // #region
     // mutation 
     const mutationActiveProduct = useMutationHooks(
         ({ id, accessToken, updatedData } = data) =>
@@ -638,16 +719,20 @@ const ProductManagementComponent = () => {
     const handleActiveProductCancel = () => {
         // setIsLoadingActiveProduct(false);
     }
+    // #endregion
+
 
     /*** NAVIGATE ***/
+    // #region
     const navigate = useNavigate();
     const handleNavigateHomePage = () => {
         navigate('/');
     }
-
+    // #endregion
 
 
     /*** ACTIVE MULTIPLE PRODUCTS ***/
+    // #region
     // mutation 
     const mutationActiveMultipleProducts = useMutationHooks(
         ({ data, accessToken } = data) =>
@@ -668,6 +753,7 @@ const ProductManagementComponent = () => {
         );
         // setIsLoadingActiveProduct(false);
     }
+    // #endregion
 
 
     return (
@@ -685,318 +771,53 @@ const ProductManagementComponent = () => {
                     ]}
                 />
             </div>
-            <div style={{ padding: '30px 0px' }}>
-                <div className='add-new-product'>
-                    <Button className='add-new-product-button' onClick={showCreateProductModal} >
-                        <PlusOutlined />
-                    </Button>
-                    {/* Modal Create New Product */}
-                    <Modal
-                        title="Thêm Sản Phẩm"
-                        open={isCreateProductModalOpen}
-                        maskClosable={false}
-                        width="550px"
-                        closeIcon={null}
-                        footer={[
-                            <Popconfirm
-                                placement='topRight'
-                                title="Xác nhận hủy"
-                                description="Bạn chắc chắn muốn hủy thao tác?"
-                                onConfirm={handleCreateProductCancel}
-                                okText="Chắc chắn"
-                                cancelText="Không"
-                                icon={
-                                    <QuestionCircleOutlined
-                                        style={{
-                                            color: 'red',
-                                        }}
-                                    />
-                                }
-                            >
-                                <Button key="back">
-                                    Hủy
-                                </Button>
-                            </Popconfirm>,
-                            <Popconfirm
-                                placement='topLeft'
-                                title="Xác nhận thêm sản phẩm"
-                                description="Bạn chắc chắn muốn thêm sản phẩm này?"
-                                onConfirm={handleCreateProductOk}
-                                okText="Chắc chắn"
-                                cancelText="Không"
-                            >
-                                <Button key="submit" type="primary">
-                                    Thêm
-                                </Button>
-                            </Popconfirm>,
-                        ]}>
-                        <LoadingComponent isLoading={isLoading}>
-                            <Form autoComplete="off">
-                                <Form.Item
-                                    label=""
-                                    validateStatus={"validating"}
-                                    help=""
-                                    style={{ marginBottom: '0px' }}
-                                    className='auth-form-item-product-id'
-                                >
-                                    <FloatingLabelComponent
-                                        label="Mã sản phẩm"
-                                        value={productState.id}
-                                        styleBefore={{ left: '37px', top: '31px' }}
-                                        styleAfter={{ left: '37px', top: '23px' }}
-                                    >
-                                        <InputFormComponent
-                                            name="id"
-                                            placeholder=""
-                                            prefix={<FieldNumberOutlined className="site-form-item-icon" />}
-                                            className='auth-input-product-id'
-                                            value={productState.id}
-                                            onChange={handleOnChangeProductState}
+            <LoadingComponent isLoading={isLoadingAllProducts}>
+                <div style={{ padding: '30px 0px' }}>
+                    <div className='add-new-product'>
+                        <Button className='add-new-product-button' onClick={showCreateProductModal} >
+                            <PlusOutlined />
+                        </Button>
+                        {/* Modal Create New Product */}
+                        <Modal
+                            title="Thêm Sản Phẩm"
+                            open={isCreateProductModalOpen}
+                            maskClosable={false}
+                            width="550px"
+                            closeIcon={null}
+                            footer={[
+                                <Popconfirm
+                                    placement='topRight'
+                                    title="Xác nhận hủy"
+                                    description="Bạn chắc chắn muốn hủy thao tác?"
+                                    onConfirm={handleCreateProductCancel}
+                                    okText="Chắc chắn"
+                                    cancelText="Không"
+                                    icon={
+                                        <QuestionCircleOutlined
                                             style={{
-                                                borderRadius: '10px',
-                                                padding: '0px 18px',
-                                                marginTop: '20px',
-                                                border: '1px solid #000',
-                                                height: '45px'
+                                                color: 'red',
                                             }}
                                         />
-                                    </FloatingLabelComponent>
-                                </Form.Item>
-                                <Form.Item
-                                    label=""
-                                    validateStatus={"validating"}
-                                    help=""
-                                    style={{ marginBottom: '0px' }}
-                                    className='auth-form-item-product-name'
+                                    }
                                 >
-                                    <FloatingLabelComponent
-                                        label="Tên sản phẩm"
-                                        value={productState.name}
-                                        styleBefore={{ left: '37px', top: '31px' }}
-                                        styleAfter={{ left: '37px', top: '23px' }}
-                                    >
-                                        <InputFormComponent
-                                            name="name"
-                                            placeholder=""
-                                            prefix={<TagOutlined className="site-form-item-icon" />}
-                                            className='auth-input-product-name'
-                                            value={productState.name}
-                                            onChange={handleOnChangeProductState}
-                                            style={{
-                                                borderRadius: '10px',
-                                                padding: '0px 18px',
-                                                marginTop: '20px',
-                                                border: '1px solid #000',
-                                                height: '45px'
-                                            }}
-                                        />
-                                    </FloatingLabelComponent>
-                                </Form.Item>
-                                <Form.Item
-                                    label=""
-                                    validateStatus={"validating"}
-                                    help=""
-                                    style={{ marginBottom: '0px' }}
-                                    className='auth-form-item-product-type'
+                                    <Button key="back">
+                                        Hủy
+                                    </Button>
+                                </Popconfirm>,
+                                <Popconfirm
+                                    placement='topLeft'
+                                    title="Xác nhận thêm sản phẩm"
+                                    description="Bạn chắc chắn muốn thêm sản phẩm này?"
+                                    onConfirm={handleCreateProductOk}
+                                    okText="Chắc chắn"
+                                    cancelText="Không"
                                 >
-                                    <FloatingLabelComponent
-                                        label="Loại sản phẩm"
-                                        value={productState.type}
-                                        styleBefore={{ left: '37px', top: '31px' }}
-                                        styleAfter={{ left: '37px', top: '23px' }}
-                                    >
-                                        <InputFormComponent
-                                            name="type"
-                                            placeholder=""
-                                            prefix={<PartitionOutlined className="site-form-item-icon" />}
-                                            className='auth-input-product-type'
-                                            value={productState.type}
-                                            onChange={handleOnChangeProductState}
-                                            style={{
-                                                borderRadius: '10px',
-                                                padding: '0px 18px',
-                                                marginTop: '20px',
-                                                border: '1px solid #000',
-                                                height: '45px'
-                                            }}
-                                        />
-                                    </FloatingLabelComponent>
-                                </Form.Item>
-                                <Row justify="space-between">
-                                    <Col span={11}>
-                                        <Form.Item
-                                            label=""
-                                            validateStatus={"validating"}
-                                            help=""
-                                            style={{ marginBottom: '0px' }}
-                                            className='auth-form-item-product-count-in-stock'
-                                        >
-                                            <FloatingLabelComponent
-                                                label="Số lượng tồn kho"
-                                                value={productState.countInStock}
-                                                styleBefore={{ left: '37px', top: '31px' }}
-                                                styleAfter={{ left: '37px', top: '23px' }}
-                                            >
-                                                <InputFormComponent
-                                                    name="countInStock"
-                                                    placeholder=""
-                                                    prefix={<InboxOutlined className="site-form-item-icon" />}
-                                                    className='auth-input-product-count-in-stock'
-                                                    value={productState.countInStock}
-                                                    onChange={handleOnChangeProductState}
-                                                    style={{
-                                                        borderRadius: '10px',
-                                                        padding: '0px 18px',
-                                                        marginTop: '20px',
-                                                        border: '1px solid #000',
-                                                        height: '45px'
-                                                    }}
-                                                />
-                                            </FloatingLabelComponent>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={12}>
-                                        <Form.Item
-                                            label=""
-                                            validateStatus={"validating"}
-                                            help=""
-                                            style={{ marginBottom: '0px' }}
-                                            className='auth-form-item-product-price'
-                                        >
-                                            <FloatingLabelComponent
-                                                label="Giá"
-                                                value={productState.price}
-                                                styleBefore={{ left: '37px', top: '31px' }}
-                                                styleAfter={{ left: '37px', top: '23px' }}
-                                            >
-                                                <InputFormComponent
-                                                    name="price"
-                                                    placeholder=""
-                                                    prefix={<DollarOutlined className="site-form-item-icon" />}
-                                                    className='auth-input-product-price'
-                                                    value={productState.price}
-                                                    onChange={handleOnChangeProductState}
-                                                    style={{
-                                                        borderRadius: '10px',
-                                                        padding: '0px 18px',
-                                                        marginTop: '20px',
-                                                        border: '1px solid #000',
-                                                        height: '45px'
-                                                    }}
-                                                />
-                                            </FloatingLabelComponent>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Form.Item
-                                    label=""
-                                    validateStatus={"validating"}
-                                    help=""
-                                    style={{ marginBottom: '0px' }}
-                                    className='auth-form-item-product-description'
-                                >
-                                    <FloatingLabelComponent
-                                        label="Mô tả"
-                                        value={productState.description}
-                                        styleBefore={{ left: '19px', top: '31px' }}
-                                        styleAfter={{ left: '19px', top: '23px' }}
-                                    >
-                                        <Input.TextArea
-                                            name="description"
-                                            prefix={<FileTextOutlined className="site-form-item-icon" />}
-                                            rows={2}
-                                            className='auth-input-product-description'
-                                            value={productState.description}
-                                            style={{
-                                                borderRadius: '10px',
-                                                padding: '20px 18px',
-                                                marginTop: '20px',
-                                                border: '1px solid #000'
-                                            }}
-                                            onChange={handleOnChangeProductState}
-                                        />
-                                    </FloatingLabelComponent>
-                                </Form.Item>
-                                <Form.Item
-                                    label=""
-                                    validateStatus={"validating"}
-                                    help=""
-                                    style={{ marginBottom: '0px', width: '450px' }}
-                                    className='edit-form-item-avatar'
-                                >
-                                    <WrapperUploadProductImage>
-                                        <div style={{ marginTop: '20px', fontWeight: 'bold' }}>Ảnh sản phẩm</div>
-                                        <div style={{ display: 'grid' }}>
-                                            <div style={{ marginTop: '10px', marginBottom: '10px' }}>
-                                                {productState.image &&
-                                                    (<img className='uploaded-product-image' src={productState.image} alt='product-image' />)}
-                                            </div>
-                                            <div>
-                                                <Upload onChange={handleCreateProductOnChangeImage} maxCount={1}>
-                                                    <Button className='product-image-upload-button' icon={<UploadOutlined />} type='primary' ghost>
-                                                        Upload
-                                                    </Button>
-                                                </Upload>
-                                                {productState.image &&
-                                                    <Button
-                                                        className='product-image-remove-button'
-                                                        icon={<DeleteOutlined />}
-                                                        onClick={handleCreateProductRemoveImage}
-                                                        danger
-                                                    >
-                                                        Remove
-                                                    </Button>}
-                                            </div>
-                                        </div>
-                                    </WrapperUploadProductImage>
-                                </Form.Item>
-                            </Form>
-                        </LoadingComponent>
-                    </Modal>
-                </div>
-                <div>
-                    {/* Modal Update Product */}
-                    <Modal
-                        title="Cập Nhật Sản Phẩm"
-                        open={isUpdateProductModalOpen}
-                        maskClosable={false}
-                        width="550px"
-                        closeIcon={null}
-                        footer={[
-                            <Popconfirm
-                                placement='topRight'
-                                title="Xác nhận hủy"
-                                description="Bạn chắc chắn muốn hủy thao tác?"
-                                onConfirm={handleUpdateProductCancel}
-                                okText="Chắc chắn"
-                                cancelText="Không"
-                                icon={
-                                    <QuestionCircleOutlined
-                                        style={{
-                                            color: 'red',
-                                        }}
-                                    />
-                                }
-                            >
-                                <Button key="back">
-                                    Hủy
-                                </Button>
-                            </Popconfirm>,
-                            <Popconfirm
-                                placement='topLeft'
-                                title="Xác nhận cập nhật sản phẩm"
-                                description="Bạn chắc chắn muốn cập nhật sản phẩm này?"
-                                onConfirm={handleUpdateProductOk}
-                                okText="Chắc chắn"
-                                cancelText="Không"
-                            >
-                                <Button key="submit" type="primary">
-                                    Cập Nhật
-                                </Button>
-                            </Popconfirm>,
-                        ]}>
-                        <LoadingComponent isLoading={isLoadingUpdateProduct}>
-                            <LoadingComponent isLoading={isLoadingUpdate}>
+                                    <Button key="submit" type="primary">
+                                        Thêm
+                                    </Button>
+                                </Popconfirm>,
+                            ]}>
+                            <LoadingComponent isLoading={isLoading}>
                                 <Form autoComplete="off">
                                     <Form.Item
                                         label=""
@@ -1007,7 +828,7 @@ const ProductManagementComponent = () => {
                                     >
                                         <FloatingLabelComponent
                                             label="Mã sản phẩm"
-                                            value={updateProductState.id}
+                                            value={productState.id}
                                             styleBefore={{ left: '37px', top: '31px' }}
                                             styleAfter={{ left: '37px', top: '23px' }}
                                         >
@@ -1016,8 +837,8 @@ const ProductManagementComponent = () => {
                                                 placeholder=""
                                                 prefix={<FieldNumberOutlined className="site-form-item-icon" />}
                                                 className='auth-input-product-id'
-                                                value={updateProductState.id}
-                                                onChange={handleOnChangeUpdateProductState}
+                                                value={productState.id}  // productState.id
+                                                onChange={handleOnChangeProductState}
                                                 style={{
                                                     borderRadius: '10px',
                                                     padding: '0px 18px',
@@ -1037,7 +858,7 @@ const ProductManagementComponent = () => {
                                     >
                                         <FloatingLabelComponent
                                             label="Tên sản phẩm"
-                                            value={updateProductState.name}
+                                            value={productState.name}
                                             styleBefore={{ left: '37px', top: '31px' }}
                                             styleAfter={{ left: '37px', top: '23px' }}
                                         >
@@ -1046,8 +867,8 @@ const ProductManagementComponent = () => {
                                                 placeholder=""
                                                 prefix={<TagOutlined className="site-form-item-icon" />}
                                                 className='auth-input-product-name'
-                                                value={updateProductState.name}
-                                                onChange={handleOnChangeUpdateProductState}
+                                                value={productState.name}
+                                                onChange={handleOnChangeProductState}
                                                 style={{
                                                     borderRadius: '10px',
                                                     padding: '0px 18px',
@@ -1067,25 +888,45 @@ const ProductManagementComponent = () => {
                                     >
                                         <FloatingLabelComponent
                                             label="Loại sản phẩm"
-                                            value={updateProductState.type}
-                                            styleBefore={{ left: '37px', top: '31px' }}
-                                            styleAfter={{ left: '37px', top: '23px' }}
+                                            value={productState.type}
+                                            styleBefore={{ left: '19px', top: '31px' }}
+                                            styleAfter={{ left: '19px', top: '23px', fontSize: '10px', fontWeight: 'normal' }}
                                         >
-                                            <InputFormComponent
-                                                name="type"
-                                                placeholder=""
-                                                prefix={<PartitionOutlined className="site-form-item-icon" />}
-                                                className='auth-input-product-type'
-                                                value={updateProductState.type}
-                                                onChange={handleOnChangeUpdateProductState}
-                                                style={{
-                                                    borderRadius: '10px',
-                                                    padding: '0px 18px',
-                                                    marginTop: '20px',
-                                                    border: '1px solid #000',
-                                                    height: '45px'
-                                                }}
-                                            />
+                                            <SelectForm
+                                                value={selectedType}
+                                                onChange={handleOnChangeSelect}
+                                                dropdownRender={(menu) => (
+                                                    <>
+                                                        {menu}
+                                                        <Divider
+                                                            style={{
+                                                                margin: '8px 0',
+                                                            }}
+                                                        />
+                                                        <Row justify="space-around" style={{ margin: '10px' }}>
+                                                            <Col span={17}>
+                                                                <Input
+                                                                    placeholder="Thêm loại mới"
+                                                                    value={newType}
+                                                                    onChange={handleOnChangeNewType}
+                                                                    ref={inputNewTypeRef}
+                                                                />
+                                                            </Col>
+                                                            <Col>
+                                                                <Button type="dashed" icon={<PlusOutlined />} onClick={addNewTypeItem}>
+                                                                    Thêm
+                                                                </Button>
+                                                            </Col>
+                                                        </Row>
+                                                    </>
+                                                )}
+                                            >
+                                                {allTypes?.map((typeItem) => {
+                                                    return (
+                                                        <Select.Option name="type" value={typeItem}>{typeItem}</Select.Option>
+                                                    )
+                                                })}
+                                            </SelectForm>
                                         </FloatingLabelComponent>
                                     </Form.Item>
                                     <Row justify="space-between">
@@ -1099,7 +940,7 @@ const ProductManagementComponent = () => {
                                             >
                                                 <FloatingLabelComponent
                                                     label="Số lượng tồn kho"
-                                                    value={updateProductState.countInStock}
+                                                    value={productState.countInStock}
                                                     styleBefore={{ left: '37px', top: '31px' }}
                                                     styleAfter={{ left: '37px', top: '23px' }}
                                                 >
@@ -1108,8 +949,8 @@ const ProductManagementComponent = () => {
                                                         placeholder=""
                                                         prefix={<InboxOutlined className="site-form-item-icon" />}
                                                         className='auth-input-product-count-in-stock'
-                                                        value={updateProductState.countInStock}
-                                                        onChange={handleOnChangeUpdateProductState}
+                                                        value={productState.countInStock}
+                                                        onChange={handleOnChangeProductState}
                                                         style={{
                                                             borderRadius: '10px',
                                                             padding: '0px 18px',
@@ -1131,7 +972,7 @@ const ProductManagementComponent = () => {
                                             >
                                                 <FloatingLabelComponent
                                                     label="Giá"
-                                                    value={updateProductState.price}
+                                                    value={productState.price}
                                                     styleBefore={{ left: '37px', top: '31px' }}
                                                     styleAfter={{ left: '37px', top: '23px' }}
                                                 >
@@ -1140,8 +981,8 @@ const ProductManagementComponent = () => {
                                                         placeholder=""
                                                         prefix={<DollarOutlined className="site-form-item-icon" />}
                                                         className='auth-input-product-price'
-                                                        value={updateProductState.price}
-                                                        onChange={handleOnChangeUpdateProductState}
+                                                        value={productState.price}
+                                                        onChange={handleOnChangeProductState}
                                                         style={{
                                                             borderRadius: '10px',
                                                             padding: '0px 18px',
@@ -1163,7 +1004,7 @@ const ProductManagementComponent = () => {
                                     >
                                         <FloatingLabelComponent
                                             label="Mô tả"
-                                            value={updateProductState.description}
+                                            value={productState.description}
                                             styleBefore={{ left: '19px', top: '31px' }}
                                             styleAfter={{ left: '19px', top: '23px' }}
                                         >
@@ -1172,14 +1013,14 @@ const ProductManagementComponent = () => {
                                                 prefix={<FileTextOutlined className="site-form-item-icon" />}
                                                 rows={2}
                                                 className='auth-input-product-description'
-                                                value={updateProductState.description}
+                                                value={productState.description}
                                                 style={{
                                                     borderRadius: '10px',
                                                     padding: '20px 18px',
                                                     marginTop: '20px',
                                                     border: '1px solid #000'
                                                 }}
-                                                onChange={handleOnChangeUpdateProductState}
+                                                onChange={handleOnChangeProductState}
                                             />
                                         </FloatingLabelComponent>
                                     </Form.Item>
@@ -1194,20 +1035,20 @@ const ProductManagementComponent = () => {
                                             <div style={{ marginTop: '20px', fontWeight: 'bold' }}>Ảnh sản phẩm</div>
                                             <div style={{ display: 'grid' }}>
                                                 <div style={{ marginTop: '10px', marginBottom: '10px' }}>
-                                                    {updateProductState.image &&
-                                                        (<img className='uploaded-product-image' src={updateProductState.image} alt='product-image' />)}
+                                                    {productState.image &&
+                                                        (<img className='uploaded-product-image' src={productState.image} alt='product-image' />)}
                                                 </div>
                                                 <div>
-                                                    <Upload onChange={handleUpdateProductOnChangeImage} maxCount={1}>
+                                                    <Upload onChange={handleCreateProductOnChangeImage} maxCount={1}>
                                                         <Button className='product-image-upload-button' icon={<UploadOutlined />} type='primary' ghost>
                                                             Upload
                                                         </Button>
                                                     </Upload>
-                                                    {updateProductState.image &&
+                                                    {productState.image &&
                                                         <Button
                                                             className='product-image-remove-button'
                                                             icon={<DeleteOutlined />}
-                                                            onClick={handleUpdateProductRemoveImage}
+                                                            onClick={handleCreateProductRemoveImage}
                                                             danger
                                                         >
                                                             Remove
@@ -1218,50 +1059,337 @@ const ProductManagementComponent = () => {
                                     </Form.Item>
                                 </Form>
                             </LoadingComponent>
-                        </LoadingComponent>
-                    </Modal>
-                </div>
-
-                <div className='all-products all-products-area'>
-                    <div className='all-products-header'>
-                        <span className='all-products-title'>Tất Cả Sản Phẩm</span>
-                        <span style={{ userSelect: 'none', color: '#7b7b7b' }}>|</span>
-                        <span className='all-products-quantity'>
-                            {dataProductsTable ? dataProductsTable?.length : 0}
-                        </span>
+                        </Modal>
                     </div>
-                    <TableComponent
-                        handleActiveMultipleConfirm={handleActiveMultipleProductsConfirm}
-                        columns={columnsProducts}
-                        data={dataProductsTable}
-                        isLoading={isLoadingAllProducts}
-                        excelFileName="ProductsTable"
-                        onRow={(record, rowIndex) => {
-                            return {
-                                onClick: (event) => {
-                                    // - event.target.parentElement.className 
-                                    // contains class name of parent of the svg (ant-design icon which is rendered in dataProductsTable)
-                                    // - only pressing the update button on every row can set setSelectedRow
-                                    if (event.target.tagName === 'svg') {   // if click on svg tag (children of class 'all-products-update')
-                                        if (event.target.parentElement.className.includes("all-products-update")) {
-                                            setSelectedRow(record?.id)
-                                        }
-                                    } else if (event.target.tagName === 'path') {   // if click on path tag (children of svg tag)
-                                        if (event.target.parentElement.parentElement.className.includes("all-products-update")) {
-                                            setSelectedRow(record?.id)
-                                        }
+                    <div>
+                        {/* Modal Update Product */}
+                        <Modal
+                            title="Cập Nhật Sản Phẩm"
+                            open={isUpdateProductModalOpen}
+                            maskClosable={false}
+                            width="550px"
+                            closeIcon={null}
+                            footer={[
+                                <Popconfirm
+                                    placement='topRight'
+                                    title="Xác nhận hủy"
+                                    description="Bạn chắc chắn muốn hủy thao tác?"
+                                    onConfirm={handleUpdateProductCancel}
+                                    okText="Chắc chắn"
+                                    cancelText="Không"
+                                    icon={
+                                        <QuestionCircleOutlined
+                                            style={{
+                                                color: 'red',
+                                            }}
+                                        />
                                     }
-                                    // - same with setSelectedActiveRow
-                                    // if click on switch span (children of class 'all-products-active')
-                                    else if (event.target.parentElement.className.includes("all-products-active")) {
-                                        setSelectedActiveRow(record?.id)
-                                    }
-                                },
-                            };
-                        }}
-                    />
+                                >
+                                    <Button key="back">
+                                        Hủy
+                                    </Button>
+                                </Popconfirm>,
+                                <Popconfirm
+                                    placement='topLeft'
+                                    title="Xác nhận cập nhật sản phẩm"
+                                    description="Bạn chắc chắn muốn cập nhật sản phẩm này?"
+                                    onConfirm={handleUpdateProductOk}
+                                    okText="Chắc chắn"
+                                    cancelText="Không"
+                                >
+                                    <Button key="submit" type="primary">
+                                        Cập Nhật
+                                    </Button>
+                                </Popconfirm>,
+                            ]}>
+                            <LoadingComponent isLoading={isLoadingUpdateProduct}>
+                                <LoadingComponent isLoading={isLoadingUpdate}>
+                                    <Form autoComplete="off">
+                                        <Form.Item
+                                            label=""
+                                            validateStatus={"validating"}
+                                            help=""
+                                            style={{ marginBottom: '0px' }}
+                                            className='auth-form-item-product-id'
+                                        >
+                                            <FloatingLabelComponent
+                                                label="Mã sản phẩm"
+                                                value={updateProductState.id}
+                                                styleBefore={{ left: '37px', top: '31px' }}
+                                                styleAfter={{ left: '37px', top: '23px' }}
+                                            >
+                                                <InputFormComponent
+                                                    name="id"
+                                                    placeholder=""
+                                                    prefix={<FieldNumberOutlined className="site-form-item-icon" />}
+                                                    className='auth-input-product-id'
+                                                    value={updateProductState.id}
+                                                    onChange={handleOnChangeUpdateProductState}
+                                                    style={{
+                                                        borderRadius: '10px',
+                                                        padding: '0px 18px',
+                                                        marginTop: '20px',
+                                                        border: '1px solid #000',
+                                                        height: '45px'
+                                                    }}
+                                                />
+                                            </FloatingLabelComponent>
+                                        </Form.Item>
+                                        <Form.Item
+                                            label=""
+                                            validateStatus={"validating"}
+                                            help=""
+                                            style={{ marginBottom: '0px' }}
+                                            className='auth-form-item-product-name'
+                                        >
+                                            <FloatingLabelComponent
+                                                label="Tên sản phẩm"
+                                                value={updateProductState.name}
+                                                styleBefore={{ left: '37px', top: '31px' }}
+                                                styleAfter={{ left: '37px', top: '23px' }}
+                                            >
+                                                <InputFormComponent
+                                                    name="name"
+                                                    placeholder=""
+                                                    prefix={<TagOutlined className="site-form-item-icon" />}
+                                                    className='auth-input-product-name'
+                                                    value={updateProductState.name}
+                                                    onChange={handleOnChangeUpdateProductState}
+                                                    style={{
+                                                        borderRadius: '10px',
+                                                        padding: '0px 18px',
+                                                        marginTop: '20px',
+                                                        border: '1px solid #000',
+                                                        height: '45px'
+                                                    }}
+                                                />
+                                            </FloatingLabelComponent>
+                                        </Form.Item>
+                                        <Form.Item
+                                            label=""
+                                            validateStatus={"validating"}
+                                            help=""
+                                            style={{ marginBottom: '0px' }}
+                                            className='auth-form-item-product-type'
+                                        >
+                                            <FloatingLabelComponent
+                                                label="Loại sản phẩm"
+                                                value={updateProductState.type}
+                                                styleBefore={{ left: '19px', top: '31px' }}
+                                                styleAfter={{ left: '19px', top: '23px' }}
+                                            >
+                                                <SelectForm
+                                                    value={selectedUpdateType ? selectedUpdateType : updateProductState.type}
+                                                    onChange={handleOnChangeSelectUpdate}
+                                                    dropdownRender={(menu) => (
+                                                        <>
+                                                            {menu}
+                                                            <Divider
+                                                                style={{
+                                                                    margin: '8px 0',
+                                                                }}
+                                                            />
+                                                            <Row justify="space-around" style={{ margin: '10px' }}>
+                                                                <Col span={17}>
+                                                                    <Input
+                                                                        placeholder="Thêm loại mới"
+                                                                        value={newType}
+                                                                        onChange={handleOnChangeNewType}
+                                                                        ref={inputNewTypeRef}
+                                                                    />
+                                                                </Col>
+                                                                <Col>
+                                                                    <Button type="dashed" icon={<PlusOutlined />} onClick={addNewTypeItem}>
+                                                                        Thêm
+                                                                    </Button>
+                                                                </Col>
+                                                            </Row>
+                                                        </>
+                                                    )}
+                                                >
+                                                    {allTypes?.map((typeItem) => {
+                                                        return (
+                                                            <Select.Option name="type" value={typeItem}>{typeItem}</Select.Option>
+                                                        )
+                                                    })}
+                                                </SelectForm>
+                                            </FloatingLabelComponent>
+                                        </Form.Item>
+                                        <Row justify="space-between">
+                                            <Col span={11}>
+                                                <Form.Item
+                                                    label=""
+                                                    validateStatus={"validating"}
+                                                    help=""
+                                                    style={{ marginBottom: '0px' }}
+                                                    className='auth-form-item-product-count-in-stock'
+                                                >
+                                                    <FloatingLabelComponent
+                                                        label="Số lượng tồn kho"
+                                                        value={updateProductState.countInStock}
+                                                        styleBefore={{ left: '37px', top: '31px' }}
+                                                        styleAfter={{ left: '37px', top: '23px' }}
+                                                    >
+                                                        <InputFormComponent
+                                                            name="countInStock"
+                                                            placeholder=""
+                                                            prefix={<InboxOutlined className="site-form-item-icon" />}
+                                                            className='auth-input-product-count-in-stock'
+                                                            value={updateProductState.countInStock}
+                                                            onChange={handleOnChangeUpdateProductState}
+                                                            style={{
+                                                                borderRadius: '10px',
+                                                                padding: '0px 18px',
+                                                                marginTop: '20px',
+                                                                border: '1px solid #000',
+                                                                height: '45px'
+                                                            }}
+                                                        />
+                                                    </FloatingLabelComponent>
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={12}>
+                                                <Form.Item
+                                                    label=""
+                                                    validateStatus={"validating"}
+                                                    help=""
+                                                    style={{ marginBottom: '0px' }}
+                                                    className='auth-form-item-product-price'
+                                                >
+                                                    <FloatingLabelComponent
+                                                        label="Giá"
+                                                        value={updateProductState.price}
+                                                        styleBefore={{ left: '37px', top: '31px' }}
+                                                        styleAfter={{ left: '37px', top: '23px' }}
+                                                    >
+                                                        <InputFormComponent
+                                                            name="price"
+                                                            placeholder=""
+                                                            prefix={<DollarOutlined className="site-form-item-icon" />}
+                                                            className='auth-input-product-price'
+                                                            value={updateProductState.price}
+                                                            onChange={handleOnChangeUpdateProductState}
+                                                            style={{
+                                                                borderRadius: '10px',
+                                                                padding: '0px 18px',
+                                                                marginTop: '20px',
+                                                                border: '1px solid #000',
+                                                                height: '45px'
+                                                            }}
+                                                        />
+                                                    </FloatingLabelComponent>
+                                                </Form.Item>
+                                            </Col>
+                                        </Row>
+                                        <Form.Item
+                                            label=""
+                                            validateStatus={"validating"}
+                                            help=""
+                                            style={{ marginBottom: '0px' }}
+                                            className='auth-form-item-product-description'
+                                        >
+                                            <FloatingLabelComponent
+                                                label="Mô tả"
+                                                value={updateProductState.description}
+                                                styleBefore={{ left: '19px', top: '31px' }}
+                                                styleAfter={{ left: '19px', top: '23px' }}
+                                            >
+                                                <Input.TextArea
+                                                    name="description"
+                                                    prefix={<FileTextOutlined className="site-form-item-icon" />}
+                                                    rows={2}
+                                                    className='auth-input-product-description'
+                                                    value={updateProductState.description}
+                                                    style={{
+                                                        borderRadius: '10px',
+                                                        padding: '20px 18px',
+                                                        marginTop: '20px',
+                                                        border: '1px solid #000'
+                                                    }}
+                                                    onChange={handleOnChangeUpdateProductState}
+                                                />
+                                            </FloatingLabelComponent>
+                                        </Form.Item>
+                                        <Form.Item
+                                            label=""
+                                            validateStatus={"validating"}
+                                            help=""
+                                            style={{ marginBottom: '0px', width: '450px' }}
+                                            className='edit-form-item-avatar'
+                                        >
+                                            <WrapperUploadProductImage>
+                                                <div style={{ marginTop: '20px', fontWeight: 'bold' }}>Ảnh sản phẩm</div>
+                                                <div style={{ display: 'grid' }}>
+                                                    <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+                                                        {updateProductState.image &&
+                                                            (<img className='uploaded-product-image' src={updateProductState.image} alt='product-image' />)}
+                                                    </div>
+                                                    <div>
+                                                        <Upload onChange={handleUpdateProductOnChangeImage} maxCount={1}>
+                                                            <Button className='product-image-upload-button' icon={<UploadOutlined />} type='primary' ghost>
+                                                                Upload
+                                                            </Button>
+                                                        </Upload>
+                                                        {updateProductState.image &&
+                                                            <Button
+                                                                className='product-image-remove-button'
+                                                                icon={<DeleteOutlined />}
+                                                                onClick={handleUpdateProductRemoveImage}
+                                                                danger
+                                                            >
+                                                                Remove
+                                                            </Button>}
+                                                    </div>
+                                                </div>
+                                            </WrapperUploadProductImage>
+                                        </Form.Item>
+                                    </Form>
+                                </LoadingComponent>
+                            </LoadingComponent>
+                        </Modal>
+                    </div>
+
+                    <div className='all-products all-products-area'>
+                        <div className='all-products-header'>
+                            <span className='all-products-title'>Tất Cả Sản Phẩm</span>
+                            <span style={{ userSelect: 'none', color: '#7b7b7b' }}>|</span>
+                            <span className='all-products-quantity'>
+                                {dataProductsTable ? dataProductsTable?.length : 0}
+                            </span>
+                        </div>
+                        <TableComponent
+                            handleActiveMultipleConfirm={handleActiveMultipleProductsConfirm}
+                            columns={columnsProducts}
+                            data={dataProductsTable}
+                            // isLoading={isLoadingAllProducts}
+                            excelFileName="ProductsTable"
+                            onRow={(record, rowIndex) => {
+                                return {
+                                    onClick: (event) => {
+                                        // - event.target.parentElement.className 
+                                        // contains class name of parent of the svg (ant-design icon which is rendered in dataProductsTable)
+                                        // - only pressing the update button on every row can set setSelectedRow
+                                        if (event.target.tagName === 'svg') {   // if click on svg tag (children of class 'all-products-update')
+                                            if (event.target.parentElement.className.includes("all-products-update")) {
+                                                setSelectedRow(record?.id)
+                                            }
+                                        } else if (event.target.tagName === 'path') {   // if click on path tag (children of svg tag)
+                                            if (event.target.parentElement.parentElement.className.includes("all-products-update")) {
+                                                setSelectedRow(record?.id)
+                                            }
+                                        }
+                                        // - same with setSelectedActiveRow
+                                        // if click on switch span (children of class 'all-products-active')
+                                        else if (event.target.parentElement.className.includes("all-products-active")) {
+                                            setSelectedActiveRow(record?.id)
+                                        }
+                                    },
+                                };
+                            }}
+                        />
+                    </div>
                 </div>
-            </div>
+            </LoadingComponent>
         </WrapperProductManagement>
     )
 };

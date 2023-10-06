@@ -29,10 +29,10 @@ const ProductsPage = () => {
 
    const onChange = () => { }
 
-   const getProductDetails = async (context) => {
+   const getActiveProductDetails = async (context) => {
       const id = context?.queryKey && context?.queryKey[1];
       if (id) {
-         const res = await ProductService.getProductDetails(id);
+         const res = await ProductService.getActiveProductDetails(id);
          if (res?.status === 'ERR') {
             // navigate('/NotFoundPage');
          }
@@ -43,7 +43,7 @@ const ProductsPage = () => {
    const { isLoading, data: productDetails } = useQuery(
       {
          queryKey: ['productDetails', id],
-         queryFn: getProductDetails,
+         queryFn: getActiveProductDetails,
          enabled: !!id,
       }
    );

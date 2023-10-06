@@ -8,12 +8,22 @@ export const getAllProducts = async (search, limitProducts = 20, onlyActive) => 
         res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getAllProducts?filter=name&filter=${search}&limitProducts=${limitProducts}&onlyActive=${onlyActive}`);
     } else {
         res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getAllProducts?limitProducts=${limitProducts}&onlyActive=${onlyActive}`);
-    } 
+    }
+    return res.data;
+}
+
+export const getAllProductTypes = async () => {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getAllProductTypes`);
     return res.data;
 }
 
 export const createProduct = async (data) => {
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/product/createProduct`, data);
+    return res.data;
+}
+
+export const getActiveProductDetails = async (id) => {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getActiveProductDetails/${id}`);
     return res.data;
 }
 
