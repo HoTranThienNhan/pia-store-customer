@@ -2,21 +2,21 @@ import { styled } from "styled-components";
 
 export const InputNumberCustom = styled.div`
     position: relative; 
-    font-size: 18px; 
+    font-size: 16px; 
     line-height: 1.5; 
     display: inline-flex; 
     align-items: center;
 
     .minus-input-number {
         position: absolute; 
-        font-size: 22px; 
+        font-size: 18px; 
         z-index: 1;
         left: 10px;
     }
 
     .plus-input-number {
         position: absolute; 
-        font-size: 22px; 
+        font-size: 18px; 
         z-index: 1;
         right: 10px;
     }
@@ -37,9 +37,9 @@ export const InputNumberCustom = styled.div`
     }
 
     .input-number-area {
-        height: 40px;
+        height: 38px;
         width: 100px;
         border: 1px solid #000;
-        font-size: 20px;
+        font-size: 18px;
     }
 `

@@ -1,15 +1,15 @@
-import { Breadcrumb, Button, Col, Image, Rate, Row, Tabs } from 'antd';
-import React from 'react';
-import imageProduct from '../../assets/images/hamburger-beef.png'
-import imageCalories from '../../assets/images/calories.png'
-import { StarFilled } from '@ant-design/icons'
+import { Breadcrumb, Button, Col, Image, InputNumber, Rate, Row, Tabs } from 'antd';
+import React, { useState } from 'react';
+import { MinusCircleOutlined, PlusCircleOutlined, StarFilled } from '@ant-design/icons'
 import InputNumberComponent from '../../components/InputNumberComponent/InputNumberComponent';
-import { DetailContentDiv, DetailsReviewSection, PriceSpan, StarRating } from './style';
-import { useNavigate, useParams } from "react-router-dom";
+import { DetailContentDiv, DetailsReviewSection, InputNumberCustom, PriceSpan, StarRating } from './style';
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import * as ProductService from '../../services/ProductService';
 import { useQuery } from '@tanstack/react-query';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
+import { useDispatch, useSelector } from 'react-redux';
+import { addOrderProduct } from '../../redux/slices/orderSlice';
 
 const items = [
    {
@@ -25,9 +25,14 @@ const items = [
 ]
 
 const ProductsPage = () => {
+   const user = useSelector((state) => state?.user);
+
+   const [productCount, setProductCount] = useState(1);
+
+   const location = useLocation();
+   const dispatch = useDispatch();
    const { id } = useParams();
 
-   const onChange = () => { }
 
    const getActiveProductDetails = async (context) => {
       const id = context?.queryKey && context?.queryKey[1];
@@ -48,6 +53,7 @@ const ProductsPage = () => {
       }
    );
 
+
    const renderStarsRating = (ratingCount) => {
       const stars = [];
       for (let i = 0; i < ratingCount; i++) {
@@ -60,13 +66,51 @@ const ProductsPage = () => {
    }
 
 
+
+   const minProductCount = 1;
+   const maxProductCount = 10;
+   const addProductCount = (e) => {
+      if (Number(productCount) < Number(maxProductCount)) {
+         setProductCount(Number(productCount) + 1);
+      }
+   }
+   const minusProductCount = (e) => {
+      if (Number(productCount) > Number(minProductCount)) {
+         setProductCount(Number(productCount) - 1);
+      }
+   }
+   const setProductCountValue = (e) => {
+      if (e !== null) {
+         setProductCount(`${e}`);
+      }
+   }
+
+
+
    /*** NAVIGATE ***/
    const navigate = useNavigate();
    const handleNavigateHomePage = () => {
       navigate('/');
    }
    const handleNavigateMenuPage = () => {
-       navigate('/menu');
+      navigate('/menu');
+   }
+   const handleAddToCart = () => {
+      if (!user?.id) {
+         // if not signin, navigate to sign in page and store the state of this product page
+         // then after sign in, navigate back to this product page (based on stored state)
+         navigate('/signin', { state: location?.pathname });
+      } else {
+         dispatch(addOrderProduct({
+            orderProductItems: {
+               name: productDetails?.name,
+               amount: productCount,
+               image: productDetails?.image,
+               price: productDetails?.price,
+               product: productDetails?._id,
+            }
+         }));
+      }
    }
 
    return (
@@ -82,7 +126,7 @@ const ProductsPage = () => {
                      title: <span onClick={handleNavigateMenuPage} style={{ cursor: 'pointer' }}>Thực đơn</span>,
                   },
                   {
-                     title: <span style={{ cursor: 'pointer' }}>Sản phẩm</span>,
+                     title: <span>Sản phẩm</span>,
                   },
                ]}
             >
@@ -107,10 +151,19 @@ const ProductsPage = () => {
                      </span>
                   </DetailContentDiv> */}
                   <DetailContentDiv>
-                     <InputNumberComponent minValue='1' maxValue='10' />
+                     <InputNumberCustom>
+                        <MinusCircleOutlined className='minus-input-number' onClick={minusProductCount} />
+                        <InputNumber className='input-number-area' min={minProductCount} max={maxProductCount} value={productCount} onChange={setProductCountValue} />
+                        <PlusCircleOutlined className='plus-input-number' onClick={addProductCount} />
+                     </InputNumberCustom>
                   </DetailContentDiv>
                   <DetailContentDiv>
-                     <Button type="primary" style={{ height: '50px', width: '170px', borderRadius: '25px' }} danger>
+                     <Button
+                        type="primary"
+                        style={{ height: '50px', width: '170px', borderRadius: '25px' }}
+                        onClick={handleAddToCart}
+                        danger
+                     >
                         Thêm vào Giỏ Hàng
                      </Button>
                      <PriceSpan>{productDetails?.price?.toLocaleString()} VNĐ</PriceSpan>

@@ -2,7 +2,7 @@ import AdminPage from "../pages/AdminPage/AdminPage";
 import HomePage from "../pages/HomePage/HomePage";
 import MenuPage from "../pages/MenuPage/MenuPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
-import OrderPage from "../pages/OrderPage/OrderPage";
+import MyCartPage from "../pages/MyCartPage/MyCartPage";
 import ProductPage from "../pages/ProductPage/ProductPage";
 import SignInPage from "../pages/SignInPage/SignInPage";
 import SignUpPage from "../pages/SignUpPage/SignUpPage";
@@ -18,8 +18,8 @@ export const routes = [
         exact: false,
     },
     {
-        path: '/order',
-        page: OrderPage,
+        path: '/mycart',
+        page: MyCartPage,
         isShowHeader: true,
         exact: false,
     },

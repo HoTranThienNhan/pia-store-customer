@@ -4,7 +4,7 @@ import InputFormComponent from '../../components/InputFormComponent/InputFormCom
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import imagePoster from '../../assets/images/food-poster.jpg'
 import { AuthCard } from './style';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import InputPasswordComponent from '../../components/InputPasswordComponent/InputPasswordComponent';
 import * as UserService from '../../services/UserService';
 import { useMutationHooks } from '../../hooks/useMutationHook';
@@ -19,6 +19,8 @@ const SignInPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const location = useLocation();
+
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
@@ -31,11 +33,17 @@ const SignInPage = () => {
     const { data, isLoading, isSuccess, isError } = mutation;
 
     useEffect(() => {
+        console.log('location', location);
         if (isSuccess) {
             // if accessToken exists
             if (data?.accessToken) {
-                MessagePopup.success();
-                handleNavigateHomepage();
+                if (location?.state) {
+                    MessagePopup.success();
+                    navigate(location?.state);
+                } else {
+                    MessagePopup.success();
+                    handleNavigateHomepage();
+                }
                 // keep accessToken stored in the browser
                 localStorage.setItem('accessToken', JSON.stringify(data?.accessToken));
                 // decoded contains elements (id, isAdmin) of access token payload
@@ -159,7 +167,7 @@ const SignInPage = () => {
                                 <span style={{ cursor: 'pointer' }}>Quên mật khẩu?</span>
                             </div>
                             <div>
-                                Chưa có tài khoản? 
+                                Chưa có tài khoản?
                                 <span style={{ cursor: 'pointer', color: 'blue' }} onClick={handleNavigateSignup}> Tạo tài khoản</span>
                             </div>
                         </Col>

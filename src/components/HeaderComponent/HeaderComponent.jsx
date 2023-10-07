@@ -24,6 +24,7 @@ const HeaderComponent = () => {
    const navItem = ['Trang chủ', 'Tìm hiểu', 'Thực đơn', 'Khuyến mãi', 'Liên hệ'];
 
    const user = useSelector((state) => state.user);
+   const order = useSelector((state) => state.order);
    const dispatch = useDispatch();
 
    const [loading, setLoading] = useState(false);
@@ -45,6 +46,9 @@ const HeaderComponent = () => {
    }
    const handleNavigateSignup = () => {
       navigate('/signup');
+   }
+   const handleNavigateMyCart = () => {
+      navigate('/mycart');
    }
    const handleNavigateSignout = async () => {
       setLoading(true);
@@ -139,13 +143,13 @@ const HeaderComponent = () => {
                   {/* Favorite Products And Cart Here */}
                   <WrapperAccountHeader>
                      <div style={{ marginRight: '15px' }}>
-                        <Badge count={1}>
-                           <HeartOutlined style={{ marginRight: '5px', fontSize: '24px' }} />
+                        <Badge count={1} showZero>
+                           <HeartOutlined style={{ marginRight: '5px', fontSize: '24px' }}/>
                         </Badge>
                      </div>
                      <div>
-                        <Badge count={1}>
-                           <ShoppingCartOutlined style={{ marginRight: '5px', fontSize: '24px' }} />
+                        <Badge count={order?.orderItems?.length} showZero>
+                           <ShoppingCartOutlined style={{ marginRight: '5px', fontSize: '24px', cursor: 'pointer' }} onClick={handleNavigateMyCart} />
                         </Badge>
                      </div>
                   </WrapperAccountHeader>
