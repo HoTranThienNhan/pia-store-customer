@@ -3,18 +3,21 @@ import { useSelector } from 'react-redux';
 import { useDebounce } from '../../hooks/useDebounce';
 import CardComponent from '../../components/CardComponent/CardComponent';
 import SidebarComponent from '../../components/SidebarComponent/SidebarComponent';
-import { Breadcrumb, Button, Col, Row } from 'antd';
+import { Breadcrumb, Button, Col, Row, Tabs } from 'antd';
 import * as ProductService from '../../services/ProductService';
 import { useNavigate } from "react-router-dom";
 import { useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
+import MenuTabsComponent from '../../components/MenuTabsComponent/MenuTabsComponent';
+import { WrapperMenuProducts } from './style';
 
 const MenuPage = () => {
     const [productState, setProductState] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [limitProducts, setLimitProducts] = useState(5);
-    const [productTypes, setProductTypes] = useState([]);
+    const [limitProducts, setLimitProducts] = useState(4);
+    const [productType, setProductType] = useState('');
+    const [productAllTypes, setProductAllTypes] = useState([]);
     const searchProduct = useSelector((state) => state?.product?.search);
     const searchDebounce = useDebounce(searchProduct, 1000);
     const refSearch = useRef();
@@ -24,15 +27,16 @@ const MenuPage = () => {
         setLoading(true);
         const limitProducts = context?.queryKey && context?.queryKey[1];
         const search = context?.queryKey && context?.queryKey[2];
+        const type = context?.queryKey && context?.queryKey[3];
         const onlyActive = 'true';
-        const res = await ProductService.getAllProducts(search, limitProducts, onlyActive);
+        const res = await ProductService.getAllProducts(search, limitProducts, type, onlyActive);
         setLoading(false);
         return res;
     }
 
     const queryAllProducts = useQuery(
         {
-            queryKey: ['products', limitProducts, searchDebounce],
+            queryKey: ['products', limitProducts, searchDebounce, productType],
             queryFn: fetchAllProducts,
             retry: 3,
             retryDelay: 1000,
@@ -47,10 +51,9 @@ const MenuPage = () => {
     const fetchAllProductTypes = async () => {
         const res = await ProductService.getAllProductTypes();
         if (res?.status === 'OK') {
-            setProductTypes(res?.data);
+            setProductAllTypes(res?.data);
         }
     }
-
     useEffect(() => {
         fetchAllProductTypes();
     }, []);
@@ -60,6 +63,26 @@ const MenuPage = () => {
     const navigate = useNavigate();
     const handleNavigateHomePage = () => {
         navigate('/');
+    }
+    const handleNavigateProductType = (e) => {
+        const productType = e.target.textContent;
+        if (productType !== "Main Menu") {
+            navigate(`/menu/${productType}`);
+            setProductType(productType);
+        } else {
+            navigate("/menu");
+            setProductType('');
+        }
+
+        const productTypesList = document.getElementsByClassName('product-types-list')[0].childNodes;
+        for (var i = 0; i < productTypesList.length; i++) {
+            productTypesList[i].classList.remove("active")
+        }
+
+        const eventTargetClassName = e.target.className;
+        if (!eventTargetClassName.includes("active")) {
+            e.target.className += " active";
+        }
     }
 
     return (
@@ -74,25 +97,29 @@ const MenuPage = () => {
                         title: <span style={{ cursor: 'pointer' }}>Thực đơn</span>,
                     },
                 ]}
-            ></Breadcrumb>
-            {/* <Row> */}
-            {/* <Col span={5}>
-                    <SidebarComponent />
-                </Col> */}
-            <div style={{ marginBottom: '30px' }}>
-                <span style={{ marginRight: '25px' }}>Main Menu</span>
-                {productTypes.map((typeItem) => {
+            />
+            <WrapperMenuProducts className='product-types-list'>
+                <span
+                    onClick={handleNavigateProductType}
+                    className="product-main-menu active"
+                >
+                    Main Menu
+                </span>
+                {productAllTypes.map((typeItem, index) => {
+                    const checkedTypeClassName = "product-type-" + index.toString();
                     return (
-                        <span style={{ marginRight: '25px' }}>{typeItem}</span>
+                        <MenuTabsComponent onClick={handleNavigateProductType} className={checkedTypeClassName}>
+                            {typeItem}
+                        </MenuTabsComponent>
                     );
                 })}
-            </div>
+            </WrapperMenuProducts>
             <LoadingComponent isLoading={isLoading || loading}>
-                <Row justify='space-between' style={{ margin: '0px 30px' }}>
+                <Row style={{ margin: '0px 30px' }}>
                     {
-                        products?.data?.map((product) => {
+                        products?.data?.map((product, index) => {
                             return (
-                                <Col span={5} style={{ marginBottom: '30px' }}>
+                                <Col span={5} offset={(index % 4 == 0) ? 0 : 1} style={{ marginBottom: '30px' }}>
                                     <CardComponent
                                         key={product._id}
                                         id={product.id}
@@ -127,7 +154,6 @@ const MenuPage = () => {
                     }
                 </Row>
             </LoadingComponent>
-            {/* </Row> */}
         </div>
     )
 };

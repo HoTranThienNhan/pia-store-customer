@@ -24,18 +24,25 @@ export const routes = [
         exact: false,
     },
     {
-        path: '/menu/products/:id',
-        page: ProductPage,
-        isShowHeader: true,
-        isPrivate: false,
-        exact: true,
-    },
-    {
         path: '/menu',
         page: MenuPage,
         isShowHeader: true,
         isPrivate: false,
         exact: false,
+    },
+    {
+        path: '/menu/:type',
+        page: MenuPage,
+        isShowHeader: true,
+        isPrivate: false,
+        exact: false,
+    },
+    {
+        path: '/menu/products/:id',
+        page: ProductPage,
+        isShowHeader: true,
+        isPrivate: false,
+        exact: true,
     },
     {
         path: '/signin',

@@ -65,6 +65,9 @@ const ProductsPage = () => {
    const handleNavigateHomePage = () => {
       navigate('/');
    }
+   const handleNavigateMenuPage = () => {
+       navigate('/menu');
+   }
 
    return (
       <LoadingComponent isLoading={isLoading}>
@@ -76,7 +79,7 @@ const ProductsPage = () => {
                      title: <span onClick={handleNavigateHomePage} style={{ cursor: 'pointer' }}>Trang chủ</span>,
                   },
                   {
-                     title: <span style={{ cursor: 'pointer' }}>Thực đơn</span>,
+                     title: <span onClick={handleNavigateMenuPage} style={{ cursor: 'pointer' }}>Thực đơn</span>,
                   },
                   {
                      title: <span style={{ cursor: 'pointer' }}>Sản phẩm</span>,

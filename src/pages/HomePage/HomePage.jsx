@@ -25,7 +25,8 @@ const HomePage = () => {
       const limitProducts = context?.queryKey && context?.queryKey[1];
       const search = context?.queryKey && context?.queryKey[2];
       const onlyActive = 'true';
-      const res = await ProductService.getAllProducts(search, limitProducts, onlyActive);
+      const type = "";
+      const res = await ProductService.getAllProducts(search, limitProducts, type, onlyActive);
       setLoading(false);
       return res;
    }

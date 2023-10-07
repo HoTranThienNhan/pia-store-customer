@@ -837,8 +837,9 @@ const ProductManagementComponent = () => {
                                                 placeholder=""
                                                 prefix={<FieldNumberOutlined className="site-form-item-icon" />}
                                                 className='auth-input-product-id'
-                                                value={productState.id}  // productState.id
+                                                value={productState.id}  
                                                 onChange={handleOnChangeProductState}
+                                                disabled
                                                 style={{
                                                     borderRadius: '10px',
                                                     padding: '0px 18px',
