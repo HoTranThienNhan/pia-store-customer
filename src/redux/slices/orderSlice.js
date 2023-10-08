@@ -32,30 +32,37 @@ export const orderSlice = createSlice({
             }
         },
         increaseAmount: (state, action) => {
-            const {productId} = action?.payload;
-            // indicatedOrderItems means the order items which are indicated in cart
+            const { productId } = action?.payload;
+            // indicatedOrderItems contains the order items which are indicated in cart
             // orderItems means order items in cart
             const indicatedOrderItems = state?.orderItems?.find((item) => item?.product === productId);
             indicatedOrderItems.amount++;
         },
         decreaseAmount: (state, action) => {
-            const {productId} = action?.payload;
-            // indicatedOrderItems means the order items which are indicated in cart
+            const { productId } = action?.payload;
+            // indicatedOrderItems contains the order items which are indicated in cart
             // orderItems means order items in cart
             const indicatedOrderItems = state?.orderItems?.find((item) => item?.product === productId);
             indicatedOrderItems.amount--;
         },
         removeOrderProduct: (state, action) => {
             const { productId } = action?.payload;
-            // differentOrderItems means there are the different order items in cart 
+            // differentOrderItems contains the order items which are removed (filtering the others) 
             // orderItems means order items in cart
-            const differentOrderItems = state?.orderItems?.find((item) => item?.product !== productId);
-            differentOrderItems.orderItems = differentOrderItems;
+            const differentOrderItems = state?.orderItems?.filter((item) => item?.product !== productId);
+            state.orderItems = differentOrderItems;
+        },
+        removeMultipleOrderProducts: (state, action) => {
+            const { listCheckedProducts } = action?.payload;
+            // orderItemsNotInList contains multiple order items in list (filtering the others)
+            // orderItems means order items in cart
+            const orderItemsInList = state?.orderItems?.filter((item) => !listCheckedProducts.includes(item?.product));
+            state.orderItems = orderItemsInList;
         },
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { addOrderProduct, increaseAmount, decreaseAmount, removeOrderProduct } = orderSlice.actions
+export const { addOrderProduct, increaseAmount, decreaseAmount, removeOrderProduct, removeMultipleOrderProducts } = orderSlice.actions
 
 export default orderSlice.reducer
