@@ -1,8 +1,14 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 
-const NavigationComponent = ({name}) => {
+const NavigationComponent = ({name, navigateTo}) => {
+   const navigate = useNavigate();
+   
+   const handleNavigateItems = (path) => {
+      navigate(path);
+   }
    return (
-      <div style={{ fontSize: '16px' }}>
+      <div style={{ fontSize: '16px', cursor: 'pointer' }} onClick={() => handleNavigateItems(navigateTo)}>
          {name}
       </div>
    )

@@ -33,7 +33,6 @@ const SignInPage = () => {
     const { data, isLoading, isSuccess, isError } = mutation;
 
     useEffect(() => {
-        console.log('location', location);
         if (isSuccess) {
             // if accessToken exists
             if (data?.accessToken) {

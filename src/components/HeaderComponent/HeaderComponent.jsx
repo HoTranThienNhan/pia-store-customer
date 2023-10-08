@@ -21,7 +21,29 @@ import LoadingComponent from "../LoadingComponent/LoadingComponent";
 import { searchProduct } from "../../redux/slices/productSlice";
 
 const HeaderComponent = () => {
-   const navItem = ['Trang chủ', 'Tìm hiểu', 'Thực đơn', 'Khuyến mãi', 'Liên hệ'];
+   const navItems = [
+      {
+         "name": "Trang chủ",
+         "path": "/",
+      },
+      {
+         "name": "Thực đơn",
+         "path": "/menu",
+      },
+      {
+         "name": "Tìm hiểu",
+         "path": "/",
+      },
+      {
+         "name": "Khuyến mãi",
+         "path": "/",
+      },
+      {
+         "name": "Liên hệ",
+         "path": "/",
+      }
+   ];
+
 
    const user = useSelector((state) => state.user);
    const order = useSelector((state) => state.order);
@@ -89,9 +111,9 @@ const HeaderComponent = () => {
             <Col span={12}>
                <Row justify="space-around" align="middle" style={{ height: '100%' }}>
                   {
-                     navItem.map((item) => {
+                     navItems.map((item) => {
                         return (
-                           <NavigationComponent name={item} key={item} />
+                           <NavigationComponent name={item.name} navigateTo={item.path} />
                         )
                      })
                   }
