@@ -3,11 +3,14 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     orderItems: [],
     selectedOrderItems: [],
-    shippingAddress: {},
-    paymentMethod: '',
-    itemPrice: 0,
+    deliveryInformation: {
+        fullname: '',
+        phone: '',
+        address: '',
+    },
+    paymentMethod: 'COD',
+    subtotalPrice: 0,
     shippingPrice: 0,
-    taxPrice: 0,
     totalPrice: 0,
     user: '',
     isPaid: false,
@@ -81,6 +84,9 @@ export const orderSlice = createSlice({
             // same with selected order items
             const differentSelectedOrderItems = state?.selectedOrderItems?.filter((item) => item?.product !== productId);
             state.selectedOrderItems = differentSelectedOrderItems;
+            // set shipping price and total price as default
+            state.shippingPrice = 0;
+            state.totalPrice = 0;
         },
         removeMultipleOrderProducts: (state, action) => {
             const { listCheckedProducts } = action?.payload;
@@ -102,6 +108,22 @@ export const orderSlice = createSlice({
             });
             state.selectedOrderItems = selectedOrderProducts;
         },
+        setPaymentMethod: (state, action) => {
+            const { paymentMethod } = action?.payload;
+            state.paymentMethod = paymentMethod;
+        },
+        setDeliveryInformation: (state, action) => {
+            const { buyerState } = action?.payload;
+            state.deliveryInformation['fullname'] = buyerState?.fullname;
+            state.deliveryInformation['phone'] = buyerState?.phone;
+            state.deliveryInformation['address'] = buyerState?.address;
+        },
+        setCosts: (state, action) => {
+            const { subtotalMemo, totalMemo, deliveryFeeMemo } = action?.payload;
+            state.totalPrice = totalMemo;
+            state.shippingPrice = deliveryFeeMemo;
+            state.subtotalPrice = subtotalMemo;
+        },
     },
 })
 
@@ -114,6 +136,9 @@ export const {
     removeOrderProduct, 
     removeMultipleOrderProducts,
     selectedOrderProducts,
+    setPaymentMethod,
+    setDeliveryInformation,
+    setCosts,
 } = orderSlice.actions
 
 export default orderSlice.reducer

@@ -1,14 +1,23 @@
-import { Breadcrumb, Button, Card, Checkbox, Col, Divider, Image, InputNumber, Popconfirm, Result, Row, Tooltip } from "antd";
+import { Breadcrumb, Button, Card, Checkbox, Col, Divider, Image, InputNumber, Popconfirm, Result, Row, Tooltip, message } from "antd";
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import { useNavigate } from "react-router-dom";
 import { InputNumberCustom, ScrollBarCustom } from "./style";
 import { DeleteOutlined, MinusCircleOutlined, MinusOutlined, PlusCircleOutlined, PlusOutlined, QuestionCircleOutlined, SmileOutlined } from "@ant-design/icons";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { decreaseAmount, increaseAmount, removeMultipleOrderProducts, removeOrderProduct, selectedOrderProducts, setAmount } from "../../redux/slices/orderSlice";
+import { 
+   decreaseAmount, 
+   increaseAmount, 
+   removeMultipleOrderProducts, 
+   removeOrderProduct, 
+   selectedOrderProducts, 
+   setAmount, 
+   setCosts 
+} from "../../redux/slices/orderSlice";
 
-const OrderPage = () => {
+const MyCartPage = () => {
    const order = useSelector((state) => state?.order);
+   const user = useSelector((state) => state?.user);
 
    const [listCheckedProducts, setListCheckedProducts] = useState([]);
 
@@ -107,6 +116,14 @@ const OrderPage = () => {
    }
    const handleNavigateMenuPage = () => {
       navigate('/menu');
+   }
+   const handleNavigateCheckout = () => {
+      if (!order?.selectedOrderItems?.length) {
+         message.error('Vui lòng chọn sản phẩm');
+      } else {
+         dispatch(setCosts({ subtotalMemo, totalMemo, deliveryFeeMemo }));
+         navigate('/mycart/checkout')
+      }
    }
 
    return (
@@ -265,7 +282,7 @@ const OrderPage = () => {
          </Row>
          <Row justify="center">
             <Col>
-               <Button type="primary" style={{ width: '450px', height: '40px', borderRadius: '20px' }}>
+               <Button type="primary" style={{ width: '450px', height: '40px', borderRadius: '20px' }} onClick={handleNavigateCheckout}>
                   <span>Mua hàng</span>
                </Button>
             </Col>
@@ -274,4 +291,4 @@ const OrderPage = () => {
    )
 };
 
-export default OrderPage
+export default MyCartPage

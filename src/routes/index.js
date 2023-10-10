@@ -8,6 +8,8 @@ import SignInPage from "../pages/SignInPage/SignInPage";
 import SignUpPage from "../pages/SignUpPage/SignUpPage";
 import UserEditProfilePage from "../pages/UserEditProfilePage/UserEditProfilePage";
 import UserProfilePage from "../pages/UserProfilePage/UserProfilePage";
+import CheckoutPage from "../pages/CheckoutPage/CheckoutPage";
+import OrderSuccessPage from "../pages/OrderSuccessPage/OrderSuccessPage";
 
 export const routes = [
     {
@@ -20,6 +22,18 @@ export const routes = [
     {
         path: '/mycart',
         page: MyCartPage,
+        isShowHeader: true,
+        exact: false,
+    },
+    {
+        path: '/mycart/checkout',
+        page: CheckoutPage,
+        isShowHeader: true,
+        exact: false,
+    },
+    {
+        path: '/mycart/checkout/order-success',
+        page: OrderSuccessPage,
         isShowHeader: true,
         exact: false,
     },
