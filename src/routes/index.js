@@ -10,6 +10,8 @@ import UserEditProfilePage from "../pages/UserEditProfilePage/UserEditProfilePag
 import UserProfilePage from "../pages/UserProfilePage/UserProfilePage";
 import CheckoutPage from "../pages/CheckoutPage/CheckoutPage";
 import OrderSuccessPage from "../pages/OrderSuccessPage/OrderSuccessPage";
+import MyOrdersPage from "../pages/MyOrdersPage/MyOrdersPage";
+
 
 export const routes = [
     {
@@ -34,6 +36,12 @@ export const routes = [
     {
         path: '/mycart/checkout/order-success',
         page: OrderSuccessPage,
+        isShowHeader: true,
+        exact: false,
+    },
+    {
+        path: '/myorders',
+        page: MyOrdersPage,
         isShowHeader: true,
         exact: false,
     },

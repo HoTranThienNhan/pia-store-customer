@@ -270,8 +270,8 @@ const CheckoutPage = () => {
     /*** MUTATION ***/
     // #region
     const mutationCreateOrder = useMutationHooks(
-        (data) => {
-            const res = OrderService.createOrder(data);
+        ({ data, accessToken } = data) => {
+            const res = OrderService.createOrder(data, accessToken);
             return res;
         }
     );
@@ -295,15 +295,18 @@ const CheckoutPage = () => {
             // eslint-disable-next-line no-unused-expressions
             mutationCreateOrder.mutate(
                 {
-                    orderItems: order?.selectedOrderItems,
-                    fullname: order?.deliveryInformation?.fullname,
-                    phone: order?.deliveryInformation?.phone,
-                    address: order?.deliveryInformation?.address,
-                    paymentMethod: order?.paymentMethod,
-                    shippingPrice: order?.shippingPrice,
-                    subtotalPrice: order?.subtotalPrice,
-                    totalPrice: order?.totalPrice,
-                    user: user?.id,
+                    data: {
+                        orderItems: order?.selectedOrderItems,
+                        fullname: order?.deliveryInformation?.fullname,
+                        phone: order?.deliveryInformation?.phone,
+                        address: order?.deliveryInformation?.address,
+                        paymentMethod: order?.paymentMethod,
+                        shippingPrice: order?.shippingPrice,
+                        subtotalPrice: order?.subtotalPrice,
+                        totalPrice: order?.totalPrice,
+                        user: user?.id,
+                    },
+                    accessToken: user?.accessToken,
                 },
             );
         }

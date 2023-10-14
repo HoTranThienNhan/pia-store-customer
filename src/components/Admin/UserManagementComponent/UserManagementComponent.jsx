@@ -17,7 +17,7 @@ import TableComponent from '../../TableComponent/TableComponent';
 import { WrapperProductManagement, WrapperUploadProductImage } from './style';
 import FloatingLabelComponent from '../../FloatingLabelComponent/FloatingLabelComponent';
 import InputFormComponent from '../../InputFormComponent/InputFormComponent';
-import { getBase64 } from '../../../utils';
+import { convertDateType, getBase64 } from '../../../utils';
 import * as UserService from '../../../services/UserService';
 import { useMutationHooks } from '../../../hooks/useMutationHook';
 import LoadingComponent from '../../LoadingComponent/LoadingComponent';
@@ -269,7 +269,7 @@ const UserManagementComponent = () => {
         {
             title: 'Ngày Tạo',
             dataIndex: 'createdAt',
-            render: (data) => <span>{data.substring(0, 10)}</span>,
+            render: (data) => <span>{convertDateType(data)}</span>,
             sorter: (a, b) => a.createdAt.localeCompare(b.createdAt),
         },
         {

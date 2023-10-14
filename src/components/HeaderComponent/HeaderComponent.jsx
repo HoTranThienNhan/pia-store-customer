@@ -53,6 +53,7 @@ const HeaderComponent = () => {
    const [username, setUsername] = useState('');
    const [userAvatar, setUserAvatar] = useState('');
    const [search, setSearch] = useState('');
+   const [isOpenPopover, setIsOpenPopover] = useState(false);
 
    useEffect(() => {
       setLoading(true);
@@ -82,17 +83,35 @@ const HeaderComponent = () => {
       navigate('/');
    }
 
-   const signoutUserPopoverItem = (
+   // popover item
+   const handleOnClickPopoverItem = (item) => {
+      if (item === 'profile') {
+         navigate('/user/profile');
+         setIsOpenPopover(false);
+      } else if (item == 'myorders') {
+         navigate('/myorders');
+         setIsOpenPopover(false);
+      } else if (item == 'admin') {
+         navigate('/system/admin');
+         setIsOpenPopover(false);
+      } else if (item == 'signout') {
+         handleNavigateSignout();
+         setIsOpenPopover(false);
+      }
+   }
+   const userPopoverItems = (
       <div>
-         <WrapperAccountPopover onClick={() => navigate('/user/profile')}>Tài Khoản Của Tôi</WrapperAccountPopover>
+         <WrapperAccountPopover onClick={() => handleOnClickPopoverItem('profile')}>Tài Khoản Của Tôi</WrapperAccountPopover>
+         <WrapperAccountPopover onClick={() => handleOnClickPopoverItem('myorders')}>Đơn Hàng Của Tôi</WrapperAccountPopover>
          {user?.isAdmin && (
-            <WrapperAccountPopover onClick={() => navigate('/system/admin')}>Quản Lý Hệ Thống</WrapperAccountPopover>
+            <WrapperAccountPopover onClick={() => handleOnClickPopoverItem('admin')}>Quản Lý Hệ Thống</WrapperAccountPopover>
          )}
          <WrapperLinePopover></WrapperLinePopover>
-         <WrapperSignoutPopover onClick={handleNavigateSignout}>Đăng Xuất</WrapperSignoutPopover>
+         <WrapperSignoutPopover onClick={() => handleOnClickPopoverItem('signout')}>Đăng Xuất</WrapperSignoutPopover>
       </div>
    );
 
+   // search
    const onSearch = (e) => {
       setSearch(e.target.value);
       dispatch(searchProduct(e.target.value));
@@ -142,14 +161,17 @@ const HeaderComponent = () => {
                         </WrapperAccountHeader>
                         {/* If user exists, show user email, else show signin and signup */}
                         {user?.accessToken ? (
-                           <Popover placement="bottom" content={signoutUserPopoverItem} trigger="click">
-                              <div style={{
-                                 marginRight: '20px',
-                                 display: 'flex',
-                                 alignItems: 'center',
-                                 fontWeight: 'bold',
-                                 cursor: 'pointer'
-                              }}>
+                           <Popover placement="bottom" content={userPopoverItems} trigger="click" open={isOpenPopover}>
+                              <div
+                                 style={{
+                                    marginRight: '20px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer'
+                                 }}
+                                 onClick={() => setIsOpenPopover((prev) => !prev)}
+                              >
                                  {username?.length ? username : 'Tài khoản'}
                               </div>
                            </Popover>
@@ -166,7 +188,7 @@ const HeaderComponent = () => {
                   <WrapperAccountHeader>
                      <div style={{ marginRight: '15px' }}>
                         <Badge count={1} showZero>
-                           <HeartOutlined style={{ marginRight: '5px', fontSize: '24px' }}/>
+                           <HeartOutlined style={{ marginRight: '5px', fontSize: '24px' }} />
                         </Badge>
                      </div>
                      <div>

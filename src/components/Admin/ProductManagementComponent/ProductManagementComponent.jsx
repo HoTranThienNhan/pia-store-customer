@@ -18,7 +18,7 @@ import TableComponent from '../../TableComponent/TableComponent';
 import { SelectForm, WrapperProductManagement, WrapperUploadProductImage } from './style';
 import FloatingLabelComponent from '../../FloatingLabelComponent/FloatingLabelComponent';
 import InputFormComponent from '../../InputFormComponent/InputFormComponent';
-import { getBase64 } from '../../../utils';
+import { convertDateType, getBase64 } from '../../../utils';
 import * as ProductService from '../../../services/ProductService';
 import { useMutationHooks } from '../../../hooks/useMutationHook';
 import LoadingComponent from '../../LoadingComponent/LoadingComponent';
@@ -48,7 +48,8 @@ const ProductManagementComponent = () => {
         price: '',
         rating: '',
         description: '',
-        active: true
+        sold: 0,
+        active: true,
     });
     const [selectedType, setSelectedType] = useState('');
     const [selectedUpdateType, setSelectedUpdateType] = useState('');
@@ -383,7 +384,7 @@ const ProductManagementComponent = () => {
         {
             title: 'Ngày Tạo',
             dataIndex: 'createdAt',
-            render: (data) => <span>{data.substring(0, 10)}</span>,
+            render: (data) => <span>{convertDateType(data)}</span>,
             sorter: (a, b) => a.createdAt.localeCompare(b.createdAt),
         },
         // {
@@ -455,6 +456,7 @@ const ProductManagementComponent = () => {
                 price,
                 rating,
                 description,
+                sold,
                 active
             } = data;
             const res = ProductService.createProduct({
@@ -466,6 +468,7 @@ const ProductManagementComponent = () => {
                 price,
                 rating,
                 description,
+                sold,
                 active
             });
             return res;
