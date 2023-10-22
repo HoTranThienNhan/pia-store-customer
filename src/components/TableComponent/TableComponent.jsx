@@ -22,14 +22,8 @@ const TableComponent = (props) => {
 
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
-            // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
             setSelectedMultipleRowKeys(selectedRowKeys);
         },
-        // getCheckboxProps: (record) => ({
-        // disabled: record.fullname === 'admin',
-        // Column configuration not to be checked
-        // name: record.fullname,
-        // }),
     };
 
     const handleActiveUpdateMultiple = () => {

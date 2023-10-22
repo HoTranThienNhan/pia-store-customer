@@ -1,12 +1,15 @@
-import { Breadcrumb, Button, Card, Checkbox, Col, Collapse, Divider, Image, Row } from "antd";
+import { Breadcrumb, Button, Card, Checkbox, Col, Collapse, Divider, Image, Popconfirm, Row } from "antd";
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import { useNavigate } from "react-router-dom";
 import { CollapseWrapper } from "./style";
 import { useDispatch, useSelector } from "react-redux";
 import * as OrderService from '../../services/OrderService';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import IMG from '../../assets/images/products/hamburger/hamburger-chicken.png';
 import { convertDateType } from "../../utils";
+import { useMutationHooks } from '../../hooks/useMutationHook';
+import { QuestionCircleOutlined } from "@ant-design/icons";
+import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
 const MyOrdersPage = () => {
    const user = useSelector((state) => state?.user);
 
@@ -66,6 +69,29 @@ const MyOrdersPage = () => {
    ];
 
 
+   /*** CANCEL ORDER ***/
+   const mutation = useMutationHooks(
+      (data) => {
+         const { orderId, accessToken, order } = data;
+         const res = OrderService.cancelOrder(orderId, accessToken, order);
+         return res;
+      }
+   );
+   const handleCancelOrder = (order) => {
+      mutation.mutate({
+         orderId: order?._id,
+         accessToken: user?.accessToken,
+         order: order
+      },
+         {
+            onSuccess: () => {
+               MessagePopup.success("Hủy đơn hàng thành công.");
+               queryMyOrders.refetch();
+            }
+         });
+   }
+
+
    /*** NAVIGATE ***/
    const navigate = useNavigate();
    const handleNavigateHomePage = () => {
@@ -90,7 +116,7 @@ const MyOrdersPage = () => {
             <Row justify="center" style={{ marginBottom: '20px' }}>
                <Divider>
                   <Col style={{ fontSize: '32px' }} >
-                     <span style={{ fontWeight: '700' }}>ĐƠN HÀNG CỦA TÔI ({orders?.length})</span>
+                     <span style={{ fontWeight: '700' }}>ĐƠN HÀNG CỦA TÔI ({orders?.length ? orders?.length : 0})</span>
                   </Col>
                </Divider>
             </Row>
@@ -125,9 +151,32 @@ const MyOrdersPage = () => {
                                        Ngày Đặt Hàng: {convertDateType(order?.createdAt)}
                                     </div>
                                     <div style={{ fontSize: '16px' }}>
-                                       Trạng Thái: {order?.isDelivered === true ? 'Đã giao' : 'Đang giao'}
+                                       Trạng Thái: {order?.status}
                                     </div>
-                                    
+                                    {order?.status === 'Chờ xác nhận' && (
+                                       <div style={{ marginTop: '10px' }}>
+                                          <Popconfirm
+                                             placement='topRight'
+                                             title="Xác nhận hủy đơn hàng"
+                                             description={<span>Bạn chỉ có thể hủy với đơn hàng ở trạng thái <b>Chờ xác nhận</b>.<br />
+                                             Bạn chắc chắn muốn hủy đơn hàng này không?</span>}
+                                             onConfirm={() => handleCancelOrder(order)}
+                                             okText="Chắc chắn"
+                                             cancelText="Không"
+                                             icon={
+                                                <QuestionCircleOutlined
+                                                   style={{
+                                                      color: 'red',
+                                                   }}
+                                                />
+                                             }
+                                          >
+                                             <Button type="primary" danger>
+                                                Hủy Đơn Hàng
+                                             </Button>
+                                          </Popconfirm>
+                                       </div>
+                                    )}
                                  </Col>
                               </Row>
                               <Divider />
@@ -137,12 +186,12 @@ const MyOrdersPage = () => {
                         <Col span={7}>
 
                         </Col>
-                     </Row>
+                     </Row >
                   )
                })
             }
-         </div>
-      </LoadingComponent>
+         </div >
+      </LoadingComponent >
    )
 };
 

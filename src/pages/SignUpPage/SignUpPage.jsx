@@ -82,7 +82,7 @@ const SignUpPage = () => {
     }
 
     return (
-        <div style={{ padding: '0px 70px', height: '1500px' }}>
+        <div style={{ padding: '0px 70px', height: '700px' }}>
             <AuthCard>
                 <Row>
                     <Col span={12} style={{ padding: '32px 32px' }}>

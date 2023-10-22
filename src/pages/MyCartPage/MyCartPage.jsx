@@ -16,8 +16,9 @@ import {
 } from "../../redux/slices/orderSlice";
 
 const MyCartPage = () => {
-   const order = useSelector((state) => state?.order);
    const user = useSelector((state) => state?.user);
+   // state?.order?.findIndex(prop => prop.user === user?.id) means find index of recent user order state
+   const order = useSelector((state) => state?.order[state?.order?.findIndex(prop => prop.user === user?.id)]);
 
    const [listCheckedProducts, setListCheckedProducts] = useState([]);
 
@@ -29,17 +30,17 @@ const MyCartPage = () => {
    const maxProductCount = 10;
    const setProductCount = (productId, value) => {
       if (value && value >= minProductCount && value <= maxProductCount) {
-         dispatch(setAmount({ productId, value }));
+         dispatch(setAmount({ productId, value, userId: user?.id }));
       }
    }
    const addProductCount = (productId) => {
-      dispatch(increaseAmount({ productId, maxProductCount }));
+      dispatch(increaseAmount({ productId, maxProductCount, userId: user?.id }));
    }
    const minusProductCount = (productId) => {
-      dispatch(decreaseAmount({ productId, minProductCount }));
+      dispatch(decreaseAmount({ productId, minProductCount, userId: user?.id }));
    }
    const deleteProductOut = (productId) => {
-      dispatch(removeOrderProduct({ productId }));
+      dispatch(removeOrderProduct({ productId, userId: user?.id }));
    }
    const checkProduct = (e) => {
       const checkedProduct = e.target.value;
@@ -72,13 +73,13 @@ const MyCartPage = () => {
    }
    const deleteMultipleProductsOut = () => {
       if (listCheckedProducts?.length > 0) {
-         dispatch(removeMultipleOrderProducts({ listCheckedProducts }));
+         dispatch(removeMultipleOrderProducts({ listCheckedProducts, userId: user?.id }));
          setListCheckedProducts([]);
       }
    }
 
    useEffect(() => {
-      dispatch(selectedOrderProducts({ listCheckedProducts }));
+      dispatch(selectedOrderProducts({ listCheckedProducts, userId: user?.id }));
    }, [listCheckedProducts]);
 
 
@@ -121,7 +122,7 @@ const MyCartPage = () => {
       if (!order?.selectedOrderItems?.length) {
          message.error('Vui lòng chọn sản phẩm');
       } else {
-         dispatch(setCosts({ subtotalMemo, totalMemo, deliveryFeeMemo }));
+         dispatch(setCosts({ subtotalMemo, totalMemo, deliveryFeeMemo, userId: user?.id }));
          navigate('/mycart/checkout')
       }
    }

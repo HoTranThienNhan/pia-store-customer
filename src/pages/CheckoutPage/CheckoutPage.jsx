@@ -2,7 +2,7 @@ import { Badge, Breadcrumb, Button, Card, Checkbox, Col, Divider, Form, Image, I
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import { useNavigate } from "react-router-dom";
 import { BadgeCheckedPaymentMethod, CardPaymentMethod, InputNumberCustom, ScrollBarCustom } from "./style";
-import { CheckOutlined, DeleteOutlined, HomeOutlined, IdcardOutlined, MinusCircleOutlined, MinusOutlined, PhoneOutlined, PlusCircleOutlined, PlusOutlined, QuestionCircleOutlined, SmileOutlined } from "@ant-design/icons";
+import {  HomeOutlined, IdcardOutlined, PhoneOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { decreaseAmount, increaseAmount, removeMultipleOrderProducts, removeOrderProduct, selectedOrderProducts, setAmount, setDeliveryInformation, setPaymentMethod } from "../../redux/slices/orderSlice";
@@ -14,8 +14,9 @@ import * as OrderService from '../../services/OrderService';
 import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
 
 const CheckoutPage = () => {
-    const order = useSelector((state) => state?.order);
-    const user = useSelector((state) => state?.user);
+    const user = useSelector((state) => state.user);
+   // state?.order?.findIndex(prop => prop.user === user?.id) means find index of recent user order state
+   const order = useSelector((state) => state?.order[state?.order?.findIndex(prop => prop.user === user?.id)]);
 
     const [buyerState, setBuyerState] = useState({
         fullname: user?.name,
@@ -70,7 +71,7 @@ const CheckoutPage = () => {
     }
     const handlePaymentMethodCOD = (e) => {
         const paymentMethod = "COD";
-        dispatch(setPaymentMethod({ paymentMethod }));
+        dispatch(setPaymentMethod({ paymentMethod, userId: user?.id }));
 
         const cardPaymentMethodClassList = e.currentTarget.classList;
         const paymentMethodParentRow = e.target.closest(".payment-method-row");
@@ -93,7 +94,7 @@ const CheckoutPage = () => {
 
     const handlePaymentMethodZaloPay = (e) => {
         const paymentMethod = "ZaloPay";
-        dispatch(setPaymentMethod({ paymentMethod }));
+        dispatch(setPaymentMethod({ paymentMethod, userId: user?.id }));
 
         const cardPaymentMethodClassList = e.currentTarget.classList;
         const paymentMethodParentRow = e.target.closest(".payment-method-row");
@@ -122,7 +123,7 @@ const CheckoutPage = () => {
         {
             title: 'Thông tin người nhận',
             content:
-                <Form autoComplete="off">
+                <Form autoComplete="off" style={{ padding: '0px 50px 30px 0px' }}>
                     <Form.Item
                         label=""
                         validateStatus={"validating"}
@@ -216,7 +217,7 @@ const CheckoutPage = () => {
                 </Form>,
         },
         {
-            title: 'Các phương thức',
+            title: 'Phương thức thanh toán',
             content:
                 <Row className="payment-method-row" justify="space-around" style={{ padding: '20px' }}>
                     <Col span={10}>
@@ -246,7 +247,7 @@ const CheckoutPage = () => {
     const next = () => {
         // finished step 1 (filling delivery information form)
         if (currentStep === 0) {
-            dispatch(setDeliveryInformation({ buyerState }));
+            dispatch(setDeliveryInformation({ buyerState, userId: user?.id }));
         }
         setCurrentStep(currentStep + 1);
     };
@@ -261,7 +262,7 @@ const CheckoutPage = () => {
         lineHeight: '260px',
         textAlign: 'center',
         width: '100%',
-        backgroundColor: '#f7f7f7',
+        backgroundColor: '#fff',
         marginTop: 16,
     };
     // #endregion
@@ -283,6 +284,7 @@ const CheckoutPage = () => {
     } = mutationCreateOrder;
 
     const handleCheckout = () => {
+        console.log(order);
         if (order?.selectedOrderItems &&
             order?.deliveryInformation?.fullname &&
             order?.deliveryInformation?.phone &&
@@ -319,7 +321,7 @@ const CheckoutPage = () => {
             order?.selectedOrderItems?.forEach((element) => {
                 selectedOrderItemsList.push(element.product);
             });
-            dispatch(removeMultipleOrderProducts({ listCheckedProducts: selectedOrderItemsList }));
+            dispatch(removeMultipleOrderProducts({ listCheckedProducts: selectedOrderItemsList, userId: user?.id }));
             MessagePopup.success("Đặt hàng thành công");
             navigate('/mycart/checkout/order-success', {
                 state: {
@@ -459,10 +461,12 @@ const CheckoutPage = () => {
                                     onConfirm={handleCheckout}
                                     okText="Chắc chắn"
                                     cancelText="Không"
+                                    disabled={currentStep === 1 ? false : true}
                                 >
                                     <Button
                                         type="primary"
-                                        style={{ height: '40px', width: '100%', borderRadius: '20px' }}
+                                        style={{ height: '40px', width: '100%', borderRadius: '20px', display: 'block' }}
+                                        disabled={currentStep === 1 ? false : true}
                                     >
                                         <span>Đặt hàng</span>
                                     </Button>

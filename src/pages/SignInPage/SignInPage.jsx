@@ -12,8 +12,9 @@ import LoadingComponent from '../../components/LoadingComponent/LoadingComponent
 import FloatingLabelComponent from '../../components/FloatingLabelComponent/FloatingLabelComponent';
 import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
 import jwt_decode from "jwt-decode";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from '../../redux/slices/userSlice';
+import { createOrderState } from '../../redux/slices/orderSlice';
 
 const SignInPage = () => {
     const [email, setEmail] = useState('');
@@ -24,6 +25,8 @@ const SignInPage = () => {
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
+
+    const user = useSelector((state) => state.user);
 
     // mutation
     const mutation = useMutationHooks(
@@ -41,13 +44,14 @@ const SignInPage = () => {
                     navigate(location?.state);
                 } else {
                     MessagePopup.success();
-                    handleNavigateHomepage();
+                    // handleNavigateHomepage();
                 }
                 // keep accessToken stored in the browser
                 localStorage.setItem('accessToken', JSON.stringify(data?.accessToken));
                 // decoded contains elements (id, isAdmin) of access token payload
                 const decoded = jwt_decode(data?.accessToken);
                 if (decoded?.id) {
+                    // update user state
                     handleGetUserDetails(decoded.id, data?.accessToken);
                 }
             } else {
@@ -57,6 +61,15 @@ const SignInPage = () => {
             MessagePopup.error();
         }
     }, [isSuccess, isError]);
+
+    useEffect(() => { 
+        // if sign in success, before navigate to homepage, create order state for this user
+        dispatch(createOrderState(user?.id));
+        // if user state is updated, navigate to homepage
+        if (user?.id) {
+            handleNavigateHomepage();
+        }
+     }, [user]);
 
     // navigation
     const handleNavigateSignup = () => {
@@ -89,7 +102,7 @@ const SignInPage = () => {
     }
 
     return (
-        <div style={{ padding: '0px 70px', height: '1500px' }}>
+        <div style={{ padding: '0px 70px', height: '700px' }}>
             <AuthCard>
                 <Row>
                     <Col span={12} style={{ padding: '32px 32px' }}>

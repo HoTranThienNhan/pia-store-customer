@@ -19,6 +19,7 @@ import * as UserService from '../../services/UserService';
 import { resetUser } from '../../redux/slices/userSlice';
 import LoadingComponent from "../LoadingComponent/LoadingComponent";
 import { searchProduct } from "../../redux/slices/productSlice";
+import { createOrderState, resetOrder } from "../../redux/slices/orderSlice";
 
 const HeaderComponent = () => {
    const navItems = [
@@ -46,7 +47,8 @@ const HeaderComponent = () => {
 
 
    const user = useSelector((state) => state.user);
-   const order = useSelector((state) => state.order);
+   // state?.order?.findIndex(prop => prop.user === user?.id) means find index of recent user order state
+   const order = useSelector((state) => state?.order[state?.order?.findIndex(prop => prop.user === user?.id)]);
    const dispatch = useDispatch();
 
    const [loading, setLoading] = useState(false);
@@ -97,8 +99,13 @@ const HeaderComponent = () => {
       } else if (item == 'signout') {
          handleNavigateSignout();
          setIsOpenPopover(false);
+         // reset cart when sign out
+         // dispatch(resetOrder());
       }
    }
+   const handleOpenPopoverChange = () => {
+      setIsOpenPopover(false);
+   };
    const userPopoverItems = (
       <div>
          <WrapperAccountPopover onClick={() => handleOnClickPopoverItem('profile')}>Tài Khoản Của Tôi</WrapperAccountPopover>
@@ -116,6 +123,7 @@ const HeaderComponent = () => {
       setSearch(e.target.value);
       dispatch(searchProduct(e.target.value));
    }
+
 
    return (
       <div>
@@ -161,7 +169,13 @@ const HeaderComponent = () => {
                         </WrapperAccountHeader>
                         {/* If user exists, show user email, else show signin and signup */}
                         {user?.accessToken ? (
-                           <Popover placement="bottom" content={userPopoverItems} trigger="click" open={isOpenPopover}>
+                           <Popover
+                              placement="bottom"
+                              content={userPopoverItems}
+                              trigger="click"
+                              open={isOpenPopover}
+                              onOpenChange={handleOpenPopoverChange}
+                           >
                               <div
                                  style={{
                                     marginRight: '20px',

@@ -1,6 +1,6 @@
 import { Breadcrumb, Button, Col, Image, InputNumber, Rate, Row, Tabs } from 'antd';
 import React, { useState } from 'react';
-import { MinusCircleOutlined, PlusCircleOutlined, StarFilled } from '@ant-design/icons'
+import { MinusOutlined, PlusOutlined, StarFilled } from '@ant-design/icons'
 import InputNumberComponent from '../../components/InputNumberComponent/InputNumberComponent';
 import { DetailContentDiv, DetailsReviewSection, InputNumberCustom, PriceSpan, StarRating } from './style';
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -108,7 +108,8 @@ const ProductsPage = () => {
                image: productDetails?.image,
                price: productDetails?.price,
                product: productDetails?._id,
-            }
+            },
+            userId: user?.id,
          }));
       }
    }
@@ -152,9 +153,9 @@ const ProductsPage = () => {
                   </DetailContentDiv> */}
                   <DetailContentDiv>
                      <InputNumberCustom>
-                        <MinusCircleOutlined className='minus-input-number' onClick={minusProductCount} />
+                        <MinusOutlined className='minus-input-number' onClick={minusProductCount} />
                         <InputNumber className='input-number-area' min={minProductCount} max={maxProductCount} value={productCount} onChange={setProductCountValue} />
-                        <PlusCircleOutlined className='plus-input-number' onClick={addProductCount} />
+                        <PlusOutlined className='plus-input-number' onClick={addProductCount} />
                      </InputNumberCustom>
                   </DetailContentDiv>
                   <DetailContentDiv>

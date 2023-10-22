@@ -5,8 +5,9 @@ import { useSelector } from "react-redux";
 import generatePDF, { Resolution, Margin } from 'react-to-pdf';
 
 const OrderSuccessPage = () => {
-    const order = useSelector((state) => state?.order);
-    const user = useSelector((state) => state?.user);
+    const user = useSelector((state) => state.user);
+   // state?.order?.findIndex(prop => prop.user === user?.id) means find index of recent user order state
+   const order = useSelector((state) => state?.order[state?.order?.findIndex(prop => prop.user === user?.id)]);
 
     const location = useLocation();
     // state contains order information
