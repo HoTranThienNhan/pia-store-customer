@@ -40,7 +40,6 @@ export const orderSlice = createSlice({
                 })
                 // if state or user order state was not created, create new order state
                 if (state.length === 0 || isExistedOrderState === false) {
-                    console.log(state.length, '-', isExistedOrderState);
                     const initState = {
                         orderItems: [],
                         selectedOrderItems: [],

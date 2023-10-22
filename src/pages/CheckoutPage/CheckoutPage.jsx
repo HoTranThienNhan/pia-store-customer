@@ -284,7 +284,6 @@ const CheckoutPage = () => {
     } = mutationCreateOrder;
 
     const handleCheckout = () => {
-        console.log(order);
         if (order?.selectedOrderItems &&
             order?.deliveryInformation?.fullname &&
             order?.deliveryInformation?.phone &&

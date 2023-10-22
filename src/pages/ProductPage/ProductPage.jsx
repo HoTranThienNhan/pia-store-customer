@@ -66,7 +66,6 @@ const ProductsPage = () => {
    }
 
 
-
    const minProductCount = 1;
    const maxProductCount = 10;
    const addProductCount = (e) => {
@@ -117,65 +116,67 @@ const ProductsPage = () => {
    return (
       <LoadingComponent isLoading={isLoading}>
          <div id="container" style={{ padding: '85px 70px 0px 70px', height: '1500px' }}>
-            <Breadcrumb
-               style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '40px' }}
-               items={[
-                  {
-                     title: <span onClick={handleNavigateHomePage} style={{ cursor: 'pointer' }}>Trang chủ</span>,
-                  },
-                  {
-                     title: <span onClick={handleNavigateMenuPage} style={{ cursor: 'pointer' }}>Thực đơn</span>,
-                  },
-                  {
-                     title: <span>Sản phẩm</span>,
-                  },
-               ]}
-            >
-            </Breadcrumb>
-            <Row justify="space-around">
-               <Col span={8}>
-                  <Image src={productDetails?.image} alt="product" preview={true} draggable={false} />
-               </Col>
-               <Col span={12}>
-                  <div style={{ fontSize: '40px', fontWeight: 'bold', cursor: 'context-menu' }}>{productDetails?.name}</div>
-                  <StarRating>
-                     {renderStarsRating(productDetails?.rating)}
-                     <span style={{ userSelect: 'none' }}>{productDetails?.rating}/5 (150 đánh giá)</span>
-                  </StarRating>
-                  <DetailContentDiv style={{ userSelect: 'none' }}>
-                     {productDetails?.description}
-                  </DetailContentDiv>
-                  {/* <DetailContentDiv>
+            {productDetails && <>
+               <Breadcrumb
+                  style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '40px' }}
+                  items={[
+                     {
+                        title: <span onClick={handleNavigateHomePage} style={{ cursor: 'pointer' }}>Trang chủ</span>,
+                     },
+                     {
+                        title: <span onClick={handleNavigateMenuPage} style={{ cursor: 'pointer' }}>Thực đơn</span>,
+                     },
+                     {
+                        title: <span>Sản phẩm</span>,
+                     },
+                  ]}
+               >
+               </Breadcrumb>
+               <Row justify="space-around">
+                  <Col span={8}>
+                     <Image src={productDetails?.image} alt="product" preview={true} draggable={false} />
+                  </Col>
+                  <Col span={12}>
+                     <div style={{ fontSize: '40px', fontWeight: 'bold', cursor: 'context-menu' }}>{productDetails?.name}</div>
+                     <StarRating>
+                        {renderStarsRating(productDetails?.rating)}
+                        <span style={{ userSelect: 'none' }}>{productDetails?.rating}/5 (150 đánh giá)</span>
+                     </StarRating>
+                     <DetailContentDiv style={{ userSelect: 'none' }}>
+                        {productDetails?.description}
+                     </DetailContentDiv>
+                     {/* <DetailContentDiv>
                      <Image src={imageCalories} preview={false} width={60} />
                      <span>
                         <span style={{ fontWeight: 'bold' }}>300</span> calories
                      </span>
                   </DetailContentDiv> */}
-                  <DetailContentDiv>
-                     <InputNumberCustom>
-                        <MinusOutlined className='minus-input-number' onClick={minusProductCount} />
-                        <InputNumber className='input-number-area' min={minProductCount} max={maxProductCount} value={productCount} onChange={setProductCountValue} />
-                        <PlusOutlined className='plus-input-number' onClick={addProductCount} />
-                     </InputNumberCustom>
-                  </DetailContentDiv>
-                  <DetailContentDiv>
-                     <Button
-                        type="primary"
-                        style={{ height: '50px', width: '170px', borderRadius: '25px' }}
-                        onClick={handleAddToCart}
-                        danger
-                     >
-                        Thêm vào Giỏ Hàng
-                     </Button>
-                     <PriceSpan>{productDetails?.price?.toLocaleString()} VNĐ</PriceSpan>
-                  </DetailContentDiv>
-               </Col>
-            </Row>
-            <DetailsReviewSection justify='center'>
-               <Col span={14}>
-                  <Tabs defaultActiveKey='1' items={items} />
-               </Col>
-            </DetailsReviewSection>
+                     <DetailContentDiv>
+                        <InputNumberCustom>
+                           <MinusOutlined className='minus-input-number' onClick={minusProductCount} />
+                           <InputNumber className='input-number-area' min={minProductCount} max={maxProductCount} value={productCount} onChange={setProductCountValue} />
+                           <PlusOutlined className='plus-input-number' onClick={addProductCount} />
+                        </InputNumberCustom>
+                     </DetailContentDiv>
+                     <DetailContentDiv>
+                        <Button
+                           type="primary"
+                           style={{ height: '50px', width: '170px', borderRadius: '25px' }}
+                           onClick={handleAddToCart}
+                           danger
+                        >
+                           Thêm vào Giỏ Hàng
+                        </Button>
+                        <PriceSpan>{productDetails?.price?.toLocaleString()} VNĐ</PriceSpan>
+                     </DetailContentDiv>
+                  </Col>
+               </Row>
+               <DetailsReviewSection justify='center'>
+                  <Col span={14}>
+                     <Tabs defaultActiveKey='1' items={items} />
+                  </Col>
+               </DetailsReviewSection>
+            </>}
          </div>
       </LoadingComponent>
    )

@@ -78,7 +78,8 @@ const HeaderComponent = () => {
    const handleNavigateSignout = async () => {
       setLoading(true);
       // clear old access token in local storage
-      localStorage.clear();
+      localStorage.removeItem("accessToken");
+      console.log(localStorage);
       await UserService.signoutUser();
       dispatch(resetUser());
       setLoading(false);
@@ -206,7 +207,7 @@ const HeaderComponent = () => {
                         </Badge>
                      </div>
                      <div>
-                        <Badge count={order?.orderItems?.length} showZero>
+                        <Badge count={order ? order?.orderItems?.length : 0} showZero>
                            <ShoppingCartOutlined style={{ marginRight: '5px', fontSize: '24px', cursor: 'pointer' }} onClick={handleNavigateMyCart} />
                         </Badge>
                      </div>

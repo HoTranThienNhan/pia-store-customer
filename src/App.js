@@ -8,6 +8,7 @@ import * as UserService from './services/UserService';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from './redux/slices/userSlice';
 import LoadingComponent from './components/LoadingComponent/LoadingComponent';
+import { createOrderState } from './redux/slices/orderSlice';
 
 export function App() {
 
@@ -20,6 +21,7 @@ export function App() {
     let { storageData, decoded } = handleDecoded();
     if (decoded?.id) {
       handleGetUserDetails(decoded?.id, storageData);
+      console.log(localStorage);
     }
     setIsLoading(false);
   }, []);
@@ -57,6 +59,10 @@ export function App() {
     const res = await UserService.getUserDetails(id, accessToken);
     dispatch(updateUser({ ...res?.data, accessToken: accessToken }));
   }
+
+  // const handleGetAllOrder = async () => {
+  //   dispatch(createOrderState())
+  // }
 
 
   return (

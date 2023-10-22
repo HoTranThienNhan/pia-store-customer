@@ -21,7 +21,6 @@ export const getAllOrders = async (userId, accessToken) => {
 }
 
 export const cancelOrder = async (orderId, accessToken, order) => {
-    console.log(accessToken);
     const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/order/cancelOrder/${orderId}`, {data: order}, {
         headers: {
             token: `Bearer ${accessToken}`
