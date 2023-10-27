@@ -129,7 +129,7 @@ const MyCartPage = () => {
 
    return (
       // <LoadingComponent isLoading={isLoading}>
-      <div id="container" style={{ padding: '85px 120px 0px 120px', height: '1500px' }}>
+      <div id="container" style={{ padding: '85px 120px 80px 120px', height: '100%' }}>
          <Breadcrumb
             style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '20px', userSelect: 'none' }}
             items={[
@@ -146,7 +146,7 @@ const MyCartPage = () => {
             <Divider>
                <Col style={{ fontSize: '32px' }} >
                   <span style={{ fontWeight: '700' }}>My Cart </span>
-                  <span>({order?.orderItems?.length})</span>
+                  <span>({order?.orderItems?.length ? order?.orderItems?.length : 0 })</span>
                </Col>
             </Divider>
          </Row>
@@ -256,7 +256,7 @@ const MyCartPage = () => {
                <Card style={{ padding: '0px 10px', width: '450px', fontSize: '18px' }}>
                   <Row justify="space-between">
                      <Col>Tạm tính</Col>
-                     <Col>{subtotalMemo?.toLocaleString()} VNĐ</Col>
+                     <Col>{subtotalMemo ? subtotalMemo?.toLocaleString() : 0} VNĐ</Col>
                   </Row>
                   <Row justify="space-between">
                      <Col>
@@ -267,7 +267,7 @@ const MyCartPage = () => {
                            <QuestionCircleOutlined />
                         </Tooltip>
                      </Col>
-                     <Col>{deliveryFeeMemo?.toLocaleString()} VNĐ</Col>
+                     <Col>{order?.orderItems?.length ? deliveryFeeMemo?.toLocaleString() : 0} VNĐ</Col>
                   </Row>
                   <Row justify="space-between">
                      <Col>Giảm voucher</Col>
@@ -276,7 +276,7 @@ const MyCartPage = () => {
                   <Divider style={{ margin: '15px 0px' }} />
                   <Row justify="space-between">
                      <Col style={{ fontSize: '20px', fontWeight: '600' }}>Tổng tiền</Col>
-                     <Col style={{ fontSize: '20px', fontWeight: '600' }}>{totalMemo?.toLocaleString()} VNĐ</Col>
+                     <Col style={{ fontSize: '20px', fontWeight: '600' }}>{totalMemo ? totalMemo?.toLocaleString() : 0} VNĐ</Col>
                   </Row>
                </Card>
             </Col>

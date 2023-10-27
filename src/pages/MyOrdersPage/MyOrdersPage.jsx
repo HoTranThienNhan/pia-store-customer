@@ -1,29 +1,32 @@
-import { Breadcrumb, Button, Card, Checkbox, Col, Collapse, Divider, Image, Popconfirm, Row } from "antd";
+import { Breadcrumb, Button, Card, Checkbox, Col, Collapse, Divider, Image, Menu, Popconfirm, Row } from "antd";
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import { useNavigate } from "react-router-dom";
-import { CollapseWrapper } from "./style";
+import { CardWrapper, CollapseWrapper, MyOrdersCard, SidebarMenuWrapper } from "./style";
 import { useDispatch, useSelector } from "react-redux";
 import * as OrderService from '../../services/OrderService';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import IMG from '../../assets/images/products/hamburger/hamburger-chicken.png';
-import { convertDateType } from "../../utils";
+import { convertDateType, convertOrderStatus } from "../../utils";
 import { useMutationHooks } from '../../hooks/useMutationHook';
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined, ShopOutlined } from "@ant-design/icons";
 import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
+import { getItem } from '../../utils';
+import { useState } from "react";
 const MyOrdersPage = () => {
    const user = useSelector((state) => state?.user);
 
    const dispatch = useDispatch();
+   const [selectedStatusKey, setSelectedStatusKey] = useState('pending');
 
-
-   const fetchMyOrders = async () => {
-      const res = await OrderService.getAllOrders(user?.id, user?.accessToken);
+   // fetch orders by status
+   const fetchMyOrders = async (status) => {
+      // const res = await OrderService.getAllOrders(user?.id, user?.accessToken);
+      const res = await OrderService.getOrderByStatus(user?.id, user?.accessToken, status);
       return res;
    }
    const queryMyOrders = useQuery(
       {
-         queryKey: ['users'],
-         queryFn: fetchMyOrders,
+         queryKey: ['users', selectedStatusKey],
+         queryFn: () => fetchMyOrders(selectedStatusKey),
          retry: 3,
          retryDelay: 1000,
          // only use query when user id and user access token are called completely
@@ -33,6 +36,42 @@ const MyOrdersPage = () => {
    const { isLoading, data } = queryMyOrders;
    const orders = data?.data;
 
+
+   // fetch order filtered by status
+   const orderStatus = [
+      getItem('Chờ Xác Nhận', 'pending', <ShopOutlined />),
+      getItem('Chờ Lấy Hàng', 'pickingup', <ShopOutlined />),
+      getItem('Đang giao', 'delivering', <ShopOutlined />),
+      getItem('Đã giao', 'delivered', <ShopOutlined />),
+      getItem('Đã hủy', 'canceled', <ShopOutlined />),
+   ];
+   const handleOnClickOrderStatus = ({ key }) => {
+      // selectedStatusKey from items
+      setSelectedStatusKey(key);
+      handleOrderState(key);
+   }
+   const mutationOrderStatus = useMutationHooks(
+      (data) => {
+         const { userId, accessToken, status } = data;
+         const res = OrderService.getOrderByStatus(userId, accessToken, status);
+         return res;
+      }
+   );
+   const handleOrderState = (status) => {
+      mutationOrderStatus.mutate({
+         userId: user?.id,
+         accessToken: user?.accessToken,
+         status: status
+      },
+         {
+            onSuccess: () => {
+               queryMyOrders.refetch();
+            }
+         });
+   }
+
+
+   /*** ORDER ITEMS ***/
    const items = (order) => [
       {
          key: '1',
@@ -43,7 +82,7 @@ const MyOrdersPage = () => {
                   <>
                      <Row>
                         <Col span={6}>
-                           <Image src={IMG} preview={false} width={130} />
+                           <Image src={orderItems?.image} preview={false} width={130} />
                         </Col>
                         <Col span={12}>
                            <div style={{ fontWeight: '600', fontSize: '16px', marginBottom: '8px' }}>
@@ -97,10 +136,13 @@ const MyOrdersPage = () => {
    const handleNavigateHomePage = () => {
       navigate('/');
    }
+   const handleNavigateToEditUserProfile = () => {
+      navigate('/user/profile/edit');
+   }
 
    return (
       <LoadingComponent isLoading={isLoading}>
-         <div id="container" style={{ padding: '85px 120px 0px 120px', height: '1500px', backgroundColor: '#d4e3fa5e' }}>
+         <div id="container" style={{ padding: '85px 120px 80px 120px', height: '100%', backgroundColor: '#d4e3fa5e' }}>
             <Breadcrumb
                style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '20px', userSelect: 'none' }}
                items={[
@@ -120,22 +162,54 @@ const MyOrdersPage = () => {
                   </Col>
                </Divider>
             </Row>
-            {
-               orders?.map((order) => {
-                  return (
-                     <Row style={{ marginBottom: '30px' }}>
-                        <Col span={17}>
-                           <Card>
+            <Row>
+               <SidebarMenuWrapper span={7} style={{}}>
+                  <Row>
+                     <Col span={24}>
+                        <CardWrapper>
+                           <Row>
+                              <Col span={6}>
+                                 <Image className="user-avatar-info" src={user?.avatar} alt="avatar" preview={false} draggable={false} />
+                              </Col>
+                              <Col span={18}>
+                                 <div style={{ fontWeight: '600', fontSize: '16px' }}>Xin chào, {user?.name ? user?.name : 'user'}!</div>
+                                 <div style={{ fontWeight: '300' }}>{user?.address ? user?.address : 'address'}</div>
+                              </Col>
+                           </Row>
+                           <Row style={{ marginTop: '20px' }}>
+                              <Col span={24}>
+                                 <Button type="primary" danger onClick={handleNavigateToEditUserProfile}>Sửa Thông Tin</Button>
+                              </Col>
+                           </Row>
+                        </CardWrapper>
+                     </Col>
+                     <Col span={24} style={{ marginTop: '30px' }}>
+                        <CardWrapper>
+                           <Menu
+                              mode="inline"
+                              items={orderStatus}
+                              onClick={handleOnClickOrderStatus}
+                              defaultSelectedKeys={'pending'}
+                           />
+                        </CardWrapper>
+                     </Col>
+                  </Row>
+               </SidebarMenuWrapper>
+               <Col span={17}>
+                  {
+                     orders?.map((order) => {
+                        return (
+                           <MyOrdersCard>
                               <Row justify="space-between">
-                                 <Col span={6}>
+                                 <Col span={10}>
                                     <div style={{ fontWeight: '700', fontSize: '16px', marginBottom: '6px' }}>
-                                       MÃ ĐƠN HÀNG
+                                       MÃ ĐƠN #{order?._id}
                                     </div>
                                     <div style={{ fontWeight: '700', fontSize: '16px' }}>
                                        Tổng Tiền: {order?.totalPrice?.toLocaleString()} VNĐ
                                     </div>
                                  </Col>
-                                 <Col span={8} style={{ alignItems: 'center' }}>
+                                 <Col span={7} style={{ alignItems: 'center' }}>
                                     <div style={{ fontWeight: '500', fontSize: '14px', margin: '2px 0px 6px 0px' }}>
                                        Phương Thức Thanh Toán: {order?.paymentMethod}
                                     </div>
@@ -151,15 +225,15 @@ const MyOrdersPage = () => {
                                        Ngày Đặt Hàng: {convertDateType(order?.createdAt)}
                                     </div>
                                     <div style={{ fontSize: '16px' }}>
-                                       Trạng Thái: {order?.status}
+                                       Trạng Thái: {convertOrderStatus(order?.status)}
                                     </div>
-                                    {order?.status === 'Chờ xác nhận' && (
+                                    {order?.status === 'pending' && (
                                        <div style={{ marginTop: '10px' }}>
                                           <Popconfirm
                                              placement='topRight'
                                              title="Xác nhận hủy đơn hàng"
                                              description={<span>Bạn chỉ có thể hủy với đơn hàng ở trạng thái <b>Chờ xác nhận</b>.<br />
-                                             Bạn chắc chắn muốn hủy đơn hàng này không?</span>}
+                                                Bạn chắc chắn muốn hủy đơn hàng này không?</span>}
                                              onConfirm={() => handleCancelOrder(order)}
                                              okText="Chắc chắn"
                                              cancelText="Không"
@@ -181,15 +255,12 @@ const MyOrdersPage = () => {
                               </Row>
                               <Divider />
                               <CollapseWrapper ghost items={items(order)} />
-                           </Card>
-                        </Col>
-                        <Col span={7}>
-
-                        </Col>
-                     </Row >
-                  )
-               })
-            }
+                           </MyOrdersCard>
+                        )
+                     })
+                  }
+               </Col>
+            </Row >
          </div >
       </LoadingComponent >
    )

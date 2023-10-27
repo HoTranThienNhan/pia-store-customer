@@ -21,7 +21,6 @@ export function App() {
     let { storageData, decoded } = handleDecoded();
     if (decoded?.id) {
       handleGetUserDetails(decoded?.id, storageData);
-      console.log(localStorage);
     }
     setIsLoading(false);
   }, []);

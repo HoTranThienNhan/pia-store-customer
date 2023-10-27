@@ -114,7 +114,6 @@ const ProductManagementComponent = () => {
     // #region
     const getAllProducts = async () => {
         const res = await ProductService.getAllProducts();
-        const { total } = res;
         return res;
     }
     const queryAllProducts = useQuery({

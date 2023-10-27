@@ -1,15 +1,17 @@
 import { Col, Menu, Row } from 'antd';
 import React, { useState } from 'react';
 import { getItem } from '../../utils';
-import { ShopOutlined, TeamOutlined } from '@ant-design/icons';
+import { InboxOutlined, ShopOutlined, TeamOutlined } from '@ant-design/icons';
 import { WrapperAdminMenuSidebar } from './style';
 import UserManagementComponent from '../../components/Admin/UserManagementComponent/UserManagementComponent';
 import ProductManagementComponent from '../../components/Admin/ProductManagementComponent/ProductManagementComponent';
+import OrderManagementComponent from '../../components/Admin/OrderManagementComponent/OrderManagementComponent';
 
 const AdminPage = () => {
     const items = [
         getItem('Sản Phẩm', 'products', <ShopOutlined />),
-        getItem('Người Dùng', 'users', <TeamOutlined />)
+        getItem('Người Dùng', 'users', <TeamOutlined />),
+        getItem('Đơn Hàng', 'orders', <InboxOutlined />)
     ];
 
     const [selectedKey, setSelectedKey] = useState('products');
@@ -19,6 +21,8 @@ const AdminPage = () => {
                 return (<ProductManagementComponent />);
             case 'users':
                 return (<UserManagementComponent />);
+            case 'orders':
+                return (<OrderManagementComponent />);
             default:
                 return (<></>);
         }

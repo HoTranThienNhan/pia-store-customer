@@ -38,3 +38,29 @@ export const convertDateType = (date) => {
         return null;
     }
 }
+
+export const convertOrderStatus = (status) => {
+    try {
+        if (status === 'pending') {
+            return 'Chờ Xác Nhận';
+        } else if (status === 'pickingup') {
+            return 'Chờ Lấy Hàng';
+        } else if (status === 'delivering') {
+            return 'Đang Giao';
+        } else if (status === 'delivered') {
+            return 'Đã Giao';
+        } else if (status === 'canceled') {
+            return 'Đã Hủy';
+        }
+    } catch (e) {
+        return '';
+    }
+}
+
+export const getTotalAmountOrder = (order) => {
+    let totalAmount = 0;
+    order?.orderItems?.map((orderItem) => {
+        totalAmount += orderItem.amount;
+    });
+    return totalAmount;
+}

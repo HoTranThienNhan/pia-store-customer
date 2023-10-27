@@ -86,7 +86,7 @@ const MenuPage = () => {
     }
 
     return (
-        <div id="container" style={{ padding: '85px 90px 0px 90px', height: '1500px' }}>
+        <div id="container" style={{ padding: '85px 90px 80px 90px', height: '100%' }}>
             <Breadcrumb
                 style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '40px' }}
                 items={[

@@ -352,7 +352,7 @@ const CheckoutPage = () => {
 
     return (
         // <LoadingComponent isLoading={isLoading}>
-        <div id="container" style={{ padding: '85px 120px 0px 120px', height: '1500px' }}>
+        <div id="container" style={{ padding: '85px 120px 80px 120px', height: '100%' }}>
             <Breadcrumb
                 style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '20px', userSelect: 'none' }}
                 items={[
