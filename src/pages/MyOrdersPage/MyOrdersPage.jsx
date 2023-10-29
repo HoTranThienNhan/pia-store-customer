@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Card, Checkbox, Col, Collapse, Divider, Image, Menu, Popconfirm, Row } from "antd";
+import { Avatar, Breadcrumb, Button, Card, Checkbox, Col, Collapse, Divider, Image, Menu, Popconfirm, Row } from "antd";
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import { useNavigate } from "react-router-dom";
 import { CardWrapper, CollapseWrapper, MyOrdersCard, SidebarMenuWrapper } from "./style";
@@ -7,7 +7,7 @@ import * as OrderService from '../../services/OrderService';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { convertDateType, convertOrderStatus } from "../../utils";
 import { useMutationHooks } from '../../hooks/useMutationHook';
-import { QuestionCircleOutlined, ShopOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined, ShopOutlined, UserOutlined } from "@ant-design/icons";
 import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
 import { getItem } from '../../utils';
 import { useState } from "react";
@@ -189,7 +189,9 @@ const MyOrdersPage = () => {
                         <CardWrapper>
                            <Row>
                               <Col span={6}>
-                                 <Image className="user-avatar-info" src={user?.avatar} alt="avatar" preview={false} draggable={false} />
+                                 {user?.avatar
+                                    ? <Image className="user-avatar-info" src={user?.avatar} alt="avatar" preview={false} draggable={false} />
+                                    : <Avatar size={50} icon={<UserOutlined />} />}
                               </Col>
                               <Col span={18}>
                                  <div style={{ fontWeight: '600', fontSize: '16px' }}>Xin chào, {user?.name ? user?.name : 'user'}!</div>

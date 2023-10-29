@@ -10,19 +10,8 @@ import LoadingComponent from '../../components/LoadingComponent/LoadingComponent
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { addOrderProduct } from '../../redux/slices/orderSlice';
-
-const items = [
-   {
-      key: '1',
-      label: 'Chi tiết',
-      children: 'Content of Tab Pane 1'
-   },
-   {
-      key: '2',
-      label: 'Đánh giá',
-      children: 'Content of Tab Pane 2'
-   }
-]
+import ProductReviewsComponent from '../../components/ProductReviewsComponent/ProductReviewsComponent';
+import * as ReviewService from '../../services/ReviewService';
 
 const ProductsPage = () => {
    const user = useSelector((state) => state?.user);
@@ -53,6 +42,41 @@ const ProductsPage = () => {
    );
 
 
+   /*** REVIEWS ***/
+   const getProductReviews = async (context) => {
+      const id = productDetails?._id;
+      if (id) {
+         const res = await ReviewService.getReviewByProduct(id);
+         if (res?.status === 'ERR') {
+            // navigate('/NotFoundPage');
+         }
+         console.log(res?.data);
+         return res?.data;
+      }
+   }
+   const { isProductReviewsLoading, data: productReviews } = useQuery(
+      {
+         queryKey: ['productReviews', productDetails?._id],
+         queryFn: getProductReviews,
+         enabled: !!productDetails?._id,
+      }
+   );
+
+   const items = [
+      // {
+      //    key: '1',
+      //    label: 'Chi tiết',
+      //    children: 'Content of Tab Pane 1'
+      // },
+      {
+         key: '1',
+         label: 'Đánh giá',
+         children:<ProductReviewsComponent productReviewsArray={productReviews} />
+      }
+   ]
+
+
+   /*** STARS RATING ***/
    const renderStarsRating = (ratingCount) => {
       const stars = [];
       for (let i = 0; i < ratingCount; i++) {
@@ -65,6 +89,7 @@ const ProductsPage = () => {
    }
 
 
+   /*** PRODUCT COUNT ***/
    const minProductCount = 1;
    const maxProductCount = 10;
    const addProductCount = (e) => {
@@ -82,7 +107,6 @@ const ProductsPage = () => {
          setProductCount(`${e}`);
       }
    }
-
 
 
    /*** NAVIGATE ***/
@@ -115,7 +139,7 @@ const ProductsPage = () => {
 
    return (
       <LoadingComponent isLoading={isLoading}>
-         <div id="container" style={{ padding: '85px 70px 0px 70px', height: '1500px' }}>
+         <div id="container" style={{ padding: '85px 70px 0px 70px', height: '100%' }}>
             {productDetails && <>
                <Breadcrumb
                   style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '40px' }}

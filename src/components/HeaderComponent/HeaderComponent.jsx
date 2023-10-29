@@ -79,7 +79,6 @@ const HeaderComponent = () => {
       setLoading(true);
       // clear old access token in local storage
       localStorage.removeItem("accessToken");
-      console.log(localStorage);
       await UserService.signoutUser();
       dispatch(resetUser());
       setLoading(false);
