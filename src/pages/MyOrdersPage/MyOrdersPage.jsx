@@ -11,6 +11,8 @@ import { QuestionCircleOutlined, ShopOutlined } from "@ant-design/icons";
 import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
 import { getItem } from '../../utils';
 import { useState } from "react";
+import * as ReviewService from '../../services/ReviewService';
+
 const MyOrdersPage = () => {
    const user = useSelector((state) => state?.user);
 
@@ -72,12 +74,16 @@ const MyOrdersPage = () => {
 
 
    /*** ORDER ITEMS ***/
+   const handleNavigateReviewProduct = (orderId, productId) => {
+      navigate(`/review/${orderId}/${productId}`);
+   }
    const items = (order) => [
       {
          key: '1',
          label: `Chi tiết đơn hàng (${order?.orderItems?.length ? order?.orderItems?.length : 0} sản phẩm)`,
          children:
             order?.orderItems?.map((orderItems, index) => {
+               let h = 8;
                return (
                   <>
                      <Row>
@@ -98,6 +104,20 @@ const MyOrdersPage = () => {
                                  <div>{orderItems?.price?.toLocaleString()}  VNĐ</div>
                               </Col>
                            </Row>
+                        </Col>
+                        <Col span={6} style={{ display: 'flex', alignItems: 'center' }}>
+
+                           {
+                              (order?.status === 'delivered') ? (
+                                 (orderItems?.isReviewed === false) ?
+                                    <Button type="primary" onClick={() => handleNavigateReviewProduct(order?._id, orderItems?.productId)}>
+                                       Đánh Giá
+                                    </Button>
+                                    : <Button type="primary" disabled>Đã Đánh Giá</Button>
+                              ) : (
+                                 <></>
+                              )
+                           }
                         </Col>
                      </Row>
                      {index + 1 !== order?.orderItems?.length && (<Divider />)}

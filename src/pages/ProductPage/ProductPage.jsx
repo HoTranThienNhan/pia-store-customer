@@ -44,7 +44,6 @@ const ProductsPage = () => {
          return res?.data;
       }
    }
-
    const { isLoading, data: productDetails } = useQuery(
       {
          queryKey: ['productDetails', id],
@@ -107,6 +106,7 @@ const ProductsPage = () => {
                image: productDetails?.image,
                price: productDetails?.price,
                product: productDetails?._id,
+               productId: productDetails?.id,
             },
             userId: user?.id,
          }));

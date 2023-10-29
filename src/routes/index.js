@@ -11,6 +11,7 @@ import UserProfilePage from "../pages/UserProfilePage/UserProfilePage";
 import CheckoutPage from "../pages/CheckoutPage/CheckoutPage";
 import OrderSuccessPage from "../pages/OrderSuccessPage/OrderSuccessPage";
 import MyOrdersPage from "../pages/MyOrdersPage/MyOrdersPage";
+import ReviewPage from "../pages/ReviewPage/ReviewPage";
 
 
 export const routes = [
@@ -62,6 +63,13 @@ export const routes = [
     {
         path: '/menu/products/:id',
         page: ProductPage,
+        isShowHeader: true,
+        isPrivate: false,
+        exact: true,
+    },
+    {
+        path: '/review/:orderId/:productId',
+        page: ReviewPage,
         isShowHeader: true,
         isPrivate: false,
         exact: true,
