@@ -22,6 +22,7 @@ const CheckoutPage = () => {
         fullname: user?.name,
         phone: user?.phone,
         address: user?.address,
+        email: user?.email,
     });
 
     const dispatch = useDispatch();
@@ -214,6 +215,36 @@ const CheckoutPage = () => {
                             />
                         </FloatingLabelComponent>
                     </Form.Item>
+                    <Form.Item
+                        label=""
+                        validateStatus={"validating"}
+                        help=""
+                        style={{ marginBottom: '0px' }}
+                        className='auth-form-item-product-count-in-stock'
+                    >
+                        <FloatingLabelComponent
+                            label="Email"
+                            value={buyerState?.email}
+                            styleBefore={{ left: '37px', top: '31px' }}
+                            styleAfter={{ left: '37px', top: '23px' }}
+                        >
+                            <InputFormComponent
+                                name="email"
+                                placeholder=""
+                                prefix={<HomeOutlined className="site-form-item-icon" />}
+                                className='auth-input-product-count-in-stock'
+                                value={buyerState?.email}
+                                onChange={handleOnChangeBuyerState}
+                                style={{
+                                    borderRadius: '10px',
+                                    padding: '0px 18px',
+                                    marginTop: '20px',
+                                    border: '1px solid #000',
+                                    height: '45px'
+                                }}
+                            />
+                        </FloatingLabelComponent>
+                    </Form.Item>
                 </Form>,
         },
         {
@@ -288,6 +319,7 @@ const CheckoutPage = () => {
             order?.deliveryInformation?.fullname &&
             order?.deliveryInformation?.phone &&
             order?.deliveryInformation?.address &&
+            order?.deliveryInformation?.email &&
             order?.paymentMethod &&
             order?.shippingPrice &&
             order?.subtotalPrice &&
@@ -301,6 +333,7 @@ const CheckoutPage = () => {
                         fullname: order?.deliveryInformation?.fullname,
                         phone: order?.deliveryInformation?.phone,
                         address: order?.deliveryInformation?.address,
+                        email: order?.deliveryInformation?.email,
                         paymentMethod: order?.paymentMethod,
                         shippingPrice: order?.shippingPrice,
                         subtotalPrice: order?.subtotalPrice,

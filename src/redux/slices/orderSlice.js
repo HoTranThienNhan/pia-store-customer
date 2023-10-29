@@ -47,6 +47,7 @@ export const orderSlice = createSlice({
                             fullname: '',
                             phone: '',
                             address: '',
+                            email: '',
                         },
                         paymentMethod: 'COD',
                         subtotalPrice: 0,
@@ -210,6 +211,7 @@ export const orderSlice = createSlice({
                     order.deliveryInformation['fullname'] = buyerState?.fullname;
                     order.deliveryInformation['phone'] = buyerState?.phone;
                     order.deliveryInformation['address'] = buyerState?.address;
+                    order.deliveryInformation['email'] = buyerState?.email;
                 }
             })
         },
