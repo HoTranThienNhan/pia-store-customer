@@ -1,8 +1,8 @@
-import { Badge, Breadcrumb, Button, Card, Checkbox, Col, Divider, Form, Image, InputNumber, Popconfirm, Result, Row, Steps, Tooltip, message } from "antd";
+import { Badge, Breadcrumb, Button, Card, Checkbox, Col, Divider, Form, Image, InputNumber, Popconfirm, Result, Row, Select, Steps, Tooltip, message } from "antd";
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import { useNavigate } from "react-router-dom";
-import { BadgeCheckedPaymentMethod, CardPaymentMethod, InputNumberCustom, ScrollBarCustom } from "./style";
-import {  HomeOutlined, IdcardOutlined, PhoneOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { BadgeCheckedPaymentMethod, CardPaymentMethod, InputNumberCustom, InputSelectCustom, ScrollBarCustom } from "./style";
+import { HomeOutlined, IdcardOutlined, PhoneOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { decreaseAmount, increaseAmount, removeMultipleOrderProducts, removeOrderProduct, selectedOrderProducts, setAmount, setDeliveryInformation, setPaymentMethod } from "../../redux/slices/orderSlice";
@@ -12,16 +12,20 @@ import CodMethodImage from "../../assets/images/checkout-payment/cod-method.png"
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import * as OrderService from '../../services/OrderService';
 import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
+import * as AddressService from '../../services/AddressService';
+import { useQuery } from "@tanstack/react-query";
+import { convertAddressString } from "../../utils";
 
 const CheckoutPage = () => {
     const user = useSelector((state) => state.user);
-   // state?.order?.findIndex(prop => prop.user === user?.id) means find index of recent user order state
-   const order = useSelector((state) => state?.order[state?.order?.findIndex(prop => prop.user === user?.id)]);
+    // state?.order?.findIndex(prop => prop.user === user?.id) means find index of recent user order state
+    const order = useSelector((state) => state?.order[state?.order?.findIndex(prop => prop.user === user?.id)]);
 
     const [buyerState, setBuyerState] = useState({
         fullname: user?.name,
         phone: user?.phone,
-        address: user?.address,
+        // address: user?.address,
+        address: '',
         email: user?.email,
     });
 
@@ -118,6 +122,84 @@ const CheckoutPage = () => {
     // #endregion
 
 
+    /*** ADDRESS SELECT ***/
+    // #region
+    const [provinces, setProvinces] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
+
+    const [selectedProvince, setSelectedProvince] = useState('Chọn tỉnh thành' );
+    const [selectedDistrict, setSelectedDistrict] = useState('Chọn quận huyện' );
+    const [selectedWard, setSelectedWard] = useState('Chọn phường xã' );
+
+    const renderProvince = async () => {
+        const res = await AddressService.getProvinces();
+        res?.map((province) => {
+            setProvinces(
+                oldArray => [...oldArray, {
+                    value: province.name,
+                    label: province.name,
+                    code: province.code,
+                }]
+            );
+        });
+        return res;
+    }
+    useEffect(() => {
+        renderProvince();
+    }, []);
+    const handleChangeProvince = async (value, province) => {
+        const provinceCode = province?.code;
+
+        setSelectedProvince(value);
+        setSelectedDistrict('Chọn quận huyện');
+        setSelectedWard('Chọn phường xã');
+
+        const res = await AddressService.getDistricts(provinceCode);
+        setDistricts([]);
+        setWards([]);
+        res?.map((districts) => {
+            setDistricts(
+                oldArray => [...oldArray, {
+                    value: districts.name,
+                    label: districts.name,
+                    code: districts.code,
+                }]
+            );
+        });
+        return res;
+    }
+    const handleChangeDistrict = async (value, district) => {
+        const districtCode = district?.code;
+
+        setSelectedDistrict(value);
+        setSelectedWard('Chọn phường xã');
+
+        const res = await AddressService.getWards(districtCode);
+        setWards([]);
+        res?.map((wards) => {
+            setWards(
+                oldArray => [...oldArray, {
+                    value: wards.name,
+                    label: wards.name,
+                    code: wards.code,
+                }]
+            );
+        });
+        return res;
+    }
+    const handleChangeWard = async (value, ward) => {
+        setSelectedWard(value);
+        const thisWard = value;
+        const address = convertAddressString(selectedProvince, selectedDistrict, thisWard);
+        setBuyerState({
+            ...buyerState,
+            address: address
+        });
+    }
+    // #endregion
+
+
     /*** ORDER INFORMATION STEPS ***/
     // #region
     const steps = [
@@ -149,7 +231,7 @@ const CheckoutPage = () => {
                                     borderRadius: '10px',
                                     padding: '0px 18px',
                                     marginTop: '20px',
-                                    border: '1px solid #000',
+                                    border: '1px solid #9a9a9a',
                                     height: '45px'
                                 }}
                             />
@@ -179,37 +261,7 @@ const CheckoutPage = () => {
                                     borderRadius: '10px',
                                     padding: '0px 18px',
                                     marginTop: '20px',
-                                    border: '1px solid #000',
-                                    height: '45px'
-                                }}
-                            />
-                        </FloatingLabelComponent>
-                    </Form.Item>
-                    <Form.Item
-                        label=""
-                        validateStatus={"validating"}
-                        help=""
-                        style={{ marginBottom: '0px' }}
-                        className='auth-form-item-product-count-in-stock'
-                    >
-                        <FloatingLabelComponent
-                            label="Địa chỉ"
-                            value={buyerState?.address}
-                            styleBefore={{ left: '37px', top: '31px' }}
-                            styleAfter={{ left: '37px', top: '23px' }}
-                        >
-                            <InputFormComponent
-                                name="address"
-                                placeholder=""
-                                prefix={<HomeOutlined className="site-form-item-icon" />}
-                                className='auth-input-product-count-in-stock'
-                                value={buyerState?.address}
-                                onChange={handleOnChangeBuyerState}
-                                style={{
-                                    borderRadius: '10px',
-                                    padding: '0px 18px',
-                                    marginTop: '20px',
-                                    border: '1px solid #000',
+                                    border: '1px solid #9a9a9a',
                                     height: '45px'
                                 }}
                             />
@@ -239,11 +291,53 @@ const CheckoutPage = () => {
                                     borderRadius: '10px',
                                     padding: '0px 18px',
                                     marginTop: '20px',
-                                    border: '1px solid #000',
+                                    border: '1px solid #9a9a9a',
                                     height: '45px'
                                 }}
                             />
                         </FloatingLabelComponent>
+                    </Form.Item>
+
+                    <Form.Item
+                        label=""
+                        validateStatus={"validating"}
+                        help=""
+                        style={{ marginBottom: '0px' }}
+                        className='auth-form-item-product-count-in-stock'
+                    >
+                        <Row justify='space-between' style={{ marginTop: '20px' }}>
+                            <Col>
+                                <InputSelectCustom
+                                    defaultValue='Chọn tỉnh thành'
+                                    style={{
+                                        width: 220,
+                                    }}
+                                    onChange={handleChangeProvince}
+                                    value={selectedProvince}
+                                    options={provinces}
+                                />
+                            </Col>
+                            <InputSelectCustom
+                                defaultValue='Chọn quận huyện'
+                                style={{
+                                    width: 220,
+                                }}
+                                onChange={handleChangeDistrict}
+                                value={selectedDistrict}
+                                options={districts}
+                            />
+                            <Col>
+                                <InputSelectCustom
+                                    defaultValue='Chọn phường xã'
+                                    style={{
+                                        width: 220,
+                                    }}
+                                    onChange={handleChangeWard}
+                                    value={selectedWard}
+                                    options={wards}
+                                />
+                            </Col>
+                        </Row>
                     </Form.Item>
                 </Form>,
         },
@@ -372,9 +466,13 @@ const CheckoutPage = () => {
     // #endregion
 
 
+
     /*** NAVIGATE ***/
     // #region
     const navigate = useNavigate();
+    // if (order?.selectedOrderItems?.length === 0) {
+    //     navigate('/NotFoundPage');
+    // }
     const handleNavigateHomePage = () => {
         navigate('/');
     }
@@ -404,7 +502,7 @@ const CheckoutPage = () => {
             <Row justify="center">
                 <Divider>
                     <Col style={{ fontSize: '32px' }} >
-                        <span style={{ fontWeight: '700' }}>Checkout </span>
+                        <span style={{ fontWeight: '700' }}>Checkout</span>
                         <span>({order?.orderItems?.length})</span>
                     </Col>
                 </Divider>
@@ -430,13 +528,17 @@ const CheckoutPage = () => {
                                             <Button
                                                 type="primary"
                                                 onClick={() => next()}
-                                                disabled={!buyerState.fullname.length || !buyerState.phone.length || !buyerState.address.length}>
-                                                Next
+                                                disabled={!buyerState.fullname.length || !buyerState.phone.length 
+                                                || selectedProvince === 'Chọn tỉnh thành' 
+                                                || selectedDistrict === 'Chọn quận huyện' 
+                                                || selectedWard === 'Chọn phường xã' 
+                                            }>
+                                                Tiếp Tục
                                             </Button>
                                         )}
                                         {currentStep === steps.length - 1 && (
                                             <Button type="primary" onClick={() => message.success('Processing complete!')}>
-                                                Done
+                                               Xong
                                             </Button>
                                         )}
                                         {currentStep > 0 && (
@@ -446,7 +548,7 @@ const CheckoutPage = () => {
                                                 }}
                                                 onClick={() => prev()}
                                             >
-                                                Previous
+                                                Quay Lại
                                             </Button>
                                         )}
                                     </div>

@@ -153,6 +153,9 @@ const MyOrdersPage = () => {
 
    /*** NAVIGATE ***/
    const navigate = useNavigate();
+   if (user?.id === '') {
+      navigate('/NotFoundPage');
+  }
    const handleNavigateHomePage = () => {
       navigate('/');
    }

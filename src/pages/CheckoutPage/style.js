@@ -1,4 +1,4 @@
-import { Badge, Card } from "antd";
+import { Badge, Card, Select } from "antd";
 import { styled } from "styled-components";
 
 export const InputNumberCustom = styled.div`
@@ -40,8 +40,16 @@ export const InputNumberCustom = styled.div`
     .input-number-area {
         height: 38px;
         width: 100px;
-        border: 1px solid #000;
+        border: 1px solid #9a9a9a;
         font-size: 18px;
+    }
+`
+
+export const InputSelectCustom = styled(Select)`
+    .ant-select-selector {
+        height: 40px!important;
+        padding-top: 5px!important;
+        border: 1px solid #9a9a9a!important;
     }
 `
 

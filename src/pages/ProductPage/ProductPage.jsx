@@ -28,7 +28,7 @@ const ProductsPage = () => {
       if (id) {
          const res = await ProductService.getActiveProductDetails(id);
          if (res?.status === 'ERR') {
-            // navigate('/NotFoundPage');
+            navigate('/NotFoundPage');
          }
          return res?.data;
       }
@@ -50,7 +50,6 @@ const ProductsPage = () => {
          if (res?.status === 'ERR') {
             // navigate('/NotFoundPage');
          }
-         console.log(res?.data);
          return res?.data;
       }
    }
@@ -71,7 +70,7 @@ const ProductsPage = () => {
       {
          key: '1',
          label: 'Đánh giá',
-         children:<ProductReviewsComponent productReviewsArray={productReviews} />
+         children: <ProductReviewsComponent productReviewsArray={productReviews} />
       }
    ]
 

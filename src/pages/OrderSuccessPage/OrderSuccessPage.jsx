@@ -55,15 +55,15 @@ const OrderSuccessPage = () => {
 
     /*** NAVIGATE ***/
     const navigate = useNavigate();
+    // if (order?.selectedOrderItems?.length === 0 || user?.id === '') {
+    //     navigate('/NotFoundPage');
+    // }
     const handleNavigateHomePage = () => {
         navigate('/');
     }
     const handleNavigateMenuPage = () => {
         navigate('/menu');
     }
-    // if (order?.selectedOrderItems?.length === 0) {
-    //     navigate('/');
-    // }
     
 
     return (
@@ -82,7 +82,7 @@ const OrderSuccessPage = () => {
             </Breadcrumb>
             <div>
                 <Row justify="space-between">
-                    <Col span={17} style={{ borderRight: '2px solid #dcdcdc4d' }}>
+                    <Col span={16} style={{ borderRight: '2px solid #dcdcdc4d' }}>
                         <Result
                             status="success"
                             title={<span style={{ fontWeight: 'bold', fontSize: '32px' }}>Đơn đặt hàng đã được xác nhận!</span>}
@@ -101,7 +101,7 @@ const OrderSuccessPage = () => {
                             ]}
                         />
                     </Col>
-                    <Col span={6}>
+                    <Col span={7}>
                         <Row justify="space-between" align="middle" style={{ marginBottom: '20px' }}>
                             <Col style={{ fontSize: '20px', fontWeight: '700' }}>
                                 ĐƠN HÀNG

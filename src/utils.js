@@ -64,3 +64,12 @@ export const getTotalAmountOrder = (order) => {
     });
     return totalAmount;
 }
+
+export const convertAddressString = (province, district, ward) => {
+    try {
+        // convert to string "ward, district, province"
+        return ward + ", " + district + ", " + province;
+    } catch (e) {
+        return null;
+    }
+}
