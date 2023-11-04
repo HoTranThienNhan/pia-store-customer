@@ -13,7 +13,6 @@ import { useMutationHooks } from '../../hooks/useMutationHook';
 import * as OrderService from '../../services/OrderService';
 import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
 import * as AddressService from '../../services/AddressService';
-import { useQuery } from "@tanstack/react-query";
 import { convertAddressString } from "../../utils";
 
 const CheckoutPage = () => {
@@ -204,7 +203,7 @@ const CheckoutPage = () => {
     // #region
     const steps = [
         {
-            title: 'Thông tin người nhận',
+            title: 'Thông tin nhận hàng',
             content:
                 <Form autoComplete="off" style={{ padding: '0px 50px 30px 0px' }}>
                     <Form.Item

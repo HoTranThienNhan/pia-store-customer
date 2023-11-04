@@ -1,4 +1,4 @@
-import { Avatar, Button, Col, Form, Modal, Popconfirm, Row, Spin, Upload, message } from 'antd';
+import { Avatar, Breadcrumb, Button, Card, Col, Form, Modal, Popconfirm, Row, Spin, Upload, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import FloatingLabelComponent from '../../components/FloatingLabelComponent/FloatingLabelComponent';
 import InputFormComponent from '../../components/InputFormComponent/InputFormComponent';
@@ -97,192 +97,212 @@ const UserEditProfilePage = () => {
             avatar,
             accessToken: user?.accessToken
         });
+        navigate('/user/profile');
     }
 
     const handleCancelEditProfile = async () => {
-        navigate('/user/profile')
+        navigate('/user/profile');
+    }
+    const handleNavigateHomePage = async () => {
+        navigate('/');
     }
 
     return (
-        <WrapperUserEditProfile id="container" style={{ padding: '125px 70px 40px 70px', height: '1500px' }}>
+        <WrapperUserEditProfile id="container" style={{ padding: '125px 70px 40px 70px', height: '1500px', backgroundColor: '#d4e3fa5e' }}>
+            <Breadcrumb
+                style={{ paddingLeft: '24px', marginBottom: '20px', userSelect: 'none' }}
+                items={[
+                    {
+                        title: <span onClick={handleNavigateHomePage} style={{ cursor: 'pointer' }}>Trang chủ</span>,
+                    },
+                    {
+                        title: <span>Thông tin người dùng</span>,
+                    },
+                ]}
+            >
+            </Breadcrumb>
             <Row>
                 <Col span={6}>
-                    <div>HHH</div>
+                    <div></div>
                 </Col>
-                <Col span={18}>
+                <Col span={14}>
                     <div style={{ fontWeight: 'bold', fontSize: '24px', marginBottom: '24px' }}>CHỈNH SỬA THÔNG TIN</div>
-                    <Form autoComplete="off">
-                        <Form.Item
-                            label=""
-                            validateStatus={"validating"}
-                            help=""
-                            style={{ marginBottom: '0px', width: '450px' }}
-                            className='edit-form-item-avatar'
-                        >
-                            <WrapperUploadUserAvatar>
-                                <div style={{ marginTop: '20px', fontWeight: 'bold' }}>Ảnh đại diện</div>
-                                <div style={{ display: 'grid' }}>
-                                    <div style={{ marginTop: '10px', marginBottom: '10px' }}>
-                                        {avatar ?
-                                            (<img className='edit-uploaded-user-avatar' src={avatar} alt='avatar' />) :
-                                            <Avatar className='edit-default-avatar' size={90} icon={<UserOutlined />} />}
-                                    </div>
-                                    <div>
-                                        <Upload onChange={handleOnChangeAvatar} maxCount={1}>
-                                            <Button className='edit-avatar-upload-button' icon={<UploadOutlined />} type='primary' ghost>
-                                                Upload
-                                            </Button>
-                                        </Upload>
-                                        {avatar &&
-                                            <Button className='edit-avatar-remove-button' icon={<DeleteOutlined />} onClick={handleRemoveAvatar} danger>
-                                                Remove
-                                            </Button>}
-                                    </div>
-                                </div>
-                            </WrapperUploadUserAvatar>
-                        </Form.Item>
-                        <Form.Item
-                            label=""
-                            validateStatus={"validating"}
-                            help=""
-                            style={{ marginBottom: '0px', width: '450px' }}
-                            className='edit-form-item-fullname'
-                        >
-                            <FloatingLabelComponent
-                                label="Họ tên"
-                                value={fullname}
-                                styleBefore={{ left: '37px', top: '31px' }}
-                                styleAfter={{ left: '37px', top: '23px' }}
-                            >
-                                <InputFormComponent
-                                    placeholder=""
-                                    prefix={<IdcardOutlined className="site-form-item-icon" />}
-                                    className='edit-input-fullname'
-                                    value={fullname}
-                                    onChange={handleOnChangeFullname}
-                                />
-                            </FloatingLabelComponent>
-                        </Form.Item>
-                        <Form.Item
-                            label=""
-                            validateStatus={"validating"}
-                            help=""
-                            style={{ marginBottom: '0px', width: '450px' }}
-                            className='edit-form-item-email'
-                        >
-                            <FloatingLabelComponent
-                                label="Tài khoản email"
-                                value={email}
-                                styleBefore={{ left: '37px', top: '31px' }}
-                                styleAfter={{ left: '37px', top: '23px' }}
-                            >
-                                <InputFormComponent
-                                    placeholder=""
-                                    prefix={<UserOutlined className="site-form-item-icon" />}
-                                    className='edit-input-email'
-                                    value={email}
-                                    onChange={handleOnChangeEmail}
-                                />
-                            </FloatingLabelComponent>
-                        </Form.Item>
-                        <Form.Item
-                            label=""
-                            validateStatus={"validating"}
-                            help=""
-                            style={{ marginBottom: '0px', width: '450px' }}
-                            className='edit-form-item-phone'
-                        >
-                            <FloatingLabelComponent
-                                label="Số điện thoại"
-                                value={phone}
-                                styleBefore={{ left: '37px', top: '31px' }}
-                                styleAfter={{ left: '37px', top: '23px' }}
-                            >
-                                <InputFormComponent
-                                    placeholder=""
-                                    prefix={<PhoneOutlined className="site-form-item-icon" />}
-                                    className='edit-input-phone'
-                                    value={phone}
-                                    onChange={handleOnChangePhone}
-                                />
-                            </FloatingLabelComponent>
-                        </Form.Item>
-                        <Form.Item
-                            label=""
-                            validateStatus={"validating"}
-                            help=""
-                            style={{ marginBottom: '0px', width: '450px' }}
-                            className='edit-form-item-address'
-                        >
-                            <FloatingLabelComponent
-                                label="Địa chỉ"
-                                value={address}
-                                styleBefore={{ left: '37px', top: '31px' }}
-                                styleAfter={{ left: '37px', top: '23px' }}
-                            >
-                                <InputFormComponent
-                                    placeholder=""
-                                    prefix={<HomeOutlined className="site-form-item-icon" />}
-                                    className='edit-input-address'
-                                    value={address}
-                                    onChange={handleOnChangeAddress}
-                                />
-                            </FloatingLabelComponent>
-                        </Form.Item>
-                        <Form.Item style={{ width: '450px' }}>
-                            <Row>
-                                <Col span={12} style={{ paddingRight: '15px' }}>
-                                    <Popconfirm
-                                        placement='bottomRight'
-                                        title="Xác nhận hủy"
-                                        description="Bạn chắc chắn muốn hủy thao tác?"
-                                        onConfirm={handleCancelEditProfile}
-                                        okText="Chắc chắn"
-                                        cancelText="Không"
-                                        icon={
-                                            <QuestionCircleOutlined
-                                                style={{
-                                                    color: 'red',
-                                                }}
-                                            />
-                                        }
+                    <Col span={24}>
+                        <Card style={{ padding: '0px 30px', borderRadius: '25px' }}>
+                            <Form autoComplete="off">
+                                <Form.Item
+                                    label=""
+                                    validateStatus={"validating"}
+                                    help=""
+                                    style={{ marginBottom: '0px', width: '450px' }}
+                                    className='edit-form-item-avatar'
+                                >
+                                    <WrapperUploadUserAvatar>
+                                        <div style={{ marginTop: '20px', fontWeight: 'bold' }}>Ảnh đại diện</div>
+                                        <div style={{ display: 'grid' }}>
+                                            <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+                                                {avatar ?
+                                                    (<img className='edit-uploaded-user-avatar' src={avatar} alt='avatar' />) :
+                                                    <Avatar className='edit-default-avatar' size={90} icon={<UserOutlined />} />}
+                                            </div>
+                                            <div>
+                                                <Upload onChange={handleOnChangeAvatar} maxCount={1}>
+                                                    <Button className='edit-avatar-upload-button' icon={<UploadOutlined />} type='primary' ghost>
+                                                        Upload
+                                                    </Button>
+                                                </Upload>
+                                                {avatar &&
+                                                    <Button className='edit-avatar-remove-button' icon={<DeleteOutlined />} onClick={handleRemoveAvatar} danger>
+                                                        Remove
+                                                    </Button>}
+                                            </div>
+                                        </div>
+                                    </WrapperUploadUserAvatar>
+                                </Form.Item>
+                                <Form.Item
+                                    label=""
+                                    validateStatus={"validating"}
+                                    help=""
+                                    style={{ marginBottom: '0px', width: '450px' }}
+                                    className='edit-form-item-fullname'
+                                >
+                                    <FloatingLabelComponent
+                                        label="Họ tên"
+                                        value={fullname}
+                                        styleBefore={{ left: '37px', top: '31px' }}
+                                        styleAfter={{ left: '37px', top: '23px' }}
                                     >
-                                        <Button
-                                            htmlType='submit'
-                                            className='edit-button-cancel'
-                                            danger
-                                        >
-                                            Hủy
-                                        </Button>
-                                    </Popconfirm>
-                                </Col>
-                                <Col span={12} style={{ paddingLeft: '15px' }}>
-                                    <LoadingComponent isLoading={isLoading}>
-                                        <Popconfirm
-                                            placement='bottomLeft'
-                                            title="Xác nhận cập nhật thông tin"
-                                            description="Bạn chắc chắn muốn cập nhật thông tin này?"
-                                            onConfirm={handleSaveEditProfile}
-                                            okText="Chắc chắn"
-                                            cancelText="Không"
-                                        >
-                                            <Button
-                                                // disabled={!fullname.length
-                                                //     || !email.length
-                                                //     || !phone.length}
-                                                type="primary"
-                                                htmlType='submit'
-                                                className='edit-button-save'
-                                                danger
+                                        <InputFormComponent
+                                            placeholder=""
+                                            prefix={<IdcardOutlined className="site-form-item-icon" />}
+                                            className='edit-input-fullname'
+                                            value={fullname}
+                                            onChange={handleOnChangeFullname}
+                                        />
+                                    </FloatingLabelComponent>
+                                </Form.Item>
+                                <Form.Item
+                                    label=""
+                                    validateStatus={"validating"}
+                                    help=""
+                                    style={{ marginBottom: '0px', width: '450px' }}
+                                    className='edit-form-item-email'
+                                >
+                                    <FloatingLabelComponent
+                                        label="Tài khoản email"
+                                        value={email}
+                                        styleBefore={{ left: '37px', top: '31px' }}
+                                        styleAfter={{ left: '37px', top: '23px' }}
+                                    >
+                                        <InputFormComponent
+                                            placeholder=""
+                                            prefix={<UserOutlined className="site-form-item-icon" />}
+                                            className='edit-input-email'
+                                            value={email}
+                                            onChange={handleOnChangeEmail}
+                                        />
+                                    </FloatingLabelComponent>
+                                </Form.Item>
+                                <Form.Item
+                                    label=""
+                                    validateStatus={"validating"}
+                                    help=""
+                                    style={{ marginBottom: '0px', width: '450px' }}
+                                    className='edit-form-item-phone'
+                                >
+                                    <FloatingLabelComponent
+                                        label="Số điện thoại"
+                                        value={phone}
+                                        styleBefore={{ left: '37px', top: '31px' }}
+                                        styleAfter={{ left: '37px', top: '23px' }}
+                                    >
+                                        <InputFormComponent
+                                            placeholder=""
+                                            prefix={<PhoneOutlined className="site-form-item-icon" />}
+                                            className='edit-input-phone'
+                                            value={phone}
+                                            onChange={handleOnChangePhone}
+                                        />
+                                    </FloatingLabelComponent>
+                                </Form.Item>
+                                <Form.Item
+                                    label=""
+                                    validateStatus={"validating"}
+                                    help=""
+                                    style={{ marginBottom: '0px', width: '450px' }}
+                                    className='edit-form-item-address'
+                                >
+                                    <FloatingLabelComponent
+                                        label="Địa chỉ"
+                                        value={address}
+                                        styleBefore={{ left: '37px', top: '31px' }}
+                                        styleAfter={{ left: '37px', top: '23px' }}
+                                    >
+                                        <InputFormComponent
+                                            placeholder=""
+                                            prefix={<HomeOutlined className="site-form-item-icon" />}
+                                            className='edit-input-address'
+                                            value={address}
+                                            onChange={handleOnChangeAddress}
+                                        />
+                                    </FloatingLabelComponent>
+                                </Form.Item>
+                                <Form.Item style={{ width: '450px' }}>
+                                    <Row>
+                                        <Col span={12} style={{ paddingRight: '15px' }}>
+                                            <Popconfirm
+                                                placement='bottomRight'
+                                                title="Xác nhận hủy"
+                                                description="Bạn chắc chắn muốn hủy thao tác?"
+                                                onConfirm={handleCancelEditProfile}
+                                                okText="Chắc chắn"
+                                                cancelText="Không"
+                                                icon={
+                                                    <QuestionCircleOutlined
+                                                        style={{
+                                                            color: 'red',
+                                                        }}
+                                                    />
+                                                }
                                             >
-                                                Lưu
-                                            </Button>
-                                        </Popconfirm>
-                                    </LoadingComponent>
-                                </Col>
-                            </Row>
-                        </Form.Item>
-                    </Form>
+                                                <Button
+                                                    htmlType='submit'
+                                                    className='edit-button-cancel'
+                                                    danger
+                                                >
+                                                    Hủy
+                                                </Button>
+                                            </Popconfirm>
+                                        </Col>
+                                        <Col span={12} style={{ paddingLeft: '15px' }}>
+                                            <LoadingComponent isLoading={isLoading}>
+                                                <Popconfirm
+                                                    placement='bottomLeft'
+                                                    title="Xác nhận cập nhật thông tin"
+                                                    description="Bạn chắc chắn muốn cập nhật thông tin này?"
+                                                    onConfirm={handleSaveEditProfile}
+                                                    okText="Chắc chắn"
+                                                    cancelText="Không"
+                                                >
+                                                    <Button
+                                                        // disabled={!fullname.length
+                                                        //     || !email.length
+                                                        //     || !phone.length}
+                                                        type="primary"
+                                                        htmlType='submit'
+                                                        className='edit-button-save'
+                                                        danger
+                                                    >
+                                                        Lưu
+                                                    </Button>
+                                                </Popconfirm>
+                                            </LoadingComponent>
+                                        </Col>
+                                    </Row>
+                                </Form.Item>
+                            </Form>
+                        </Card>
+                    </Col>
                 </Col>
             </Row>
         </WrapperUserEditProfile>

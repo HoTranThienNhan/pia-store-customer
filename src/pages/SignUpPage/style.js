@@ -1,4 +1,4 @@
-import { Card } from "antd";
+import { Card, Select } from "antd";
 import { styled } from "styled-components";
 
 export const AuthCard = styled(Card)`
@@ -19,7 +19,7 @@ export const AuthCard = styled(Card)`
         border-radius: 25px;
         padding: 0px 18px; 
         margin-top: 20px; 
-        border: 1px solid #000;
+        border: 1px solid #9a9a9a;
     }
 
     .auth-input-fullname .ant-input, 
@@ -35,5 +35,22 @@ export const AuthCard = styled(Card)`
         border-radius: 25px; 
         margin-bottom: 20px; 
         margin-top: 20px;
+    }
+`
+
+export const InputSelectCustom = styled(Select)`
+    .ant-select-selector {
+        height: 50px!important;
+        padding-top: 8px!important;
+        border: 1px solid #9a9a9a!important;
+        border-radius: 25px;
+        margin-top: 20px;
+    }
+    .ant-select-arrow {
+        padding-top: 16px!important;
+    }
+    .ant-select-selection-item {
+        // color: #d2d2d2!important;
+        // font-weight: 300!important;
     }
 `

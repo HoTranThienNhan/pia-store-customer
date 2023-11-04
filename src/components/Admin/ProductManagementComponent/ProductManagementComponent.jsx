@@ -381,6 +381,35 @@ const ProductManagementComponent = () => {
             },
         },
         {
+            title: 'Đã Bán',
+            dataIndex: 'sold',
+            className: 'all-products-sold',
+            sorter: (a, b) => a.sold - b.sold,
+            filters: [
+                {
+                    text: 'Tất Cả',
+                    value: 'all',
+                },
+                {
+                    text: '< 50',
+                    value: '< 50',
+                },
+                {
+                    text: '>= 50',
+                    value: '>= 50',
+                },
+            ],
+            onFilter: (value, record) => {
+                if (value === 'all') {
+                    return record.sold;
+                } else if (value === '< 50') {
+                    return record.sold < 50;
+                } else if (value === '>= 50') {
+                    return record.sold >= 50;
+                } 
+            },
+        },
+        {
             title: 'Ngày Tạo',
             dataIndex: 'createdAt',
             render: (data) => <span>{convertDateType(data)}</span>,

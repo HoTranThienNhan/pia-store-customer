@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import InputFormComponent from '../../components/InputFormComponent/InputFormComponent';
 import { IdcardOutlined, LockOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
 import imagePoster from '../../assets/images/food-poster.jpg'
-import { AuthCard } from './style';
+import { AuthCard, InputSelectCustom } from './style';
 import { useNavigate } from 'react-router-dom';
 import InputPasswordComponent from '../../components/InputPasswordComponent/InputPasswordComponent';
 import * as UserService from '../../services/UserService';
@@ -11,6 +11,8 @@ import { useMutationHooks } from '../../hooks/useMutationHook';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import FloatingLabelComponent from '../../components/FloatingLabelComponent/FloatingLabelComponent';
 import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
+import * as AddressService from '../../services/AddressService';
+import { convertAddressString } from "../../utils";
 
 const SignUpPage = () => {
     const navigate = useNavigate();
@@ -19,15 +21,15 @@ const SignUpPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [address, setAddress] = useState('');
     const isAdmin = false;
-    const address = "";
     const avatar = "";
 
     // mutation
     const mutation = useMutationHooks(
         data => UserService.signupUser(data)
     );
-    const { data, isLoading , isSuccess, isError } = mutation;
+    const { data, isLoading, isSuccess, isError } = mutation;
 
     useEffect(() => {
         if (isSuccess) {
@@ -72,6 +74,80 @@ const SignUpPage = () => {
             isAdmin
         })
     }
+
+    /*** ADDRESS SELECT ***/
+    // #region
+    const [provinces, setProvinces] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
+
+    const [selectedProvince, setSelectedProvince] = useState('Chọn tỉnh thành');
+    const [selectedDistrict, setSelectedDistrict] = useState('Chọn quận huyện');
+    const [selectedWard, setSelectedWard] = useState('Chọn phường xã');
+
+    const renderProvince = async () => {
+        const res = await AddressService.getProvinces();
+        res?.map((province) => {
+            setProvinces(
+                oldArray => [...oldArray, {
+                    value: province.name,
+                    label: province.name,
+                    code: province.code,
+                }]
+            );
+        });
+        return res;
+    }
+    useEffect(() => {
+        renderProvince();
+    }, []);
+    const handleChangeProvince = async (value, province) => {
+        const provinceCode = province?.code;
+
+        setSelectedProvince(value);
+        setSelectedDistrict('Chọn quận huyện');
+        setSelectedWard('Chọn phường xã');
+
+        const res = await AddressService.getDistricts(provinceCode);
+        setDistricts([]);
+        setWards([]);
+        res?.map((districts) => {
+            setDistricts(
+                oldArray => [...oldArray, {
+                    value: districts.name,
+                    label: districts.name,
+                    code: districts.code,
+                }]
+            );
+        });
+        return res;
+    }
+    const handleChangeDistrict = async (value, district) => {
+        const districtCode = district?.code;
+
+        setSelectedDistrict(value);
+        setSelectedWard('Chọn phường xã');
+
+        const res = await AddressService.getWards(districtCode);
+        setWards([]);
+        res?.map((wards) => {
+            setWards(
+                oldArray => [...oldArray, {
+                    value: wards.name,
+                    label: wards.name,
+                    code: wards.code,
+                }]
+            );
+        });
+        return res;
+    }
+    const handleChangeWard = async (value, ward) => {
+        setSelectedWard(value);
+        const thisWard = value;
+        const address = convertAddressString(selectedProvince, selectedDistrict, thisWard);
+        setAddress(address);
+    }
+    // #endregion
 
     // navigation
     const handleNavigateSignin = () => {
@@ -165,6 +241,42 @@ const SignUpPage = () => {
                                     validateStatus={"validating"}
                                     help=""
                                     style={{ marginBottom: '0px' }}
+                                    className='auth-form-item-product-count-in-stock'
+                                >
+                                    <Row>
+                                        <Col span={24}>
+                                            <InputSelectCustom
+                                                defaultValue='Chọn tỉnh thành'
+                                                onChange={handleChangeProvince}
+                                                value={selectedProvince}
+                                                options={provinces}
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row justify='space-between'>
+                                        <Col span={11}>
+                                            <InputSelectCustom
+                                                defaultValue='Chọn quận huyện'
+                                                onChange={handleChangeDistrict}
+                                                value={selectedDistrict}
+                                                options={districts}
+                                            />
+                                        </Col>
+                                        <Col span={11}>
+                                            <InputSelectCustom
+                                                defaultValue='Chọn phường xã'
+                                                onChange={handleChangeWard}
+                                                value={selectedWard}
+                                                options={wards}
+                                            />
+                                        </Col>
+                                    </Row>
+                                </Form.Item>
+                                <Form.Item
+                                    label=""
+                                    validateStatus={"validating"}
+                                    help=""
+                                    style={{ marginBottom: '0px' }}
                                     className='auth-form-item-password'
                                 >
                                     <FloatingLabelComponent
@@ -208,10 +320,10 @@ const SignUpPage = () => {
                                 <Form.Item>
                                     <LoadingComponent isLoading={isLoading}>
                                         <Button
-                                            disabled={!fullname.length 
+                                            disabled={!fullname.length
                                                 || !phone.length
-                                                || !email.length 
-                                                || !password.length 
+                                                || !email.length
+                                                || !password.length
                                                 || !confirmPassword.length}
                                             type="primary"
                                             htmlType='submit'
