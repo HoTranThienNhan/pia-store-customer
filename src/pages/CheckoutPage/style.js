@@ -49,7 +49,11 @@ export const InputSelectCustom = styled(Select)`
     .ant-select-selector {
         height: 40px!important;
         padding-top: 5px!important;
+        padding-bottom: 5px!important;
         border: 1px solid #9a9a9a!important;
+    }
+    .ant-select-arrow {
+        padding-top: 10px;
     }
 `
 

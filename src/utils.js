@@ -39,6 +39,39 @@ export const convertDateType = (date) => {
     }
 }
 
+export const getDayFromMongoDB = (date) => {
+    try {
+        // date default type as 2023-10-14T11:07:42.289Z
+        // get day: 14
+        const day = date.substr(8, 2);
+        return day;
+    } catch (e) {
+        return null;
+    }
+}
+
+export const getMonthFromMongoDB = (date) => {
+    try {
+        // date default type as 2023-10-14T11:07:42.289Z
+        // get month: 10
+        const month = date.substr(5, 2);
+        return month;
+    } catch (e) {
+        return null;
+    }
+}
+
+export const getYearFromMongoDB = (date) => {
+    try {
+        // date default type as 2023-10-14T11:07:42.289Z
+        // get year: 2023
+        const year = date.substr(0, 4);
+        return year;
+    } catch (e) {
+        return null;
+    }
+}
+
 export const convertOrderStatus = (status) => {
     try {
         if (status === 'pending') {

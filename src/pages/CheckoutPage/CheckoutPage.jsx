@@ -63,9 +63,9 @@ const CheckoutPage = () => {
     /*** HANDLE STATE & SLICE ***/
     // #region
     const [showBadgeCODMethod, setShowBadgeCODMethod] = useState(true);
-    const [showBadgeZaloPayMethod, setShowBadgeZaloPayMethod] = useState(false);
+    const [showBadgePaypalMethod, setShowBadgePaypalMethod] = useState(false);
     const [cardCODMethodClassName, setCardCODMethodClassName] = useState("card-payment-method checked");
-    const [cardZaloPayMethodClassName, setCardZaloPayMethodClassName] = useState("card-payment-method");
+    const [cardPaypalMethodClassName, setCardPaypalMethodClassName] = useState("card-payment-method");
 
     const handleOnChangeBuyerState = (e) => {
         setBuyerState({
@@ -89,15 +89,15 @@ const CheckoutPage = () => {
             // add checked to this class
             cardPaymentMethodClassList.add("checked");
             setCardCODMethodClassName("card-payment-method checked");
-            setCardZaloPayMethodClassName("card-payment-method");
+            setCardPaypalMethodClassName("card-payment-method");
             // set badge
             setShowBadgeCODMethod(true);
-            setShowBadgeZaloPayMethod(false);
+            setShowBadgePaypalMethod(false);
         }
     }
 
-    const handlePaymentMethodZaloPay = (e) => {
-        const paymentMethod = "ZaloPay";
+    const handlePaymentMethodPaypal = (e) => {
+        const paymentMethod = "Paypal";
         dispatch(setPaymentMethod({ paymentMethod, userId: user?.id }));
 
         const cardPaymentMethodClassList = e.currentTarget.classList;
@@ -111,10 +111,10 @@ const CheckoutPage = () => {
             })
             // add checked to this class
             cardPaymentMethodClassList.add("checked");
-            setCardZaloPayMethodClassName("card-payment-method checked");
+            setCardPaypalMethodClassName("card-payment-method checked");
             setCardCODMethodClassName("card-payment-method");
             // set badge
-            setShowBadgeZaloPayMethod(true);
+            setShowBadgePaypalMethod(true);
             setShowBadgeCODMethod(false);
         }
     }
@@ -353,10 +353,10 @@ const CheckoutPage = () => {
                         </BadgeCheckedPaymentMethod>
                     </Col>
                     <Col span={10}>
-                        <BadgeCheckedPaymentMethod count={showBadgeZaloPayMethod ? "\u2713" : 0} color="#63b0ff" size="default">
-                            <CardPaymentMethod className={cardZaloPayMethodClassName} hoverable onClick={handlePaymentMethodZaloPay}>
+                        <BadgeCheckedPaymentMethod count={showBadgePaypalMethod ? "\u2713" : 0} color="#63b0ff" size="default">
+                            <CardPaymentMethod className={cardPaypalMethodClassName} hoverable onClick={handlePaymentMethodPaypal}>
                                 <div><Image src={CodMethodImage} preview={false} width='70px' /></div>
-                                <div>Thanh toán qua ZaloPay</div>
+                                <div>Thanh toán qua Paypal</div>
                             </CardPaymentMethod>
                         </BadgeCheckedPaymentMethod>
                     </Col>

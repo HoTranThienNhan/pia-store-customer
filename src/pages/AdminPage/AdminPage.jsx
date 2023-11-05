@@ -1,17 +1,25 @@
 import { Col, Menu, Row } from 'antd';
 import React, { useState } from 'react';
 import { getItem } from '../../utils';
-import { InboxOutlined, ShopOutlined, TeamOutlined } from '@ant-design/icons';
+import { BarChartOutlined, InboxOutlined, ShopOutlined, TeamOutlined } from '@ant-design/icons';
 import { WrapperAdminMenuSidebar } from './style';
 import UserManagementComponent from '../../components/Admin/UserManagementComponent/UserManagementComponent';
 import ProductManagementComponent from '../../components/Admin/ProductManagementComponent/ProductManagementComponent';
 import OrderManagementComponent from '../../components/Admin/OrderManagementComponent/OrderManagementComponent';
+import StatsManagementComponent from '../../components/Admin/MonthStatsManagementComponent/MonthStatsManagementComponent';
 
 const AdminPage = () => {
     const items = [
         getItem('Sản Phẩm', 'products', <ShopOutlined />),
         getItem('Người Dùng', 'users', <TeamOutlined />),
-        getItem('Đơn Hàng', 'orders', <InboxOutlined />)
+        getItem('Đơn Hàng', 'orders', <InboxOutlined />),
+        getItem('Thống Kê', 'stats', <BarChartOutlined />,
+            [
+                getItem('Theo Ngày', 'statsByDay'),
+                getItem('Theo Tháng', 'statsByMonth'),
+                getItem('Theo Quý', 'statsByQuarter'),
+            ]
+        ),
     ];
 
     const [selectedKey, setSelectedKey] = useState('products');
@@ -23,6 +31,8 @@ const AdminPage = () => {
                 return (<UserManagementComponent />);
             case 'orders':
                 return (<OrderManagementComponent />);
+            case 'statsByMonth':
+                return (<StatsManagementComponent />);
             default:
                 return (<></>);
         }
