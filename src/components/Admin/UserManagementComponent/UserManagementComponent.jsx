@@ -298,6 +298,7 @@ const UserManagementComponent = () => {
                     value: 'isNotAdmin',
                 },
             ],
+            filterMultiple: false,
             onFilter: (value, record) => {
                 if (value === 'all') {
                     return record.isAdmin === true || record.isAdmin === false;
@@ -334,6 +335,7 @@ const UserManagementComponent = () => {
                     value: 'hide',
                 },
             ],
+            filterMultiple: false,
             onFilter: (value, record) => {
                 if (value === 'all') {
                     return record.active === true || record.active === false;

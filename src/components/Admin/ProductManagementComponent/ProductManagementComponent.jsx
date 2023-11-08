@@ -305,6 +305,7 @@ const ProductManagementComponent = () => {
                     value: '>= 30.000',
                 },
             ],
+            filterMultiple: false,
             onFilter: (value, record) => {
                 if (value === 'all') {
                     return record.price;
@@ -325,18 +326,15 @@ const ProductManagementComponent = () => {
                     value: 'all',
                 },
                 {
-                    text: 'Hamburger',
-                    value: 'Hamburger',
+                    text: 'Truyền Thống',
+                    value: 'Truyền Thống',
                 },
                 {
-                    text: 'Pizza',
-                    value: 'Pizza',
-                },
-                {
-                    text: 'Fried Chicken',
-                    value: 'Fried Chicken',
+                    text: 'Kim Sa',
+                    value: 'Kim Sa',
                 },
             ],
+            filterMultiple: false,
             onFilter: (value, record) => {
                 if (value === 'all') {
                     return record.type;
@@ -368,6 +366,7 @@ const ProductManagementComponent = () => {
                     value: '= 0',
                 },
             ],
+            filterMultiple: false,
             onFilter: (value, record) => {
                 if (value === 'all') {
                     return record.countInStock;
@@ -448,6 +447,7 @@ const ProductManagementComponent = () => {
                     value: 'hide',
                 },
             ],
+            filterMultiple: false,
             onFilter: (value, record) => {
                 if (value === 'all') {
                     return record.active == true || record.active == false;
@@ -645,6 +645,7 @@ const ProductManagementComponent = () => {
     const handleUpdateProductCancel = () => {
         setIsUpdateProductModalOpen(false);
         setSelectedRow(null);
+        setSelectedUpdateType(null);
         setUpdateProductState({
             id: '',
             name: '',

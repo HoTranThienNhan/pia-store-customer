@@ -6,7 +6,8 @@ import { WrapperAdminMenuSidebar } from './style';
 import UserManagementComponent from '../../components/Admin/UserManagementComponent/UserManagementComponent';
 import ProductManagementComponent from '../../components/Admin/ProductManagementComponent/ProductManagementComponent';
 import OrderManagementComponent from '../../components/Admin/OrderManagementComponent/OrderManagementComponent';
-import StatsManagementComponent from '../../components/Admin/MonthStatsManagementComponent/MonthStatsManagementComponent';
+import DayStatsManagementComponent from '../../components/Admin/DayStatsManagementComponent/DayStatsManagementComponent';
+import MonthStatsManagementComponent from '../../components/Admin/MonthStatsManagementComponent/MonthStatsManagementComponent';
 
 const AdminPage = () => {
     const items = [
@@ -32,7 +33,9 @@ const AdminPage = () => {
             case 'orders':
                 return (<OrderManagementComponent />);
             case 'statsByMonth':
-                return (<StatsManagementComponent />);
+                return (<MonthStatsManagementComponent />);
+            case 'statsByDay':
+                return (<DayStatsManagementComponent />);
             default:
                 return (<></>);
         }

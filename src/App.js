@@ -71,7 +71,7 @@ export function App() {
           <Routes>
             {routes.map((route) => {
               const Page = route.page;
-              const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+              const Layout = route.isShowHeader || route.isShowFooter ? DefaultComponent : Fragment;
               const isAdmin = !route.isPrivate || user.isAdmin;
               const exactRoute = route.exact;
               // publicRoutePath contains route paths with isPrivate = false (in routes/index.js)

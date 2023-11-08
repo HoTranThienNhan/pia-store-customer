@@ -130,13 +130,13 @@ const HeaderComponent = () => {
          <WrapperHeader>
             {/* Branch Name Part Here */}
             <Col span={3}>
-               <Row justify="space-around" align="middle" style={{ height: '100%' }}>
+               <Row justify="space-around" align="middle" style={{ height: '100%', color: '#fff' }}>
                   BRAND NAME
                </Row>
             </Col>
             {/* NavBar Items Part Here */}
             <Col span={12}>
-               <Row justify="space-around" align="middle" style={{ height: '100%' }}>
+               <Row justify="space-around" align="middle" style={{ height: '100%', color: '#fff' }}>
                   {
                      navItems.map((item) => {
                         return (
@@ -182,7 +182,8 @@ const HeaderComponent = () => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     fontWeight: 'bold',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer', 
+                                    color: '#fff'
                                  }}
                                  onClick={() => setIsOpenPopover((prev) => !prev)}
                               >
@@ -191,9 +192,9 @@ const HeaderComponent = () => {
                            </Popover>
                         ) : (
                            <WrapperAuthHeader>
-                              <span onClick={handleNavigateSignin} style={{ marginRight: '5px', cursor: 'pointer' }}>Đăng nhập</span>
+                              <span onClick={handleNavigateSignin} style={{ marginRight: '5px', cursor: 'pointer', color: '#fff' }}>Đăng nhập</span>
                               <span style={{ userSelect: 'none' }}>/</span>
-                              <span onClick={handleNavigateSignup} style={{ marginLeft: '5px', cursor: 'pointer' }}>Đăng ký</span>
+                              <span onClick={handleNavigateSignup} style={{ marginLeft: '5px', cursor: 'pointer', color: '#fff' }}>Đăng ký</span>
                            </WrapperAuthHeader>
                         )}
                      </LoadingComponent>
@@ -202,12 +203,12 @@ const HeaderComponent = () => {
                   <WrapperAccountHeader>
                      <div style={{ marginRight: '15px' }}>
                         <Badge count={1} showZero>
-                           <HeartOutlined style={{ marginRight: '5px', fontSize: '24px' }} />
+                           <HeartOutlined style={{ marginRight: '5px', fontSize: '24px', color: '#d9a34e' }} />
                         </Badge>
                      </div>
                      <div>
                         <Badge count={order ? order?.orderItems?.length : 0} showZero>
-                           <ShoppingCartOutlined style={{ marginRight: '5px', fontSize: '24px', cursor: 'pointer' }} onClick={handleNavigateMyCart} />
+                           <ShoppingCartOutlined style={{ marginRight: '5px', fontSize: '24px', cursor: 'pointer', color: '#d9a34e' }} onClick={handleNavigateMyCart} />
                         </Badge>
                      </div>
                   </WrapperAccountHeader>

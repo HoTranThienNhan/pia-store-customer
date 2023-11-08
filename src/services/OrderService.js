@@ -29,6 +29,15 @@ export const getAllOrdersByAdmin = async (accessToken) => {
     return res.data;
 }
 
+export const getNotCanceledOrdersByAdmin = async (accessToken) => {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/order/getNotCanceledOrdersByAdmin`, {
+        headers: {
+            token: `Bearer ${accessToken}`
+        }
+    });
+    return res.data;
+}
+
 export const cancelOrder = async (orderId, accessToken, order) => {
     const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/order/cancelOrder/${orderId}`, {data: order}, {
         headers: {

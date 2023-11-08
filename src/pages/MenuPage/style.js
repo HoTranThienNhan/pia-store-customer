@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 
 export const WrapperMenuProducts = styled.div`
-    margin-bottom: 70px;
+    margin-bottom: 30px;
     margin-left: 24px;
     font-weight: 600;
     user-select: none;

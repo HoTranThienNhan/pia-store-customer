@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card } from 'antd';
+import { Card, Image, Row } from 'antd';
 import Meta from 'antd/es/card/Meta';
-import { NameProduct, PriceProduct } from './style';
+import { CardWrapper, NameProduct, PriceProduct } from './style';
 import { useNavigate } from "react-router-dom";
 
 const CardComponent = (props) => {
@@ -13,15 +13,20 @@ const CardComponent = (props) => {
     }
 
     return (
-        <Card
+        <CardWrapper
             hoverable
-            style={{ width: 240, height: 320, padding: '30px 20px', borderColor: '#ccc' }}
-            cover={<img alt="product" src={image} />}
+            style={{
+                
+            }}
+            className='card-item-product'
             onClick={() => handleNavigateProductDetails(id)}
         >
-            <NameProduct>{name}</NameProduct>
+            <Row justify="center" style={{ height: '180px' }}>
+                <Image className='card-item-product-image' src={image} preview={false} height={180} draggable={false} />
+            </Row>
+            <NameProduct style={{ marginTop: '20px' }}>{name}</NameProduct>
             <PriceProduct>{price?.toLocaleString()} VNĐ</PriceProduct>
-        </Card>
+        </CardWrapper>
     )
 };
 

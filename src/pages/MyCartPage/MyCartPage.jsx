@@ -5,14 +5,14 @@ import { InputNumberCustom, ScrollBarCustom } from "./style";
 import { DeleteOutlined, MinusCircleOutlined, MinusOutlined, PlusCircleOutlined, PlusOutlined, QuestionCircleOutlined, SmileOutlined } from "@ant-design/icons";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { 
-   decreaseAmount, 
-   increaseAmount, 
-   removeMultipleOrderProducts, 
-   removeOrderProduct, 
-   selectedOrderProducts, 
-   setAmount, 
-   setCosts 
+import {
+   decreaseAmount,
+   increaseAmount,
+   removeMultipleOrderProducts,
+   removeOrderProduct,
+   selectedOrderProducts,
+   setAmount,
+   setCosts
 } from "../../redux/slices/orderSlice";
 
 const MyCartPage = () => {
@@ -129,7 +129,7 @@ const MyCartPage = () => {
 
    return (
       // <LoadingComponent isLoading={isLoading}>
-      <div id="container" style={{ padding: '85px 120px 80px 120px', height: '100%' }}>
+      <div id="container" style={{ padding: '85px 120px 80px 120px', height: '100%', backgroundColor: 'whitesmoke' }}>
          <Breadcrumb
             style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '20px', userSelect: 'none' }}
             items={[
@@ -146,7 +146,7 @@ const MyCartPage = () => {
             <Divider>
                <Col style={{ fontSize: '32px' }} >
                   <span style={{ fontWeight: '700' }}>My Cart </span>
-                  <span>({order?.orderItems?.length ? order?.orderItems?.length : 0 })</span>
+                  <span>({order?.orderItems?.length ? order?.orderItems?.length : 0})</span>
                </Col>
             </Divider>
          </Row>
@@ -185,7 +185,7 @@ const MyCartPage = () => {
                <ScrollBarCustom>
                   {order?.orderItems?.map((orderProduct) => {
                      return (
-                        <Card style={{ margin: '5px 0px 20px 0px', borderRadius: '10px' }} hoverable>
+                        <Card style={{ margin: '5px 0px 20px 0px', borderRadius: '10px', backgroundColor: 'whitesmoke', border: '2px solid #b9b9b8bf' }} hoverable>
                            <Row>
                               <Col span={24}>
                                  <Row justify="space-between" align="middle">
@@ -197,7 +197,18 @@ const MyCartPage = () => {
                                        />
                                     </Col>
                                     <Col span={4} style={{ padding: '0px 10px' }}>
-                                       <Image src={orderProduct?.image} alt="product" preview={true} draggable={false} style={{ width: '120px' }} />
+                                       <Image
+                                          src={orderProduct?.image}
+                                          alt="product"
+                                          preview={true}
+                                          draggable={false}
+                                          style={{
+                                             width: '100px',
+                                             height: '120px',
+                                             WebkitFilter: 'drop-shadow(2px 2px 3px #666)',
+                                             filter: 'drop-shadow(2px 2px 3px #666)'
+                                          }}
+                                       />
                                     </Col>
                                     <Col span={6} style={{ fontWeight: "bold", fontSize: '18px' }}>{orderProduct?.name}</Col>
                                     <Col span={5} style={{ fontWeight: "bold", fontSize: '18px' }}>{orderProduct?.price?.toLocaleString()} VNĐ</Col>
@@ -253,7 +264,7 @@ const MyCartPage = () => {
          <Divider style={{ marginTop: '40px' }}></Divider>
          <Row justify="center" style={{ marginBottom: '20px' }}>
             <Col>
-               <Card style={{ padding: '0px 10px', width: '450px', fontSize: '18px' }}>
+               <Card style={{ padding: '0px 10px', width: '450px', fontSize: '18px', border: '2px solid #cacaca' }}>
                   <Row justify="space-between">
                      <Col>Tạm tính</Col>
                      <Col>{subtotalMemo ? subtotalMemo?.toLocaleString() : 0} VNĐ</Col>

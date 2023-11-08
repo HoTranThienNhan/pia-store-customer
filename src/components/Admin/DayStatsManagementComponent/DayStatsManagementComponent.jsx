@@ -5,28 +5,30 @@ import {
     InboxOutlined,
     SwapOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Card, Col, DatePicker, Row, Tag } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Breadcrumb, Card, Col, DatePicker, Row, Tag, } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import { WrapperProductManagement } from './style';
 import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import * as OrderService from '../../../services/OrderService';
-import { getMonthFromMongoDB, getYearFromMongoDB } from '../../../utils';
+import { getDayFromMongoDB, getMonthFromMongoDB, getYearFromMongoDB } from '../../../utils';
 import dayjs from 'dayjs';
-import { Column } from '@ant-design/plots';
 
 
-const MonthStatsManagementComponent = () => {
+const DayStatsManagementComponent = () => {
     const user = useSelector((state) => state?.user);
     const [orders, setOrders] = useState([]);
 
     const today = new Date();
+    const thisDay = today.getDate();
     const thisMonth = today.getMonth() + 1;
     const thisYear = today.getFullYear();
 
+    const [selectedDay, setSelectedDate] = useState(thisDay);
     const [selectedMonth, setSelectedMonth] = useState(thisMonth);
     const [selectedYear, setSelectedYear] = useState(thisYear);
     const [thisMonthYear, setThisMonthYear] = useState(thisMonth.toString() + '/' + thisYear.toString());
+    const [thisFullDate, setthisFullDate] = useState(('0' + today.getDate()).slice(-2) + '/' + thisMonth.toString() + '/' + thisYear.toString());
 
 
     const onChangeMonth = (date, dateString) => {
@@ -35,10 +37,17 @@ const MonthStatsManagementComponent = () => {
         setThisMonthYear(dateString);
     }
 
+    const onChangeDate = (date, dateString) => {
+        setSelectedDate(dateString.substr(0, 2));
+        setSelectedMonth(dateString.substr(3, 2));
+        setSelectedYear(dateString.substr(6, 4));
+        setthisFullDate(dateString);
+    }
+
 
     /*** ALL ORDERS ***/
     const fetchAllOrders = async () => {
-        const res = await OrderService.getNotCanceledOrdersByAdmin(user?.id, user?.accessToken);
+        const res = await OrderService.getNotCanceledOrdersByAdmin(user?.accessToken);
         setOrders(res?.data);
         return res?.data;
     }
@@ -52,27 +61,31 @@ const MonthStatsManagementComponent = () => {
 
 
     /*** REVENUE ***/
-    let revenueThisMonth = 0;
-    let revenueLastMonth = 0;
+    let revenueThisDay = 0;
+    let revenueLastDay = 0;
     let valueAddedRevenue = 0;
     let growRateRevenue = 0;
+
+
     orders?.map((order) => {
-        if (getMonthFromMongoDB(order?.updatedAt) === selectedMonth.toString()
-        && getYearFromMongoDB(order?.updatedAt) === selectedYear.toString()) {
-            revenueThisMonth += order?.subtotalPrice;
-        }
-    });
-    orders?.map((order) => {
-        if (getMonthFromMongoDB(order?.updatedAt) === (selectedMonth - 1).toString()
+        if (getDayFromMongoDB(order?.updatedAt) === ('0' + selectedDay).slice(-2)
+            && getMonthFromMongoDB(order?.updatedAt) === selectedMonth.toString()
             && getYearFromMongoDB(order?.updatedAt) === selectedYear.toString()) {
-            revenueLastMonth += order?.subtotalPrice;
+            revenueThisDay += order?.subtotalPrice;
         }
     });
-    valueAddedRevenue = revenueThisMonth - revenueLastMonth;
-    if (revenueLastMonth !== 0) {
-        growRateRevenue = (valueAddedRevenue / revenueLastMonth) * 100;
+    orders?.map((order) => {
+        if (getDayFromMongoDB(order?.updatedAt) === ('0' + (selectedDay - 1)).slice(-2)
+            && getMonthFromMongoDB(order?.updatedAt) === selectedMonth.toString()
+            && getYearFromMongoDB(order?.updatedAt) === selectedYear.toString()) {
+            revenueLastDay += order?.subtotalPrice;
+        }
+    });
+    valueAddedRevenue = revenueThisDay - revenueLastDay;
+    if (revenueLastDay !== 0) {
+        growRateRevenue = (valueAddedRevenue / revenueLastDay) * 100;
     } else {
-        if (revenueThisMonth !== 0) {
+        if (revenueThisDay !== 0) {
             growRateRevenue = 100;
         } else {
             growRateRevenue = 0;
@@ -81,31 +94,34 @@ const MonthStatsManagementComponent = () => {
 
 
     /*** SALES ***/
-    let salesThisMonth = 0;
-    let salesLastMonth = 0;
+    let salesThisDay = 0;
+    let salesLastDay = 0;
     let valueAddedSales = 0;
     let growRateSales = 0;
+
     orders?.map((order) => {
-        if (getMonthFromMongoDB(order?.updatedAt) === selectedMonth.toString()
+        if (getDayFromMongoDB(order?.updatedAt) === ('0' + selectedDay).slice(-2)
+            && getMonthFromMongoDB(order?.updatedAt) === selectedMonth.toString()
             && getYearFromMongoDB(order?.updatedAt) === selectedYear.toString()) {
             order?.orderItems.map((orderItem) => {
-                salesThisMonth += orderItem?.amount;
+                salesThisDay += orderItem?.amount;
             });
         }
     });
     orders?.map((order) => {
-        if (getMonthFromMongoDB(order?.updatedAt) === (selectedMonth - 1).toString()
+        if (getDayFromMongoDB(order?.updatedAt) === ('0' + (selectedDay - 1)).slice(-2)
+            && getMonthFromMongoDB(order?.updatedAt) === selectedMonth.toString()
             && getYearFromMongoDB(order?.updatedAt) === selectedYear.toString()) {
             order?.orderItems.map((orderItem) => {
-                salesLastMonth += orderItem?.amount;
+                salesLastDay += orderItem?.amount;
             });
         }
     });
-    valueAddedSales = salesThisMonth - salesLastMonth;
-    if (revenueLastMonth !== 0) {
-        growRateSales = (valueAddedSales / salesLastMonth) * 100;
+    valueAddedSales = salesThisDay - salesLastDay;
+    if (revenueLastDay !== 0) {
+        growRateSales = (valueAddedSales / salesLastDay) * 100;
     } else {
-        if (salesThisMonth !== 0) {
+        if (salesThisDay !== 0) {
             growRateSales = 100;
         } else {
             growRateSales = 0;
@@ -171,14 +187,14 @@ const MonthStatsManagementComponent = () => {
     return (
         <WrapperProductManagement>
             <div style={{ userSelect: 'none' }}>
-                <h2 style={{ fontWeight: 'bold' }}>Quản Lý Thống Kê Theo Tháng</h2>
+                <h2 style={{ fontWeight: 'bold' }}>Quản Lý Thống Kê Theo Ngày</h2>
                 <Breadcrumb
                     items={[
                         {
                             title: <span onClick={handleNavigateHomePage} style={{ cursor: 'pointer' }}>Trang chủ</span>,
                         },
                         {
-                            title: 'Quản lý thống kê theo tháng',
+                            title: 'Quản lý thống kê theo ngày',
                         },
                     ]}
                 />
@@ -187,11 +203,10 @@ const MonthStatsManagementComponent = () => {
                 <Row style={{ marginBottom: '15px' }}>
                     <Col>
                         <DatePicker
-                            defaultValue={dayjs(thisMonthYear, 'MM-YYYY')}
-                            onChange={onChangeMonth}
-                            picker="month"
+                            defaultValue={dayjs(thisFullDate, 'DD-MM-YYYY')}
+                            onChange={onChangeDate}
                             allowClear={false}
-                            format={'MM/YYYY'}
+                            format={'DD/MM/YYYY'}
                         />
                     </Col>
                 </Row>
@@ -201,12 +216,12 @@ const MonthStatsManagementComponent = () => {
                             <Row>
                                 <Col span={24} style={{ marginBottom: '10px' }}>
                                     <span style={{ color: '#a0a0a0', fontSize: '16px', fontWeight: '600' }}>
-                                        <DollarOutlined /><span style={{ marginLeft: '7px' }}>Doanh Thu Tháng {thisMonthYear}</span>
+                                        <DollarOutlined /><span style={{ marginLeft: '7px' }}>Doanh Thu Ngày {thisFullDate}</span>
                                     </span>
                                 </Col>
                                 <Col span={24} style={{ marginBottom: '7px' }}>
                                     <span style={{ fontWeight: '700', fontSize: '20px' }}>
-                                        <span style={{ marginRight: '7px' }}>{revenueThisMonth.toLocaleString()} VNĐ</span>
+                                        <span style={{ marginRight: '7px' }}>{revenueThisDay.toLocaleString()} VNĐ</span>
                                         <Tag
                                             color={growRateRevenue > 0 ? "green" : (growRateRevenue < 0 ? "red" : "orange")}
                                         >
@@ -228,7 +243,7 @@ const MonthStatsManagementComponent = () => {
                                         >
                                             {valueAddedRevenue >= 0 && '+'}{valueAddedRevenue.toLocaleString()} VNĐ
                                         </span>
-                                        <span style={{ color: '#a0a0a0' }}>so với tháng trước</span>
+                                        <span style={{ color: '#a0a0a0' }}>so với hôm qua</span>
                                     </span>
                                 </Col>
                             </Row>
@@ -239,12 +254,12 @@ const MonthStatsManagementComponent = () => {
                             <Row>
                                 <Col span={24} style={{ marginBottom: '10px' }}>
                                     <span style={{ color: '#a0a0a0', fontSize: '16px', fontWeight: '600' }}>
-                                        <InboxOutlined /><span style={{ marginLeft: '7px' }}>Doanh Số Tháng {thisMonthYear}</span>
+                                        <InboxOutlined /><span style={{ marginLeft: '7px' }}>Doanh Số Ngày {thisFullDate}</span>
                                     </span>
                                 </Col>
                                 <Col span={24} style={{ marginBottom: '7px' }}>
                                     <span style={{ fontWeight: '700', fontSize: '20px' }}>
-                                        <span style={{ marginRight: '7px' }}>{salesThisMonth} sản phẩm</span>
+                                        <span style={{ marginRight: '7px' }}>{salesThisDay} sản phẩm</span>
                                         <Tag
                                             color={growRateSales > 0 ? "green" : (growRateSales < 0 ? "red" : "orange")}
                                         >
@@ -266,7 +281,7 @@ const MonthStatsManagementComponent = () => {
                                         >
                                             {valueAddedSales >= 0 && '+'}{valueAddedSales} sản phẩm
                                         </span>
-                                        <span style={{ color: '#a0a0a0' }}>so với tháng trước</span>
+                                        <span style={{ color: '#a0a0a0' }}>so với hôm qua</span>
                                     </span>
                                 </Col>
                             </Row>
@@ -275,7 +290,7 @@ const MonthStatsManagementComponent = () => {
                 </Row>
                 <Row style={{ marginTop: '30px' }}>
                     <Col span={18}>
-                        <Card style={{ boxShadow: '0px 0px 4px 3px #cacaca8a', borderRadius: '10px' }}>
+                        {/* <Card style={{ boxShadow: '0px 0px 4px 3px #cacaca8a', borderRadius: '10px' }}>
                             <Row justify="center">
                                 <Col span={22} align="middle">
                                     <span style={{ fontSize: '18px', fontWeight: '600' }}>
@@ -288,7 +303,7 @@ const MonthStatsManagementComponent = () => {
                                     />
                                 </Col>
                             </Row>
-                        </Card>
+                        </Card> */}
                     </Col>
                 </Row>
             </div>
@@ -296,4 +311,4 @@ const MonthStatsManagementComponent = () => {
     )
 };
 
-export default MonthStatsManagementComponent;
+export default DayStatsManagementComponent;

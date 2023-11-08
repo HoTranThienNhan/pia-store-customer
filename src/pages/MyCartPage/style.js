@@ -36,6 +36,10 @@ export const InputNumberCustom = styled.div`
         text-align: center;
     }
 
+    .ant-input-number {
+        background-color: whitesmoke;
+    }
+
     .input-number-area {
         height: 38px;
         width: 100px;
@@ -46,7 +50,7 @@ export const InputNumberCustom = styled.div`
 
 export const ScrollBarCustom = styled.div`
     overflow-y: auto;
-    max-height: 460px;
+    max-height: 387px;
     padding: 0px 20px;
 
     &::-webkit-scrollbar-track {

@@ -102,4 +102,8 @@ export const InputNumberCustom = styled.div`
         border: 1px solid #000;
         font-size: 20px;
     }
+
+    .ant-input-number {
+        background-color: whitesmoke;
+    }
 `

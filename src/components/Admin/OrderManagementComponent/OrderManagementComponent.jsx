@@ -309,6 +309,7 @@ const OrderManagementComponent = () => {
                     value: 'Paypal',
                 },
             ],
+            filterMultiple: false,
             onFilter: (value, record) => {
                 if (value === 'all') {
                     return record.method;
@@ -336,6 +337,7 @@ const OrderManagementComponent = () => {
                     value: '>= 100000',
                 },
             ],
+            filterMultiple: false,
             onFilter: (value, record) => {
                 if (value === 'all') {
                     return record.totalPrice;
@@ -386,23 +388,23 @@ const OrderManagementComponent = () => {
                     value: 'canceled',
                 },
             ],
+            filterMultiple: false,
             onFilter: (value, record) => {
                 if (value === 'all') {
                     return record.status;
                 } else if (value === 'pending') {
                     return record.status == 'Chờ Xác Nhận';
-
                 } else if (value === 'pickingup') {
                     return record.status == 'Chờ Lấy Hàng';
                 }
                 else if (value === 'delivering') {
-                    return record.status == 'Đang giao';
+                    return record.status == 'Đang Giao';
                 }
                 else if (value === 'delivered') {
-                    return record.status == 'Đã giao';
+                    return record.status == 'Đã Giao';
                 }
                 else if (value === 'canceled') {
-                    return record.status == 'Đã hủy';
+                    return record.status == 'Đã Hủy';
                 }
             },
         }

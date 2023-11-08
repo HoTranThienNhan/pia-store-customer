@@ -61,6 +61,7 @@ const ProductsPage = () => {
       }
    );
 
+
    const items = [
       // {
       //    key: '1',
@@ -73,6 +74,11 @@ const ProductsPage = () => {
          children: <ProductReviewsComponent productReviewsArray={productReviews} />
       }
    ]
+
+   let productRate = 0;
+   productReviews?.map((review, index) => {
+      productRate = (productRate + review.rating) / (index + 1);
+   });
 
 
    /*** STARS RATING ***/
@@ -138,7 +144,7 @@ const ProductsPage = () => {
 
    return (
       <LoadingComponent isLoading={isLoading}>
-         <div id="container" style={{ padding: '85px 70px 0px 70px', height: '100%' }}>
+         <div id="container" style={{ padding: '85px 70px 0px 70px', height: '100%', backgroundColor: 'whitesmoke' }}>
             {productDetails && <>
                <Breadcrumb
                   style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '40px' }}
@@ -156,24 +162,28 @@ const ProductsPage = () => {
                >
                </Breadcrumb>
                <Row justify="space-around">
-                  <Col span={8}>
-                     <Image src={productDetails?.image} alt="product" preview={true} draggable={false} />
+                  <Col span={9} align="middle">
+                     <Image
+                        style={{
+                           filter: 'drop-shadow(2px 5px 5px #666)',
+                           WebkitFilter: 'drop-shadow(2px 5px 5px #666)'
+                        }}
+                        src={productDetails?.image}
+                        alt="product"
+                        height={350}
+                        preview={true}
+                        draggable={false}
+                     />
                   </Col>
-                  <Col span={12}>
+                  <Col span={15}>
                      <div style={{ fontSize: '40px', fontWeight: 'bold', cursor: 'context-menu' }}>{productDetails?.name}</div>
                      <StarRating>
-                        {renderStarsRating(productDetails?.rating)}
-                        <span style={{ userSelect: 'none' }}>{productDetails?.rating}/5 (150 đánh giá)</span>
+                        {renderStarsRating(productRate)}
+                        <span style={{ userSelect: 'none' }}>{productRate}/5 ({productReviews ? productReviews?.length : 0} đánh giá)</span>
                      </StarRating>
                      <DetailContentDiv style={{ userSelect: 'none' }}>
                         {productDetails?.description}
                      </DetailContentDiv>
-                     {/* <DetailContentDiv>
-                     <Image src={imageCalories} preview={false} width={60} />
-                     <span>
-                        <span style={{ fontWeight: 'bold' }}>300</span> calories
-                     </span>
-                  </DetailContentDiv> */}
                      <DetailContentDiv>
                         <InputNumberCustom>
                            <MinusOutlined className='minus-input-number' onClick={minusProductCount} />
