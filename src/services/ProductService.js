@@ -22,8 +22,12 @@ export const getAllProductTypes = async () => {
     return res.data;
 }
 
-export const createProduct = async (data) => {
-    const res = await axios.post(`${process.env.REACT_APP_API_URL}/product/createProduct`, data);
+export const createProduct = async (data, accessToken) => {
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/product/createProduct`, data, {
+        headers: {
+            token: `Bearer ${accessToken}`
+        }
+    });
     return res.data;
 }
 

@@ -154,7 +154,7 @@ const MenuPage = () => {
                                             key={product._id}
                                             user={user}
                                             favorite={favorite}
-                                            id={product.id}
+                                            id={product._id}
                                             countInStock={product.countInStock}
                                             description={product.description}
                                             image={product.image}

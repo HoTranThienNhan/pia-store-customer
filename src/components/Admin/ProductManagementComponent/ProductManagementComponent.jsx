@@ -40,7 +40,6 @@ const ProductManagementComponent = () => {
     const [isLoadingActiveProduct, setIsLoadingActiveProduct] = useState(false);
 
     const [productState, setProductState] = useState({
-        id: '',
         name: '',
         type: '',
         image: '',
@@ -274,10 +273,10 @@ const ProductManagementComponent = () => {
     const columnsProducts = [
         {
             title: 'Mã SP',
-            dataIndex: 'id',
+            dataIndex: '_id',
             className: 'all-products-id',
-            sorter: (a, b) => a.id.localeCompare(b.id),
-            ...getColumnSearchProps('id'),
+            sorter: (a, b) => a.id.localeCompare(b._id),
+            ...getColumnSearchProps('_id'),
         },
         {
             title: 'Tên SP',
@@ -405,7 +404,7 @@ const ProductManagementComponent = () => {
                     return record.sold < 50;
                 } else if (value === '>= 50') {
                     return record.sold >= 50;
-                } 
+                }
             },
         },
         {
@@ -464,7 +463,7 @@ const ProductManagementComponent = () => {
     const dataProductsTable = allProducts?.data?.length && allProducts?.data?.map((product) => {
         return {
             ...product,
-            key: product.id
+            key: product._id
         }
     });
     // #endregion
@@ -474,9 +473,8 @@ const ProductManagementComponent = () => {
     // #region
     // mutation
     const mutation = useMutationHooks(
-        (data) => {
+        ({ productState, accessToken} = data) => {
             const {
-                id,
                 name,
                 type,
                 image,
@@ -484,11 +482,10 @@ const ProductManagementComponent = () => {
                 price,
                 rating,
                 description,
-                sold,
-                active
-            } = data;
+                sold = 0,
+                active,
+            } = productState;
             const res = ProductService.createProduct({
-                id,
                 name,
                 type,
                 image,
@@ -498,7 +495,7 @@ const ProductManagementComponent = () => {
                 description,
                 sold,
                 active
-            });
+            }, accessToken);
             return res;
         }
     );
@@ -514,27 +511,24 @@ const ProductManagementComponent = () => {
         }
     }, [isSuccess, isError]);
 
-    // get lastest product id and create new product id
-    const getLastestProductId = () => {
-        const allProductsCount = allProducts?.data?.length;
-        const lastestProductId = allProducts?.data[allProductsCount - 1]?.id; // lastestProductId pattern: example is SP001
-        const newProductId = lastestProductId?.slice(0, 2) + (parseInt(lastestProductId?.slice(2)) + 1)?.toString()?.padStart(3, 0);
-        return newProductId;
-    }
-
     // handle create product modals
     const showCreateProductModal = () => {
         setIsCreateProductModalOpen(true);
         setAllTypes(allProductTypes?.data);
-        const newProductId = getLastestProductId();
+        // setProductState({
+        //     ...productState,
+        //     id: newProductId
+        // });
         setProductState({
-            ...productState,
-            id: newProductId
+            productState,
         });
     };
     const onCreateProductFinish = () => {
         mutation.mutate(
-            productState,
+            {
+                productState,
+                accessToken: user?.accessToken,
+            },
             {
                 onSettled: () => {
                     queryAllProducts.refetch();
@@ -550,13 +544,13 @@ const ProductManagementComponent = () => {
         setIsCreateProductModalOpen(false);
         setSelectedType('');
         setProductState({
-            id: '',
             name: '',
             type: '',
             image: '',
             countInStock: '',
             price: '',
             rating: '',
+            sold: 0,
             description: ''
         });
     };
@@ -617,7 +611,7 @@ const ProductManagementComponent = () => {
         const res = await ProductService.getProductDetails(id);
         if (res?.data) {
             setUpdateProductState({
-                id: res?.data?.id,
+                id: res?.data?._id,
                 name: res?.data?.name,
                 type: res?.data?.type,
                 image: res?.data?.image,
@@ -647,7 +641,7 @@ const ProductManagementComponent = () => {
         setSelectedRow(null);
         setSelectedUpdateType(null);
         setUpdateProductState({
-            id: '',
+            // id: '',
             name: '',
             type: '',
             image: '',
@@ -851,37 +845,6 @@ const ProductManagementComponent = () => {
                             ]}>
                             <LoadingComponent isLoading={isLoading}>
                                 <Form autoComplete="off">
-                                    <Form.Item
-                                        label=""
-                                        validateStatus={"validating"}
-                                        help=""
-                                        style={{ marginBottom: '0px' }}
-                                        className='auth-form-item-product-id'
-                                    >
-                                        <FloatingLabelComponent
-                                            label="Mã sản phẩm"
-                                            value={productState.id}
-                                            styleBefore={{ left: '37px', top: '31px' }}
-                                            styleAfter={{ left: '37px', top: '23px' }}
-                                        >
-                                            <InputFormComponent
-                                                name="id"
-                                                placeholder=""
-                                                prefix={<FieldNumberOutlined className="site-form-item-icon" />}
-                                                className='auth-input-product-id'
-                                                value={productState.id}  
-                                                onChange={handleOnChangeProductState}
-                                                disabled
-                                                style={{
-                                                    borderRadius: '10px',
-                                                    padding: '0px 18px',
-                                                    marginTop: '20px',
-                                                    border: '1px solid #000',
-                                                    height: '45px'
-                                                }}
-                                            />
-                                        </FloatingLabelComponent>
-                                    </Form.Item>
                                     <Form.Item
                                         label=""
                                         validateStatus={"validating"}
@@ -1405,17 +1368,17 @@ const ProductManagementComponent = () => {
                                         // - only pressing the update button on every row can set setSelectedRow
                                         if (event.target.tagName === 'svg') {   // if click on svg tag (children of class 'all-products-update')
                                             if (event.target.parentElement.className.includes("all-products-update")) {
-                                                setSelectedRow(record?.id)
+                                                setSelectedRow(record?._id)
                                             }
                                         } else if (event.target.tagName === 'path') {   // if click on path tag (children of svg tag)
                                             if (event.target.parentElement.parentElement.className.includes("all-products-update")) {
-                                                setSelectedRow(record?.id)
+                                                setSelectedRow(record?._id)
                                             }
                                         }
                                         // - same with setSelectedActiveRow
                                         // if click on switch span (children of class 'all-products-active')
                                         else if (event.target.parentElement.className.includes("all-products-active")) {
-                                            setSelectedActiveRow(record?.id)
+                                            setSelectedActiveRow(record?._id)
                                         }
                                     },
                                 };
