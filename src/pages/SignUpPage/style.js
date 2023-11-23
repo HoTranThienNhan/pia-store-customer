@@ -6,6 +6,10 @@ export const AuthCard = styled(Card)`
     border: 2px solid #000; 
     margin: 70px 100px;
 
+    .ant-card-body {
+        padding: 0px;
+    }
+
     &:where(.css-dev-only-do-not-override-17a39f8).ant-card .ant-card-body {
         padding: 0px;
         border-radius: 0 0 8px 8px;
@@ -41,10 +45,9 @@ export const AuthCard = styled(Card)`
 export const InputSelectCustom = styled(Select)`
     .ant-select-selector {
         height: 50px!important;
-        padding-top: 8px!important;
+        // padding-top: 8px!important;
         border: 1px solid #9a9a9a!important;
         border-radius: 25px;
-        margin-top: 20px;
     }
     .ant-select-arrow {
         padding-top: 16px!important;

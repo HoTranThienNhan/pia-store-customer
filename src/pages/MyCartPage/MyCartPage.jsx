@@ -5,6 +5,7 @@ import { InputNumberCustom, ScrollBarCustom } from "./style";
 import { DeleteOutlined, MinusCircleOutlined, MinusOutlined, PlusCircleOutlined, PlusOutlined, QuestionCircleOutlined, SmileOutlined } from "@ant-design/icons";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import * as ProductService from '../../services/ProductService';
 import {
    decreaseAmount,
    increaseAmount,
@@ -14,6 +15,8 @@ import {
    setAmount,
    setCosts
 } from "../../redux/slices/orderSlice";
+import { useQuery } from "@tanstack/react-query";
+import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
 
 const MyCartPage = () => {
    const user = useSelector((state) => state?.user);
@@ -25,16 +28,46 @@ const MyCartPage = () => {
    const dispatch = useDispatch();
 
 
+   /*** GET ALL PRODUCTS ***/
+   const getAllProducts = async () => {
+      const res = await ProductService.getAllProducts();
+      return res.data;
+   }
+   const queryAllProducts = useQuery({
+      queryKey: ['products'],
+      queryFn: getAllProducts
+   });
+   const { isLoading: isLoadingAllProducts, data: allProducts } = queryAllProducts;
+
+
    /*** MANAGE PRODUCT IN CART ***/
    const minProductCount = 1;
    const maxProductCount = 10;
    const setProductCount = (productId, value) => {
-      if (value && value >= minProductCount && value <= maxProductCount) {
-         dispatch(setAmount({ productId, value, userId: user?.id }));
-      }
+      allProducts?.map((product) => {
+         if (product._id === productId) {
+            if (product.countInStock < value) {
+               MessagePopup.warning('Số lượng sản phẩm tồn kho còn lại là ' + product.countInStock);
+            } else if (value && value >= minProductCount && value <= maxProductCount) {
+               dispatch(setAmount({ productId, value, userId: user?.id }));
+            }
+         }
+      });
    }
-   const addProductCount = (productId) => {
-      dispatch(increaseAmount({ productId, maxProductCount, userId: user?.id }));
+   const addProductCount = (productId, productAmount) => {
+      allProducts?.map((product) => {
+         if (product._id === productId) {
+            if (productAmount + 1 > product.countInStock) {
+               MessagePopup.warning('Số lượng sản phẩm tồn kho còn lại là ' + product.countInStock);
+            } else {
+               if (productAmount + 1 > 10) {
+                  MessagePopup.warning('Tối đa 10 đơn vị cho mỗi sản phẩm');
+               } else {
+                  dispatch(increaseAmount({ productId, maxProductCount, userId: user?.id }));
+               }
+            }
+         }
+      });
    }
    const minusProductCount = (productId) => {
       dispatch(decreaseAmount({ productId, minProductCount, userId: user?.id }));
@@ -222,7 +255,7 @@ const MyCartPage = () => {
                                              value={orderProduct?.amount}
                                              onChange={(value) => setProductCount(orderProduct?.product, value)}
                                           />
-                                          <PlusOutlined className='plus-input-number' onClick={() => addProductCount(orderProduct?.product, maxProductCount)} />
+                                          <PlusOutlined className='plus-input-number' onClick={() => addProductCount(orderProduct?.product, orderProduct?.amount, maxProductCount)} />
                                        </InputNumberCustom>
                                     </Col>
                                     <Col span={1}>
@@ -251,7 +284,47 @@ const MyCartPage = () => {
                      )
                   })}
                </ScrollBarCustom>
+
+               <Divider style={{ marginTop: '40px' }}></Divider>
+               <Row justify="center" style={{ marginBottom: '20px' }}>
+                  <Col>
+                     <Card style={{ padding: '0px 10px', width: '450px', fontSize: '18px', border: '2px solid #cacaca' }}>
+                        <Row justify="space-between">
+                           <Col>Tạm tính</Col>
+                           <Col>{subtotalMemo ? subtotalMemo?.toLocaleString() : 0} VNĐ</Col>
+                        </Row>
+                        <Row justify="space-between">
+                           <Col>
+                              <span style={{ marginRight: '5px' }}>
+                                 Phí vận chuyển
+                              </span>
+                              <Tooltip title="12.000 VNĐ khi tổng giá trị sản phẩm từ 100.000 VNĐ, còn lại phí 25.000 VNĐ" color="black">
+                                 <QuestionCircleOutlined />
+                              </Tooltip>
+                           </Col>
+                           <Col>{order?.orderItems?.length ? deliveryFeeMemo?.toLocaleString() : 0} VNĐ</Col>
+                        </Row>
+                        <Row justify="space-between">
+                           <Col>Giảm voucher</Col>
+                           <Col>- {discountVoucherMemo?.toLocaleString()} VNĐ</Col>
+                        </Row>
+                        <Divider style={{ margin: '15px 0px' }} />
+                        <Row justify="space-between">
+                           <Col style={{ fontSize: '20px', fontWeight: '600' }}>Tổng tiền</Col>
+                           <Col style={{ fontSize: '20px', fontWeight: '600' }}>{totalMemo ? totalMemo?.toLocaleString() : 0} VNĐ</Col>
+                        </Row>
+                     </Card>
+                  </Col>
+               </Row>
+               <Row justify="center">
+                  <Col>
+                     <Button type="primary" style={{ width: '450px', height: '40px', borderRadius: '20px' }} onClick={handleNavigateCheckout}>
+                        <span>Mua hàng</span>
+                     </Button>
+                  </Col>
+               </Row>
             </div>
+
          ) : (
             <Result
                icon={<SmileOutlined />}
@@ -259,46 +332,7 @@ const MyCartPage = () => {
                extra={<Button type="primary" onClick={handleNavigateMenuPage}>Đi tới Menu</Button>}
             />
          )}
-
          {/* </LoadingComponent> */}
-         <Divider style={{ marginTop: '40px' }}></Divider>
-         <Row justify="center" style={{ marginBottom: '20px' }}>
-            <Col>
-               <Card style={{ padding: '0px 10px', width: '450px', fontSize: '18px', border: '2px solid #cacaca' }}>
-                  <Row justify="space-between">
-                     <Col>Tạm tính</Col>
-                     <Col>{subtotalMemo ? subtotalMemo?.toLocaleString() : 0} VNĐ</Col>
-                  </Row>
-                  <Row justify="space-between">
-                     <Col>
-                        <span style={{ marginRight: '5px' }}>
-                           Phí vận chuyển
-                        </span>
-                        <Tooltip title="12.000 VNĐ khi tổng giá trị sản phẩm từ 100.000 VNĐ, còn lại phí 25.000 VNĐ" color="black">
-                           <QuestionCircleOutlined />
-                        </Tooltip>
-                     </Col>
-                     <Col>{order?.orderItems?.length ? deliveryFeeMemo?.toLocaleString() : 0} VNĐ</Col>
-                  </Row>
-                  <Row justify="space-between">
-                     <Col>Giảm voucher</Col>
-                     <Col>- {discountVoucherMemo?.toLocaleString()} VNĐ</Col>
-                  </Row>
-                  <Divider style={{ margin: '15px 0px' }} />
-                  <Row justify="space-between">
-                     <Col style={{ fontSize: '20px', fontWeight: '600' }}>Tổng tiền</Col>
-                     <Col style={{ fontSize: '20px', fontWeight: '600' }}>{totalMemo ? totalMemo?.toLocaleString() : 0} VNĐ</Col>
-                  </Row>
-               </Card>
-            </Col>
-         </Row>
-         <Row justify="center">
-            <Col>
-               <Button type="primary" style={{ width: '450px', height: '40px', borderRadius: '20px' }} onClick={handleNavigateCheckout}>
-                  <span>Mua hàng</span>
-               </Button>
-            </Col>
-         </Row>
       </div>
    )
 };

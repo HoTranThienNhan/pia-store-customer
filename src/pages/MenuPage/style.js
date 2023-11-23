@@ -12,6 +12,10 @@ export const WrapperMenuProducts = styled.div`
         font-size: 17px;
     }
 
+    .product-main-menu:hover {
+        color: #ff222ec7;
+    }
+
     .active {
         font-weight: 600;
         color: #ff222ec7;

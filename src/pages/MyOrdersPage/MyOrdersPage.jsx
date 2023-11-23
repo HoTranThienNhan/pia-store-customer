@@ -87,10 +87,20 @@ const MyOrdersPage = () => {
                return (
                   <>
                      <Row>
-                        <Col span={6}>
-                           <Image src={orderItems?.image} preview={false} width={130} />
+                        <Col span={5}>
+                           <Image
+                              src={orderItems?.image}
+                              preview={false}
+                              draggable={false}
+                              width={90}
+                              height={120}
+                              style={{
+                                 filter: 'drop-shadow(2px 2px 3px #666)',
+                                 WebkitFilter: 'drop-shadow(2px 2px 3px #666)'
+                              }}
+                           />
                         </Col>
-                        <Col span={12}>
+                        <Col span={13}>
                            <div style={{ fontWeight: '600', fontSize: '16px', marginBottom: '8px' }}>
                               {orderItems?.name}
                            </div>
@@ -155,7 +165,7 @@ const MyOrdersPage = () => {
    const navigate = useNavigate();
    if (user?.id === '') {
       navigate('/NotFoundPage');
-  }
+   }
    const handleNavigateHomePage = () => {
       navigate('/');
    }
@@ -165,7 +175,7 @@ const MyOrdersPage = () => {
 
    return (
       <LoadingComponent isLoading={isLoading}>
-         <div id="container" style={{ padding: '85px 120px 80px 120px', height: '100%', backgroundColor: '#d4e3fa5e' }}>
+         <div id="container" style={{ padding: '85px 120px 80px 120px', height: '100%', backgroundColor: '#e5e8ed' }}>
             <Breadcrumb
                style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '20px', userSelect: 'none' }}
                items={[

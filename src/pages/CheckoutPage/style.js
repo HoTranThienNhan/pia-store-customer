@@ -88,6 +88,8 @@ export const BadgeCheckedPaymentMethod = styled(Badge)`
     }
 `
 export const CardPaymentMethod = styled(Card)`
+    min-width: 250px;
+
     &.checked {
         background-color: #a5e7ff57;
         border: 2px solid #70d1ff;

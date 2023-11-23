@@ -6,6 +6,10 @@ export const AuthCard = styled(Card)`
     border: 2px solid #000; 
     margin: 70px 100px;
 
+    .ant-card-body {
+        padding: 0px;
+    }
+
     &:where(.css-dev-only-do-not-override-17a39f8).ant-card .ant-card-body {
         padding: 0px;
         border-radius: 0 0 8px 8px;

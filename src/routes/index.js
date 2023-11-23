@@ -12,6 +12,8 @@ import CheckoutPage from "../pages/CheckoutPage/CheckoutPage";
 import OrderSuccessPage from "../pages/OrderSuccessPage/OrderSuccessPage";
 import MyOrdersPage from "../pages/MyOrdersPage/MyOrdersPage";
 import ReviewPage from "../pages/ReviewPage/ReviewPage";
+import FavoritePage from "../pages/FavoritePage/FavoritePage";
+import ContactPage from "../pages/ContactPage/ContactPage";
 
 
 export const routes = [
@@ -60,6 +62,14 @@ export const routes = [
         exact: true,
     },
     {
+        path: '/favorite',
+        page: FavoritePage,
+        isShowHeader: true,
+        isShowFooter: true,
+        isPrivate: false,
+        exact: true,
+    },
+    {
         path: '/menu/:type',
         page: MenuPage,
         isShowHeader: true,
@@ -87,7 +97,7 @@ export const routes = [
         path: '/signin',
         page: SignInPage,
         isShowHeader: false,
-        isShowFooter: true,
+        isShowFooter: false,
         isPrivate: false,
         exact: true,
     },
@@ -95,6 +105,14 @@ export const routes = [
         path: '/signup',
         page: SignUpPage,
         isShowHeader: false,
+        isShowFooter: false,
+        isPrivate: false,
+        exact: true,
+    },
+    {
+        path: '/contact',
+        page: ContactPage,
+        isShowHeader: true,
         isShowFooter: true,
         isPrivate: false,
         exact: true,

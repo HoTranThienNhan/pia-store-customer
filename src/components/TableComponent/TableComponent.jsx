@@ -6,13 +6,13 @@ import { FileExcelOutlined } from '@ant-design/icons';
 import { ButtonExportToExcel, WrapperTable } from './style';
 
 const TableComponent = (props) => {
-    const { 
-        selectionType = 'checkbox', 
-        data = [], 
-        columns = [], 
-        isLoading = false, 
+    const {
+        selectionType = 'checkbox',
+        data = [],
+        columns = [],
+        isLoading = false,
         excelFileName = 'DefaultTable',
-        handleActiveMultipleConfirm 
+        handleActiveMultipleConfirm
     } = props;
 
     const [selectedMultipleRowKeys, setSelectedMultipleRowKeys] = useState([]);
@@ -37,6 +37,8 @@ const TableComponent = (props) => {
     const handleInactiveUpdateCancel = () => { }
 
     const handleActiveUpdateCancel = () => { }
+
+    console.log(tableRef);
 
     return (
         <WrapperTable>
@@ -78,15 +80,15 @@ const TableComponent = (props) => {
             )}
 
             {/* Export Table To Excel */}
-            <DownloadTableExcel
+            {/* <DownloadTableExcel
                 filename={excelFileName}
                 sheet={excelSheetName}
                 currentTableRef={tableRef.current}
             >
                 <ButtonExportToExcel type="dashed">
-                    <FileExcelOutlined /> Xuất sang Excel 
+                    <FileExcelOutlined /> Xuất sang Excel
                 </ButtonExportToExcel>
-            </DownloadTableExcel>
+            </DownloadTableExcel> */}
 
             <LoadingComponent isLoading={isLoading}>
                 <Table

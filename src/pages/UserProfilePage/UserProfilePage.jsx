@@ -5,6 +5,7 @@ import * as UserService from '../../services/UserService';
 import { convertDateType } from '../../utils';
 import { useNavigate } from 'react-router-dom';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
+import { UserOutlined } from '@ant-design/icons';
 
 const UserProfilePage = () => {
   const user = useSelector((state) => state?.user);
@@ -76,7 +77,7 @@ const UserProfilePage = () => {
   }
 
   return (
-    <div id="container" style={{ padding: '125px 70px 60px 70px', height: '100%', backgroundColor: '#d4e3fa5e' }}>
+    <div id="container" style={{ padding: '125px 70px 60px 70px', height: '100%', backgroundColor: '#e5e8ed' }}>
       <Breadcrumb
         style={{ paddingLeft: '24px', marginBottom: '20px', userSelect: 'none' }}
         items={[
@@ -89,9 +90,9 @@ const UserProfilePage = () => {
         ]}
       >
       </Breadcrumb>
-      <div style={{ fontWeight: 'bold', fontSize: '24px', marginBottom: '24px' }}>THÔNG TIN NGƯỜI DÙNG</div>
       <Row justify="center">
         <Col span={18}>
+          <div style={{ fontWeight: 'bold', fontSize: '24px', marginBottom: '24px' }}>THÔNG TIN NGƯỜI DÙNG</div>
           <LoadingComponent isLoading={isLoading}>
             <Card style={{ borderRadius: '25px' }}>
               <Row style={{ position: 'relative', marginBottom: '90px' }}>
@@ -110,7 +111,15 @@ const UserProfilePage = () => {
                         style={{ height: '140px', width: '140px', backgroundColor: '#fff' }} />
                     </Col>
                     <Col style={{ position: 'absolute', top: '60px', left: '20px' }}>
-                      <Avatar className="user-avatar-info" src={thisUser?.avatar} alt="avatar" style={{ height: '130px', width: '130px' }} />
+                      {thisUser?.avatar
+                        ? <Avatar className="user-avatar-info" src={thisUser?.avatar} alt="avatar" style={{ height: '130px', width: '130px' }} />
+                        : <Avatar
+                          className='edit-default-avatar'
+                          alt='avatar'
+                          style={{ height: '130px', width: '130px', paddingTop: '30px' }}
+                          icon={<UserOutlined style={{ fontSize: '60px' }} />}
+                        />
+                      }
                     </Col>
                     <Col style={{ position: 'absolute', top: '140px', left: '170px' }}>
                       <span style={{ textTransform: 'uppercase', fontWeight: '700', fontSize: '20px' }}>{thisUser?.fullname ? thisUser?.fullname : 'Username'}</span>
@@ -169,14 +178,14 @@ const UserProfilePage = () => {
                       <span style={{ fontWeight: '600' }}>{thisUser?.email ? thisUser?.email : 'User Email'}</span>
                     </Col>
                   </Row>
-                  <Row style={{ marginBottom: '12px' }}>
+                  {/* <Row style={{ marginBottom: '12px' }}>
                     <Col span={6} style={{ fontWeight: '600', color: '#989797' }}>
                       Mô Tả Bản Thân
                     </Col>
                     <Col>
                       <span style={{ fontWeight: '600' }}>{thisUser?.description ? thisUser?.description : 'Chưa có mô tả.'}</span>
                     </Col>
-                  </Row>
+                  </Row> */}
                   <Row style={{ marginBottom: '12px' }}>
                     <Col span={6} style={{ fontWeight: '600', color: '#989797' }}>
                       Mật Khẩu

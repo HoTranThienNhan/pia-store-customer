@@ -8,6 +8,7 @@ export const WrapperAdminMenuSidebar = styled(Menu)`
     color: #535b98;
     padding: 20px 10px 0px 10px;
     box-shadow: 3px 0px 3px #cacaca8a !important;
+    min-height: 600px;
 
     .ant-menu-item.ant-menu-item-selected, 
     .ant-menu-item.ant-menu-item-active {

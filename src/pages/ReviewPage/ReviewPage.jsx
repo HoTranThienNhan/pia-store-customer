@@ -132,7 +132,7 @@ const ProductsPage = () => {
 
     return (
         // <LoadingComponent isLoading={isLoading}>
-        <div id="container" style={{ padding: '85px 70px 0px 70px', height: '100%' }}>
+        <div id="container" style={{ padding: '85px 70px 50px 70px', height: '100%', backgroundColor: 'whitesmoke' }}>
             {/* {productDetails && <> */}
             <Breadcrumb
                 style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '40px' }}
@@ -154,7 +154,18 @@ const ProductsPage = () => {
                     <div style={{ fontSize: '28px', fontWeight: 'bold', cursor: 'context-menu', marginBottom: '30px' }}>
                         {productDetails?.price?.toLocaleString()} VNĐ
                     </div>
-                    <Image src={productDetails?.image} width={300} alt="product" preview={true} draggable={false} />
+                    <Image
+                        src={productDetails?.image}
+                        width={250}
+                        height={320}
+                        alt="product"
+                        preview={true}
+                        draggable={false}
+                        style={{
+                            filter: 'drop-shadow(2px 5px 5px #666)',
+                            WebkitFilter: 'drop-shadow(2px 5px 5px #666)'
+                        }}
+                    />
                 </Col>
                 <Col span={12}>
                     <div>

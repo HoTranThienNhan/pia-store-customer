@@ -1,4 +1,4 @@
-import { Avatar, Badge, Col, Popover, Row } from "antd";
+import { Avatar, Badge, Col, Image, Popover, Row } from "antd";
 import { UserOutlined, HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import {
@@ -20,6 +20,7 @@ import { resetUser } from '../../redux/slices/userSlice';
 import LoadingComponent from "../LoadingComponent/LoadingComponent";
 import { searchProduct } from "../../redux/slices/productSlice";
 import { createOrderState, resetOrder } from "../../redux/slices/orderSlice";
+import imageLogo from '../../assets/images/banh-pia-logo-2.png';
 
 const HeaderComponent = () => {
    const navItems = [
@@ -36,12 +37,8 @@ const HeaderComponent = () => {
          "path": "/",
       },
       {
-         "name": "Khuyến mãi",
-         "path": "/",
-      },
-      {
          "name": "Liên hệ",
-         "path": "/",
+         "path": "/contact",
       }
    ];
 
@@ -49,7 +46,9 @@ const HeaderComponent = () => {
    const user = useSelector((state) => state.user);
    // state?.order?.findIndex(prop => prop.user === user?.id) means find index of recent user order state
    const order = useSelector((state) => state?.order[state?.order?.findIndex(prop => prop.user === user?.id)]);
+   const favorite = useSelector((state) => state?.favorite[state?.favorite?.findIndex(prop => prop.user === user?.id)]);
    const dispatch = useDispatch();
+
 
    const [loading, setLoading] = useState(false);
    const [username, setUsername] = useState('');
@@ -74,6 +73,9 @@ const HeaderComponent = () => {
    }
    const handleNavigateMyCart = () => {
       navigate('/mycart');
+   }
+   const handleNavigateFavorite = () => {
+      navigate('/favorite');
    }
    const handleNavigateSignout = async () => {
       setLoading(true);
@@ -131,11 +133,11 @@ const HeaderComponent = () => {
             {/* Branch Name Part Here */}
             <Col span={3}>
                <Row justify="space-around" align="middle" style={{ height: '100%', color: '#fff' }}>
-                  BRAND NAME
+                  <Image src={imageLogo} draggable={false} preview={false} width={150} height={75} />
                </Row>
             </Col>
             {/* NavBar Items Part Here */}
-            <Col span={12}>
+            <Col span={12} style={{ padding: '25px 0px' }}>
                <Row justify="space-around" align="middle" style={{ height: '100%', color: '#fff' }}>
                   {
                      navItems.map((item) => {
@@ -147,7 +149,7 @@ const HeaderComponent = () => {
                </Row>
             </Col>
             {/* Right NavBar Part Here */}
-            <Col span={9}>
+            <Col span={9} style={{ padding: '25px 0px' }}>
                <Row justify="end">
                   {/* Search Part Here */}
                   <WrapperSearchHeader style={{ marginRight: '25px' }}>
@@ -165,7 +167,7 @@ const HeaderComponent = () => {
                            {/* <UserOutlined /> */}
                            {userAvatar ?
                               (<img className="user-avatar-header" src={userAvatar} alt="avatar" />) :
-                              <Avatar size={35} icon={<UserOutlined />} />}
+                              <Avatar size={35} icon={<UserOutlined />} style={{ color: '#fff', background: 'grey' }} />}
                         </WrapperAccountHeader>
                         {/* If user exists, show user email, else show signin and signup */}
                         {user?.accessToken ? (
@@ -182,7 +184,7 @@ const HeaderComponent = () => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     fontWeight: 'bold',
-                                    cursor: 'pointer', 
+                                    cursor: 'pointer',
                                     color: '#fff'
                                  }}
                                  onClick={() => setIsOpenPopover((prev) => !prev)}
@@ -193,7 +195,7 @@ const HeaderComponent = () => {
                         ) : (
                            <WrapperAuthHeader>
                               <span onClick={handleNavigateSignin} style={{ marginRight: '5px', cursor: 'pointer', color: '#fff' }}>Đăng nhập</span>
-                              <span style={{ userSelect: 'none' }}>/</span>
+                              <span style={{ userSelect: 'none', color: '#fff' }}>/</span>
                               <span onClick={handleNavigateSignup} style={{ marginLeft: '5px', cursor: 'pointer', color: '#fff' }}>Đăng ký</span>
                            </WrapperAuthHeader>
                         )}
@@ -202,8 +204,8 @@ const HeaderComponent = () => {
                   {/* Favorite Products And Cart Here */}
                   <WrapperAccountHeader>
                      <div style={{ marginRight: '15px' }}>
-                        <Badge count={1} showZero>
-                           <HeartOutlined style={{ marginRight: '5px', fontSize: '24px', color: '#d9a34e' }} />
+                        <Badge count={favorite ? favorite?.favoriteItems?.length : 0} showZero>
+                           <HeartOutlined style={{ marginRight: '5px', fontSize: '24px', color: '#d9a34e' }} onClick={handleNavigateFavorite} />
                         </Badge>
                      </div>
                      <div>

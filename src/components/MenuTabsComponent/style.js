@@ -10,4 +10,8 @@ export const WrapperProductTypes = styled.span`
         font-weight: 600;
         color: #ff222ec7;
     }
+
+    &:hover {
+        color: #ff222ec7;
+    }
 `

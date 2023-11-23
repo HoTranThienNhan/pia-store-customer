@@ -23,8 +23,11 @@ const MenuPage = () => {
     const searchProduct = useSelector((state) => state?.product?.search);
     const searchDebounce = useDebounce(searchProduct, 1000);
     const refSearch = useRef();
+    const user = useSelector((state) => state?.user);
+    const favorite = useSelector((state) => state?.favorite[state?.favorite?.findIndex(prop => prop.user === user?.id)]);
 
 
+    
     /*** ALL PRODUCTS ***/
     const fetchAllProducts = async (context) => {
         setLoading(true);
@@ -149,6 +152,8 @@ const MenuPage = () => {
                                     <Col span={5} offset={(index % 4 == 0) ? 0 : 1} style={{ marginBottom: '30px' }}>
                                         <CardComponent
                                             key={product._id}
+                                            user={user}
+                                            favorite={favorite}
                                             id={product.id}
                                             countInStock={product.countInStock}
                                             description={product.description}

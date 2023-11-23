@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import CardComponent from '../../components/CardComponent/CardComponent';
 import SliderComponent from '../../components/SliderComponent/SliderComponent';
-import slider1 from '../../assets/images/slider-banner-1.png';
-import slider2 from '../../assets/images/slider-banner-1.png';
-import slider3 from '../../assets/images/slider-banner-1.png';
+import slider1 from '../../assets/images/banhpia-cover-slider-1.png';
+import slider2 from '../../assets/images/banhpia-cover-slider-1.png';
+import slider3 from '../../assets/images/banhpia-cover-slider-1.png';
 import { useQuery } from '@tanstack/react-query';
 import * as ProductService from '../../services/ProductService';
 import { Button, Col, Row } from 'antd';
@@ -44,49 +44,53 @@ const HomePage = () => {
    const { isLoading, data: products, isPreviousData } = queryAllProducts;
 
    return (
-      <div id="container" style={{ padding: '85px 70px 50px 70px', height: 'maxContent' }}>
-         <SliderComponent arrImages={[slider1, slider2, slider3]} />
-         <div style={{ marginTop: '40px' }}>
-            <LoadingComponent isLoading={isLoading || loading}>
-               <Row>
-                  {
-                     products?.data?.map((product) => {
-                        return (
-                           <Col span={6} style={{ marginBottom: '30px' }}>
-                              <CardComponent
-                                 key={product._id}
-                                 id={product.id}
-                                 countInStock={product.countInStock}
-                                 description={product.description}
-                                 image={product.image}
-                                 name={product.name}
-                                 price={product.price}
-                                 rating={product.rating}
-                                 type={product.type}
-                                 sold={product.sold}
-                                 discount={product.discount}
-                              />
-                           </Col>
-                        );
-                     })
-                  }
-               </Row>
-               <Row justify="center">
-                  {((products?.data?.length >= 4 && !searchDebounce) || (products?.data?.length > 4 && searchDebounce)) &&
-                     <Button
-                        type="primary"
-                        style={{ marginBottom: '40px' }}
-                        onClick={
-                           () => {
-                              setLimitProducts((prev) => products?.total === products?.data?.length ? prev - 4 : prev + 4);
+      <div>
+         <div style={{ paddingTop: '85px' }}>
+            <SliderComponent arrImages={[slider1, slider2, slider3]} />
+         </div>
+         <div id="container" style={{ padding: '0px 70px 50px 70px', height: 'maxContent' }}>
+            <div style={{ marginTop: '40px' }}>
+               <LoadingComponent isLoading={isLoading || loading}>
+                  <Row>
+                     {
+                        products?.data?.map((product) => {
+                           return (
+                              <Col span={6} style={{ marginBottom: '30px' }}>
+                                 <CardComponent
+                                    key={product._id}
+                                    id={product.id}
+                                    countInStock={product.countInStock}
+                                    description={product.description}
+                                    image={product.image}
+                                    name={product.name}
+                                    price={product.price}
+                                    rating={product.rating}
+                                    type={product.type}
+                                    sold={product.sold}
+                                    discount={product.discount}
+                                 />
+                              </Col>
+                           );
+                        })
+                     }
+                  </Row>
+                  <Row justify="center">
+                     {((products?.data?.length >= 4 && !searchDebounce) || (products?.data?.length > 4 && searchDebounce)) &&
+                        <Button
+                           type="primary"
+                           style={{ marginBottom: '40px' }}
+                           onClick={
+                              () => {
+                                 setLimitProducts((prev) => products?.total === products?.data?.length ? prev - 4 : prev + 4);
+                              }
                            }
-                        }
-                     >
-                        {products?.total > products?.data?.length ? 'Hiển Thị Thêm' : 'Ẩn bớt'}
-                     </Button>
-                  }
-               </Row>
-            </LoadingComponent>
+                        >
+                           {products?.total > products?.data?.length ? 'Hiển Thị Thêm' : 'Ẩn bớt'}
+                        </Button>
+                     }
+                  </Row>
+               </LoadingComponent>
+            </div>
          </div>
       </div>
    )

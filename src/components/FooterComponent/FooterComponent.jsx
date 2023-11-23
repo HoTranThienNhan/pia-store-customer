@@ -1,8 +1,9 @@
 import { FacebookOutlined, InstagramOutlined, TwitterOutlined } from '@ant-design/icons';
-import { Button, Col, Input, Row } from 'antd';
+import { Button, Col, Image, Input, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import * as ProductService from '../../services/ProductService';
 import { useNavigate } from 'react-router-dom';
+import imageLogo from '../../assets/images/banh-pia-logo.png';
 
 const FooterComponent = () => {
 
@@ -31,10 +32,18 @@ const FooterComponent = () => {
             <Row style={{ padding: '50px 114px', backgroundColor: '#eae5d6' }}>
                 <Col span={6}>
                     <Row>
-                        <span>LOGO HERE</span>
+                        <Col span={24}>
+                            <Image src={imageLogo} draggable={false} preview={false} width={250} />
+                        </Col>
+                        <Col>
+                            <div style={{ fontSize: '16px', textAlign: 'justify' }}>
+                                Chúng tôi luôn mong muốn cung cấp những sản phẩm chất lượng về hương vị, giá thành
+                                cũng như đem lại những trải nghiệm vô cùng tuyệt vời đến với khách hàng.
+                            </div>
+                        </Col>
                     </Row>
                 </Col>
-                <Col span={6}>
+                <Col offset={2} span={5}>
                     <Row style={{ fontSize: '18px', fontWeight: '600', marginBottom: '25px' }}>
                         <span>Phân Loại</span>
                     </Row>
@@ -47,7 +56,7 @@ const FooterComponent = () => {
                     }
                     )}
                 </Col>
-                <Col span={6}>
+                <Col span={5}>
                     <Row style={{ fontSize: '18px', fontWeight: '600', marginBottom: '25px' }}>
                         <span>Cửa Hàng</span>
                     </Row>

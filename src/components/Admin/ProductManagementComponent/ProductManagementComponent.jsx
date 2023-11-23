@@ -1158,6 +1158,7 @@ const ProductManagementComponent = () => {
                                                     className='auth-input-product-id'
                                                     value={updateProductState.id}
                                                     onChange={handleOnChangeUpdateProductState}
+                                                    disabled
                                                     style={{
                                                         borderRadius: '10px',
                                                         padding: '0px 18px',

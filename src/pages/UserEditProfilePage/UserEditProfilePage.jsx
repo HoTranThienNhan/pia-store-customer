@@ -108,7 +108,7 @@ const UserEditProfilePage = () => {
     }
 
     return (
-        <WrapperUserEditProfile id="container" style={{ padding: '125px 70px 40px 70px', height: '1500px', backgroundColor: '#d4e3fa5e' }}>
+        <WrapperUserEditProfile id="container" style={{ padding: '125px 70px 40px 70px', height: '900px', backgroundColor: '#e5e8ed' }}>
             <Breadcrumb
                 style={{ paddingLeft: '24px', marginBottom: '20px', userSelect: 'none' }}
                 items={[

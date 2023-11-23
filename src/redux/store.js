@@ -14,6 +14,7 @@ import counterReducer from './slices/counterSlice';
 import userReducer from './slices/userSlice';
 import productReducer from './slices/productSlice';
 import orderReducer from './slices/orderSlice';
+import favoriteReducer from './slices/favoriteSlice';
 
 const persistConfig = {
   key: 'root',
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
   counter: counterReducer,
   user: userReducer,
   product: productReducer,
-  order: orderReducer
+  order: orderReducer,
+  favorite: favoriteReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

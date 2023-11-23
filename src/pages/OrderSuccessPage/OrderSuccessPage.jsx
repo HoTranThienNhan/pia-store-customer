@@ -67,7 +67,7 @@ const OrderSuccessPage = () => {
     
 
     return (
-        <div id="container" style={{ padding: '85px 120px 0px 120px', height: '100%' }}>
+        <div id="container" style={{ padding: '85px 120px 0px 120px', height: '100%', backgroundColor: 'whitesmoke' }}>
             <Breadcrumb
                 style={{ paddingLeft: '24px', marginTop: '20px', marginBottom: '20px', userSelect: 'none' }}
                 items={[
@@ -88,7 +88,7 @@ const OrderSuccessPage = () => {
                             title={<span style={{ fontWeight: 'bold', fontSize: '32px' }}>Đơn đặt hàng đã được xác nhận!</span>}
                             subTitle={
                                 <span style={{ fontSize: '16px' }}>
-                                    Cảm ơn bạn đã tin tưởng và lựa chọn sản phẩm của BRAND NAME để có được những trải nghiệm tuyệt vời.
+                                    Cảm ơn bạn đã tin tưởng và lựa chọn sản phẩm của PIASTORE để có được những trải nghiệm tuyệt vời.
                                     <br />
                                     Đơn hàng của bạn sẽ được giao đến tay sớm nhất có thể.
                                 </span>

@@ -12,9 +12,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addOrderProduct } from '../../redux/slices/orderSlice';
 import ProductReviewsComponent from '../../components/ProductReviewsComponent/ProductReviewsComponent';
 import * as ReviewService from '../../services/ReviewService';
+import * as MessagePopup from '../../components/MessagePopupComponent/MessagePopupComponent';
 
 const ProductsPage = () => {
    const user = useSelector((state) => state?.user);
+   const order = useSelector((state) => state?.order[state?.order?.findIndex(prop => prop.user === user?.id)]);
 
    const [productCount, setProductCount] = useState(1);
 
@@ -95,11 +97,28 @@ const ProductsPage = () => {
 
 
    /*** PRODUCT COUNT ***/
-   const minProductCount = 1;
-   const maxProductCount = 10;
+   let minProductCount = 1;
+   let maxProductCount = 10;
+   let cartProductCount = 0;
+
+   order?.orderItems?.map((product) => {
+      if (product.productId === productDetails?.id) {
+         cartProductCount = product.amount;
+      }
+   });
+
    const addProductCount = (e) => {
+      if (productDetails?.countInStock < maxProductCount) {
+         maxProductCount = productDetails?.countInStock;
+      }
       if (Number(productCount) < Number(maxProductCount)) {
          setProductCount(Number(productCount) + 1);
+      } else {
+         if (maxProductCount === 10) {
+            MessagePopup.warning('Tối đa 10 đơn vị cho mỗi sản phẩm');
+         } else {
+            MessagePopup.warning('Số lượng sản phẩm tồn kho còn lại là ' + productDetails?.countInStock);
+         }
       }
    }
    const minusProductCount = (e) => {
@@ -109,7 +128,11 @@ const ProductsPage = () => {
    }
    const setProductCountValue = (e) => {
       if (e !== null) {
-         setProductCount(`${e}`);
+         if (e > productDetails?.countInStock) {
+            MessagePopup.warning('Số lượng sản phẩm tồn kho còn lại là ' + productDetails?.countInStock);
+         } else {
+            setProductCount(`${e}`);
+         }
       }
    }
 
@@ -128,17 +151,22 @@ const ProductsPage = () => {
          // then after sign in, navigate back to this product page (based on stored state)
          navigate('/signin', { state: location?.pathname });
       } else {
-         dispatch(addOrderProduct({
-            orderProductItems: {
-               name: productDetails?.name,
-               amount: productCount,
-               image: productDetails?.image,
-               price: productDetails?.price,
-               product: productDetails?._id,
-               productId: productDetails?.id,
-            },
-            userId: user?.id,
-         }));
+         if ((cartProductCount + productCount) > productDetails?.countInStock) {
+            MessagePopup.error('Hiện đang có ' + cartProductCount + ' sản phẩm trong giỏ hàng. Không thể thêm ' + productCount + ' vào giỏ hàng vì vượt quá số lượng tồn kho là ' + productDetails?.countInStock, 5);
+         } else {
+            dispatch(addOrderProduct({
+               orderProductItems: {
+                  name: productDetails?.name,
+                  amount: productCount,
+                  image: productDetails?.image,
+                  price: productDetails?.price,
+                  product: productDetails?._id,
+                  productId: productDetails?.id,
+               },
+               userId: user?.id,
+            }));
+            MessagePopup.success('Thêm sản phẩm vào giỏ hàng thành công');
+         }
       }
    }
 
@@ -190,6 +218,9 @@ const ProductsPage = () => {
                            <InputNumber className='input-number-area' min={minProductCount} max={maxProductCount} value={productCount} onChange={setProductCountValue} />
                            <PlusOutlined className='plus-input-number' onClick={addProductCount} />
                         </InputNumberCustom>
+                        <div style={{ color: 'red', marginLeft: '30px', userSelect: 'none' }}>
+                           Còn {productDetails?.countInStock} sản phẩm
+                        </div>
                      </DetailContentDiv>
                      <DetailContentDiv>
                         <Button

@@ -2,7 +2,7 @@ import { Button, Col, Form, Image, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import InputFormComponent from '../../components/InputFormComponent/InputFormComponent';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import imagePoster from '../../assets/images/food-poster.jpg'
+import imagePoster from '../../assets/images/banh-pia-poster.jpg';
 import { AuthCard } from './style';
 import { useLocation, useNavigate } from 'react-router-dom';
 import InputPasswordComponent from '../../components/InputPasswordComponent/InputPasswordComponent';
@@ -15,6 +15,7 @@ import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from '../../redux/slices/userSlice';
 import { createOrderState } from '../../redux/slices/orderSlice';
+import { createFavoriteState } from '../../redux/slices/favoriteSlice';
 
 const SignInPage = () => {
     const [email, setEmail] = useState('');
@@ -63,8 +64,9 @@ const SignInPage = () => {
     }, [isSuccess, isError]);
 
     useEffect(() => { 
-        // if sign in success, before navigate to homepage, create order state for this user
+        // if sign in success, before navigate to homepage, create order and favorite state for this user
         dispatch(createOrderState(user?.id));
+        dispatch(createFavoriteState(user?.id));
         // if user state is updated, navigate to homepage
         if (user?.id) {
             handleNavigateHomepage();
@@ -102,12 +104,12 @@ const SignInPage = () => {
     }
 
     return (
-        <div style={{ padding: '0px 70px', height: '700px' }}>
+        <div style={{ padding: '0px 130px', height: '700px' }}>
             <AuthCard>
                 <Row>
-                    <Col span={12} style={{ padding: '32px 32px' }}>
+                    <Col span={15} style={{ padding: '32px 64px' }}>
                         <h2 style={{ marginBottom: '48px' }}>
-                            Chào mừng đến <span onClick={handleNavigateHomepage} style={{ cursor: 'pointer' }}>BRAND NAME</span>
+                            Chào mừng đến <span onClick={handleNavigateHomepage} style={{ cursor: 'pointer' }}>PIASTORE</span>
                         </h2>
                         <Col style={{ padding: '20px 50px' }}>
                             <h1 style={{ textAlign: 'center', marginBottom: '24px' }}>
@@ -184,7 +186,7 @@ const SignInPage = () => {
                             </div>
                         </Col>
                     </Col>
-                    <Col span={12}>
+                    <Col span={9}>
                         <Image src={imagePoster} preview={false} height={600} style={{ borderTopRightRadius: '25px', borderBottomRightRadius: '25px' }} />
                     </Col>
                 </Row>

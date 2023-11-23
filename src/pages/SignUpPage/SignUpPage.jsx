@@ -2,7 +2,7 @@ import { Button, Col, Form, Image, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import InputFormComponent from '../../components/InputFormComponent/InputFormComponent';
 import { IdcardOutlined, LockOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
-import imagePoster from '../../assets/images/food-poster.jpg'
+import imagePoster from '../../assets/images/banh-pia-poster-2.jpg';
 import { AuthCard, InputSelectCustom } from './style';
 import { useNavigate } from 'react-router-dom';
 import InputPasswordComponent from '../../components/InputPasswordComponent/InputPasswordComponent';
@@ -158,15 +158,15 @@ const SignUpPage = () => {
     }
 
     return (
-        <div style={{ padding: '0px 70px', height: '700px' }}>
+        <div style={{ padding: '0px 100px', height: '900px' }}>
             <AuthCard>
                 <Row>
-                    <Col span={12} style={{ padding: '32px 32px' }}>
-                        <h2 style={{ marginBottom: '48px' }}>
-                            Chào mừng đến <span onClick={handleNavigateHomepage} style={{ cursor: 'pointer' }}>BRAND NAME</span>
+                    <Col span={13} style={{ padding: '32px 32px' }}>
+                        <h2 style={{ marginBottom: '12px' }}>
+                            Chào mừng đến <span onClick={handleNavigateHomepage} style={{ cursor: 'pointer' }}>PIASTORE</span>
                         </h2>
-                        <Col style={{ padding: '20px 50px' }}>
-                            <h1 style={{ textAlign: 'center', marginBottom: '24px' }}>
+                        <Col style={{ padding: '10px 50px 0px 50px' }}>
+                            <h1 style={{ textAlign: 'center', marginBottom: '0px' }}>
                                 Đăng Ký Tài Khoản
                             </h1>
                             <Form autoComplete="off">
@@ -218,7 +218,7 @@ const SignUpPage = () => {
                                     label=""
                                     validateStatus={"validating"}
                                     help=""
-                                    style={{ marginBottom: '0px' }}
+                                    style={{ marginBottom: '20px' }}
                                     className='auth-form-item-email'
                                 >
                                     <FloatingLabelComponent
@@ -240,10 +240,8 @@ const SignUpPage = () => {
                                     label=""
                                     validateStatus={"validating"}
                                     help=""
-                                    style={{ marginBottom: '0px' }}
-                                    className='auth-form-item-product-count-in-stock'
                                 >
-                                    <Row>
+                                    <Row style={{ marginBottom: '35px' }}>
                                         <Col span={24}>
                                             <InputSelectCustom
                                                 defaultValue='Chọn tỉnh thành'
@@ -336,13 +334,13 @@ const SignUpPage = () => {
                                     </LoadingComponent>
                                 </Form.Item>
                             </Form>
-                            <div style={{ marginBottom: '8px' }}>
+                            <div>
                                 Đã có tài khoản? <span style={{ cursor: 'pointer', color: 'blue' }} onClick={handleNavigateSignin}>Đăng nhập</span>
                             </div>
                         </Col>
                     </Col>
-                    <Col span={12}>
-                        <Image src={imagePoster} preview={false} height={600} style={{ borderTopRightRadius: '25px', borderBottomRightRadius: '25px' }} />
+                    <Col span={11}>
+                        <Image src={imagePoster} preview={false} height={800} style={{ borderTopRightRadius: '25px', borderBottomRightRadius: '25px' }} />
                     </Col>
                 </Row>
             </AuthCard>
