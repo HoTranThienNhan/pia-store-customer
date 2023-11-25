@@ -35,7 +35,7 @@ const ProductReviewsComponent = (props) => {
                                         {review?.images?.map((imageReview) => {
                                             return (
                                                 <Col style={{ marginRight: '10px' }}>
-                                                    <Image src={imageReview} width={120} />
+                                                    <Image src={imageReview} width={120} height={120} />
                                                 </Col>
                                             );
                                         })}

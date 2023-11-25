@@ -65,11 +65,6 @@ const ProductsPage = () => {
 
 
    const items = [
-      // {
-      //    key: '1',
-      //    label: 'Chi tiết',
-      //    children: 'Content of Tab Pane 1'
-      // },
       {
          key: '1',
          label: 'Đánh giá',

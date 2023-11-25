@@ -83,7 +83,6 @@ const MyOrdersPage = () => {
          label: `Chi tiết đơn hàng (${order?.orderItems?.length ? order?.orderItems?.length : 0} sản phẩm)`,
          children:
             order?.orderItems?.map((orderItems, index) => {
-               let h = 8;
                return (
                   <>
                      <Row>
@@ -120,7 +119,7 @@ const MyOrdersPage = () => {
                            {
                               (order?.status === 'delivered') ? (
                                  (orderItems?.isReviewed === false) ?
-                                    <Button type="primary" onClick={() => handleNavigateReviewProduct(order?._id, orderItems?.productId)}>
+                                    <Button type="primary" onClick={() => handleNavigateReviewProduct(order?._id, orderItems?.product)}>
                                        Đánh Giá
                                     </Button>
                                     : <Button type="primary" disabled>Đã Đánh Giá</Button>

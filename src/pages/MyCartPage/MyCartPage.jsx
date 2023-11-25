@@ -178,7 +178,7 @@ const MyCartPage = () => {
          <Row justify="center">
             <Divider>
                <Col style={{ fontSize: '32px' }} >
-                  <span style={{ fontWeight: '700' }}>My Cart </span>
+                  <span style={{ fontWeight: '700' }}>Giỏ Hàng Của Tôi </span>
                   <span>({order?.orderItems?.length ? order?.orderItems?.length : 0})</span>
                </Col>
             </Divider>

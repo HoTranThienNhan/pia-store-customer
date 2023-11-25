@@ -49,6 +49,9 @@ const HomePage = () => {
             <SliderComponent arrImages={[slider1, slider2, slider3]} />
          </div>
          <div id="container" style={{ padding: '0px 70px 50px 70px', height: 'maxContent' }}>
+            <Row justify="center" style={{ marginTop: '40px' }}>
+               <span style={{ fontSize: '24px', fontWeight: '700' }}>SẢN PHẨM CỦA CHÚNG TÔI</span>
+            </Row>
             <div style={{ marginTop: '40px' }}>
                <LoadingComponent isLoading={isLoading || loading}>
                   <Row>

@@ -362,10 +362,6 @@ const CheckoutPage = () => {
                     </Col>
                 </Row>,
         },
-        {
-            title: 'Last',
-            content: <div>hihi</div>,
-        },
     ];
     const [currentStep, setCurrentStep] = useState(0);
     const next = () => {
@@ -501,8 +497,7 @@ const CheckoutPage = () => {
             <Row justify="center">
                 <Divider>
                     <Col style={{ fontSize: '32px' }} >
-                        <span style={{ fontWeight: '700' }}>Checkout</span>
-                        <span>({order?.orderItems?.length})</span>
+                        <span style={{ fontWeight: '700' }}>Thanh toán</span>
                     </Col>
                 </Divider>
             </Row>
