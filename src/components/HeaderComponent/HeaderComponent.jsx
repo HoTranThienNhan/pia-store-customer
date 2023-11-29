@@ -34,7 +34,7 @@ const HeaderComponent = () => {
       },
       {
          "name": "Tìm hiểu",
-         "path": "/",
+         "path": "/about",
       },
       {
          "name": "Liên hệ",

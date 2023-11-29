@@ -14,6 +14,7 @@ import MyOrdersPage from "../pages/MyOrdersPage/MyOrdersPage";
 import ReviewPage from "../pages/ReviewPage/ReviewPage";
 import FavoritePage from "../pages/FavoritePage/FavoritePage";
 import ContactPage from "../pages/ContactPage/ContactPage";
+import AboutUsPage from "../pages/AboutUsPage/AboutUsPage";
 
 
 export const routes = [
@@ -112,6 +113,14 @@ export const routes = [
     {
         path: '/contact',
         page: ContactPage,
+        isShowHeader: true,
+        isShowFooter: true,
+        isPrivate: false,
+        exact: true,
+    },
+    {
+        path: '/about',
+        page: AboutUsPage,
         isShowHeader: true,
         isShowFooter: true,
         isPrivate: false,

@@ -87,17 +87,28 @@ const UserEditProfilePage = () => {
     }
 
     const handleSaveEditProfile = async () => {
-        // parse these data into UserService to update new data
-        await mutation.mutateAsync({
-            id: user?.id,
-            fullname,
-            email,
-            phone,
-            address,
-            avatar,
-            accessToken: user?.accessToken
-        });
-        navigate('/user/profile');
+        console.log(fullname);
+        if (fullname === '') {
+            MessagePopup.error("Fullname is required");
+        } else if (email === '') {
+            MessagePopup.error("Email is required");
+        } else if (phone === '') {
+            MessagePopup.error("Phone is required");
+        } else if (address === '') {
+            MessagePopup.error("Address is required");
+        } else {
+            // parse these data into UserService to update new data
+            await mutation.mutateAsync({
+                id: user?.id,
+                fullname,
+                email,
+                phone,
+                address,
+                avatar,
+                accessToken: user?.accessToken
+            });
+            navigate('/user/profile');
+        }
     }
 
     const handleCancelEditProfile = async () => {
