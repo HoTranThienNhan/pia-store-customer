@@ -127,9 +127,9 @@ const CheckoutPage = () => {
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
 
-    const [selectedProvince, setSelectedProvince] = useState('Chọn tỉnh thành' );
-    const [selectedDistrict, setSelectedDistrict] = useState('Chọn quận huyện' );
-    const [selectedWard, setSelectedWard] = useState('Chọn phường xã' );
+    const [selectedProvince, setSelectedProvince] = useState('Chọn tỉnh thành');
+    const [selectedDistrict, setSelectedDistrict] = useState('Chọn quận huyện');
+    const [selectedWard, setSelectedWard] = useState('Chọn phường xã');
 
     const renderProvince = async () => {
         const res = await AddressService.getProvinces();
@@ -138,7 +138,8 @@ const CheckoutPage = () => {
                 oldArray => [...oldArray, {
                     value: province.name,
                     label: province.name,
-                    code: province.code,
+                    // code: province.code,
+                    code: province.idProvince
                 }]
             );
         });
@@ -162,7 +163,7 @@ const CheckoutPage = () => {
                 oldArray => [...oldArray, {
                     value: districts.name,
                     label: districts.name,
-                    code: districts.code,
+                    code: districts.idDistrict,
                 }]
             );
         });
@@ -181,7 +182,7 @@ const CheckoutPage = () => {
                 oldArray => [...oldArray, {
                     value: wards.name,
                     label: wards.name,
-                    code: wards.code,
+                    code: wards.idCommune,
                 }]
             );
         });
@@ -343,24 +344,28 @@ const CheckoutPage = () => {
         {
             title: 'Phương thức thanh toán',
             content:
-                <Row className="payment-method-row" justify="space-around" style={{ padding: '20px' }}>
-                    <Col span={10}>
-                        <BadgeCheckedPaymentMethod count={showBadgeCODMethod ? "\u2713" : 0} color="#63b0ff" size="default">
-                            <CardPaymentMethod className={cardCODMethodClassName} hoverable onClick={handlePaymentMethodCOD}>
-                                <div><Image src={CodMethodImage} preview={false} width='70px' /></div>
-                                <div>(COD) Thanh toán khi nhận hàng</div>
-                            </CardPaymentMethod>
-                        </BadgeCheckedPaymentMethod>
-                    </Col>
-                    <Col span={10}>
-                        <BadgeCheckedPaymentMethod count={showBadgePaypalMethod ? "\u2713" : 0} color="#63b0ff" size="default">
-                            <CardPaymentMethod className={cardPaypalMethodClassName} hoverable onClick={handlePaymentMethodPaypal}>
-                                <div><Image src={CodMethodImage} preview={false} width='70px' /></div>
-                                <div>Thanh toán qua Paypal</div>
-                            </CardPaymentMethod>
-                        </BadgeCheckedPaymentMethod>
-                    </Col>
-                </Row>,
+                <>
+                    <Row className="payment-method-row" justify="space-around" style={{ padding: '20px' }}>
+                        <Col span={10}>
+                            <BadgeCheckedPaymentMethod count={showBadgeCODMethod ? "\u2713" : 0} color="#63b0ff" size="default">
+                                <CardPaymentMethod className={cardCODMethodClassName} hoverable onClick={handlePaymentMethodCOD}>
+                                    <div><Image src={CodMethodImage} preview={false} width='70px' /></div>
+                                    <div>(COD) Thanh toán khi nhận hàng</div>
+                                </CardPaymentMethod>
+                            </BadgeCheckedPaymentMethod>
+                        </Col>
+                        <Col span={10}>
+                            <Tooltip title="Chức năng đang xây dựng." color="black">
+                                <BadgeCheckedPaymentMethod count={showBadgePaypalMethod ? "\u2713" : 0} color="#63b0ff" size="default">
+                                    <CardPaymentMethod className={cardPaypalMethodClassName + ' not-allowed-card'} hoverable>
+                                        <div><Image src={CodMethodImage} preview={false} width='70px' /></div>
+                                        <div>Thanh toán qua Paypal</div>
+                                    </CardPaymentMethod>
+                                </BadgeCheckedPaymentMethod>
+                            </Tooltip>
+                        </Col>
+                    </Row>
+                </>
         },
     ];
     const [currentStep, setCurrentStep] = useState(0);
@@ -379,7 +384,7 @@ const CheckoutPage = () => {
         title: item.title,
     }));
     const contentStyle = {
-        lineHeight: '260px',
+        // lineHeight: '260px',
         textAlign: 'center',
         width: '100%',
         backgroundColor: '#fff',
@@ -522,17 +527,17 @@ const CheckoutPage = () => {
                                             <Button
                                                 type="primary"
                                                 onClick={() => next()}
-                                                disabled={!buyerState.fullname.length || !buyerState.phone.length 
-                                                || selectedProvince === 'Chọn tỉnh thành' 
-                                                || selectedDistrict === 'Chọn quận huyện' 
-                                                || selectedWard === 'Chọn phường xã' 
-                                            }>
+                                                disabled={!buyerState.fullname.length || !buyerState.phone.length
+                                                    || selectedProvince === 'Chọn tỉnh thành'
+                                                    || selectedDistrict === 'Chọn quận huyện'
+                                                    || selectedWard === 'Chọn phường xã'
+                                                }>
                                                 Tiếp Tục
                                             </Button>
                                         )}
                                         {currentStep === steps.length - 1 && (
                                             <Button type="primary" onClick={() => message.success('Processing complete!')}>
-                                               Xong
+                                                Xong
                                             </Button>
                                         )}
                                         {currentStep > 0 && (
